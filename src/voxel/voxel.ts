@@ -66,3 +66,22 @@ export function bounds(voxels: readonly Voxel[]): Bounds {
 }
 
 export const toMeters = (voxels: number) => voxels * VOXEL_SIZE
+
+/**
+ * Centro de cada cubo en metros, como [x0, y0, z0, x1, y1, z1, ...].
+ * El modelo queda centrado en X/Z y con la base apoyada en y = 0, así colocarlo
+ * en la escena es "ponerlo en el piso/escritorio en tal punto".
+ */
+export function instancePositions(voxels: readonly Voxel[]): Float32Array {
+  const { min, size } = bounds(voxels)
+  const offsetX = min[0] + size[0] / 2
+  const offsetZ = min[2] + size[2] / 2
+  const positions = new Float32Array(voxels.length * 3)
+  voxels.forEach(([x, y, z], i) => {
+    // +0.5: la posición de un cubo es su centro, no su esquina
+    positions[i * 3] = (x - offsetX + 0.5) * VOXEL_SIZE
+    positions[i * 3 + 1] = (y - min[1] + 0.5) * VOXEL_SIZE
+    positions[i * 3 + 2] = (z - offsetZ + 0.5) * VOXEL_SIZE
+  })
+  return positions
+}

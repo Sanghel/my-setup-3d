@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bounds, box, merge, toMeters, VOXEL_SIZE } from './voxel'
+import { bounds, box, instancePositions, merge, toMeters, VOXEL_SIZE } from './voxel'
 
 describe('box', () => {
   it('genera un voxel por cada celda del volumen', () => {
@@ -48,5 +48,25 @@ describe('toMeters', () => {
   it('convierte voxeles a metros con VOXEL_SIZE', () => {
     expect(VOXEL_SIZE).toBe(0.02)
     expect(toMeters(50)).toBeCloseTo(1)
+  })
+})
+
+describe('instancePositions', () => {
+  it('centra el modelo en X/Z y apoya su base en y = 0, en metros', () => {
+    // caja de 2×1×2 voxeles con la esquina en (10, 5, 10)
+    const positions = instancePositions(box([10, 5, 10], [2, 1, 2], 0))
+    expect(positions).toHaveLength(4 * 3)
+    const xs = [], ys = [], zs = []
+    for (let i = 0; i < positions.length; i += 3) {
+      xs.push(positions[i])
+      ys.push(positions[i + 1])
+      zs.push(positions[i + 2])
+    }
+    // centros de los cubos: ±medio voxel alrededor de 0 en X/Z
+    expect(Math.min(...xs)).toBeCloseTo(-VOXEL_SIZE / 2)
+    expect(Math.max(...xs)).toBeCloseTo(VOXEL_SIZE / 2)
+    expect(Math.min(...zs)).toBeCloseTo(-VOXEL_SIZE / 2)
+    // el centro del cubo más bajo está a medio voxel del piso
+    expect(Math.min(...ys)).toBeCloseTo(VOXEL_SIZE / 2)
   })
 })
