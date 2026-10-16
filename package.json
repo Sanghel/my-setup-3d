@@ -11,7 +11,8 @@
     "test": "vitest run --maxWorkers=2 --testTimeout=15000",
     "test:watch": "vitest --maxWorkers=2",
     "preview": "vite preview",
-    "assets": "blender --background --factory-startup --python blender/scripts/build_room.py -- --out public/models/room.raw.glb"
+    "assets": "blender --background --factory-startup --python blender/scripts/build_room.py -- --out public/models/room.raw.glb",
+    "assets:preview": "npm run assets -- --preview"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

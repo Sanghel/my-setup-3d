@@ -16,6 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="public/models/room.raw.glb")
     parser.add_argument("--blend", default="blender/out/room.blend")
+    parser.add_argument("--preview", action="store_true", help="renderizar blender/out/preview.png")
     return parser.parse_args(argv)
 
 
@@ -38,7 +39,13 @@ def reset_scene() -> None:
 def export_glb(path: str) -> Path:
     out = ROOT / path
     out.parent.mkdir(parents=True, exist_ok=True)
-    bpy.ops.export_scene.gltf(filepath=str(out), export_format="GLB", export_yup=True)
+    bpy.ops.export_scene.gltf(
+        filepath=str(out),
+        export_format="GLB",
+        export_yup=True,
+        export_cameras=False,  # la cámara y las luces de preview no van a la web
+        export_lights=False,
+    )
     return out
 
 
