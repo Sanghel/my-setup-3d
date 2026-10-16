@@ -3,15 +3,22 @@ import type { ThreeElements } from '@react-three/fiber'
 import { Color, Matrix4, type InstancedMesh } from 'three'
 import { instancePositions, VOXEL_SIZE, type VoxelModel } from '../voxel/voxel'
 
-type VoxelObjectProps = ThreeElements['group'] & { model: VoxelModel }
+type VoxelObjectProps = ThreeElements['group'] & {
+  model: VoxelModel
+  /** false: usar coordenadas de grilla tal cual en vez de centrar en la base (estructura del cuarto). */
+  center?: boolean
+}
 
 /**
  * Dibuja un VoxelModel como UN InstancedMesh: una geometría de cubo, un material
  * y N instancias con su propia posición y color → un solo draw call.
  */
-export function VoxelObject({ model, ...groupProps }: VoxelObjectProps) {
+export function VoxelObject({ model, center = true, ...groupProps }: VoxelObjectProps) {
   const ref = useRef<InstancedMesh>(null)
-  const positions = useMemo(() => instancePositions(model.voxels), [model.voxels])
+  const positions = useMemo(
+    () => instancePositions(model.voxels, { center }),
+    [model.voxels, center],
+  )
 
   useLayoutEffect(() => {
     const mesh = ref.current

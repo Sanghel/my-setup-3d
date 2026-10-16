@@ -69,19 +69,59 @@ export const toMeters = (voxels: number) => voxels * VOXEL_SIZE
 
 /**
  * Centro de cada cubo en metros, como [x0, y0, z0, x1, y1, z1, ...].
- * El modelo queda centrado en X/Z y con la base apoyada en y = 0, así colocarlo
- * en la escena es "ponerlo en el piso/escritorio en tal punto".
+ * Por defecto el modelo queda centrado en X/Z y con la base apoyada en y = 0, así
+ * colocarlo en la escena es "ponerlo en el piso/escritorio en tal punto".
+ * Con `center: false` se usan las coordenadas de la grilla tal cual (estructura del cuarto).
  */
-export function instancePositions(voxels: readonly Voxel[]): Float32Array {
-  const { min, size } = bounds(voxels)
-  const offsetX = min[0] + size[0] / 2
-  const offsetZ = min[2] + size[2] / 2
+export function instancePositions(
+  voxels: readonly Voxel[],
+  { center = true }: { center?: boolean } = {},
+): Float32Array {
+  let offsetX = 0
+  let offsetY = 0
+  let offsetZ = 0
+  if (center) {
+    const { min, size } = bounds(voxels)
+    offsetX = min[0] + size[0] / 2
+    offsetY = min[1]
+    offsetZ = min[2] + size[2] / 2
+  }
   const positions = new Float32Array(voxels.length * 3)
   voxels.forEach(([x, y, z], i) => {
     // +0.5: la posición de un cubo es su centro, no su esquina
     positions[i * 3] = (x - offsetX + 0.5) * VOXEL_SIZE
-    positions[i * 3 + 1] = (y - min[1] + 0.5) * VOXEL_SIZE
+    positions[i * 3 + 1] = (y - offsetY + 0.5) * VOXEL_SIZE
     positions[i * 3 + 2] = (z - offsetZ + 0.5) * VOXEL_SIZE
   })
   return positions
+}
+
+/**
+ * Segmento de voxeles entre `from` y `to` (ambos incluidos): un voxel por paso del eje
+ * más largo, redondeando los otros dos. `thickness` lo engruesa como una caja por punto.
+ */
+export function line(from: Vec3, to: Vec3, color: number, thickness: Vec3 = [1, 1, 1]): Voxel[] {
+  const steps = Math.max(...[0, 1, 2].map((axis) => Math.abs(to[axis] - from[axis])))
+  const parts: Voxel[][] = []
+  for (let i = 0; i <= steps; i++) {
+    const t = steps === 0 ? 0 : i / steps
+    const point: Vec3 = [
+      Math.round(from[0] + (to[0] - from[0]) * t),
+      Math.round(from[1] + (to[1] - from[1]) * t),
+      Math.round(from[2] + (to[2] - from[2]) * t),
+    ]
+    parts.push(box(point, thickness, color))
+  }
+  return merge(...parts)
+}
+
+/**
+ * Número pseudoaleatorio en [0, 1) a partir de una celda: siempre el mismo para la misma
+ * (x, y, z). Sirve para variar colores (piso, techo popcorn) sin que cambien en cada carga.
+ */
+export function hash3(x: number, y: number, z: number): number {
+  let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(z, 2147483647)
+  h = Math.imul(h ^ (h >>> 13), 1274126177)
+  h ^= h >>> 16
+  return (h >>> 0) / 4294967296
 }

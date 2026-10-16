@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bounds, box, instancePositions, merge, toMeters, VOXEL_SIZE } from './voxel'
+import { bounds, box, hash3, instancePositions, line, merge, toMeters, VOXEL_SIZE } from './voxel'
 
 describe('box', () => {
   it('genera un voxel por cada celda del volumen', () => {
@@ -68,5 +68,44 @@ describe('instancePositions', () => {
     expect(Math.min(...zs)).toBeCloseTo(-VOXEL_SIZE / 2)
     // el centro del cubo más bajo está a medio voxel del piso
     expect(Math.min(...ys)).toBeCloseTo(VOXEL_SIZE / 2)
+  })
+})
+
+describe('instancePositions sin centrar', () => {
+  it('con center: false usa las coordenadas de la grilla tal cual', () => {
+    const positions = instancePositions([[10, 0, -1, 0]], { center: false })
+    expect(positions[0]).toBeCloseTo(10.5 * VOXEL_SIZE)
+    expect(positions[1]).toBeCloseTo(0.5 * VOXEL_SIZE)
+    expect(positions[2]).toBeCloseTo(-0.5 * VOXEL_SIZE)
+  })
+})
+
+describe('line', () => {
+  it('une dos puntos con voxeles contiguos, incluyendo los extremos', () => {
+    const voxels = line([0, 0, 0], [0, 10, 5], 0)
+    const ys = voxels.map(([, y]) => y)
+    expect(Math.min(...ys)).toBe(0)
+    expect(Math.max(...ys)).toBe(10)
+    // un voxel por paso del eje más largo: no quedan huecos en Y
+    expect(new Set(ys).size).toBe(11)
+    expect(voxels).toContainEqual([0, 10, 5, 0])
+  })
+
+  it('aplica un grosor como caja alrededor de cada punto', () => {
+    const thin = line([0, 0, 0], [10, 0, 0], 0)
+    const thick = line([0, 0, 0], [10, 0, 0], 0, [1, 2, 2])
+    expect(thick).toHaveLength(thin.length * 4)
+  })
+})
+
+describe('hash3', () => {
+  it('es determinista y devuelve valores en [0, 1)', () => {
+    expect(hash3(3, 7, 11)).toBe(hash3(3, 7, 11))
+    expect(hash3(3, 7, 11)).not.toBe(hash3(3, 7, 12))
+    for (let i = 0; i < 200; i++) {
+      const v = hash3(i, i * 2, -i)
+      expect(v).toBeGreaterThanOrEqual(0)
+      expect(v).toBeLessThan(1)
+    }
   })
 })
