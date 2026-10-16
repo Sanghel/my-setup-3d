@@ -2,6 +2,7 @@ import { CameraControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
 import { Room } from './scene/Room'
+import { Setup } from './scene/Setup'
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <ambientLight intensity={0.4} />
         <directionalLight position={[0.5, 2.3, 2.5]} intensity={1.6} />
         <Room />
+        <Setup />
         {import.meta.env.DEV && <DevStatsProbe />}
         {/* makeDefault: otros componentes de drei pueden encontrar estos controles.
             Límites temporales; los del cuarto llegan con el CameraRig (tarea 7.1) */}
