@@ -9,3 +9,4 @@ dist/
 blender/out/
 *.blend1
 __pycache__/
+public/models/*.raw.glb

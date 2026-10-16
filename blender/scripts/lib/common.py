@@ -1,0 +1,49 @@
+"""Utilidades compartidas por los scripts de Blender: argumentos, medidas y escena limpia."""
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+import bpy
+
+ROOT = Path(__file__).resolve().parents[3]  # raíz del repo
+
+
+def parse_args() -> argparse.Namespace:
+    """Blender pasa sus propios argumentos; los del script van después de `--`."""
+    argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", default="public/models/room.raw.glb")
+    parser.add_argument("--blend", default="blender/out/room.blend")
+    return parser.parse_args(argv)
+
+
+def load_measurements() -> dict:
+    with open(ROOT / "blender" / "measurements.json", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def cm(value: float) -> float:
+    """Las medidas están en cm; Blender y glTF trabajan en metros."""
+    return value / 100
+
+
+def reset_scene() -> None:
+    """--factory-startup ya arranca limpio, pero la escena trae cubo, cámara y luz por defecto."""
+    bpy.ops.object.select_all(action="SELECT")
+    bpy.ops.object.delete()
+
+
+def export_glb(path: str) -> Path:
+    out = ROOT / path
+    out.parent.mkdir(parents=True, exist_ok=True)
+    bpy.ops.export_scene.gltf(filepath=str(out), export_format="GLB", export_yup=True)
+    return out
+
+
+def save_blend(path: str) -> Path:
+    out = ROOT / path
+    out.parent.mkdir(parents=True, exist_ok=True)
+    bpy.ops.wm.save_as_mainfile(filepath=str(out))
+    return out
