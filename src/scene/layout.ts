@@ -16,3 +16,7 @@ export const DESK_POSITION: Vec3 = [
 ]
 
 export const ULTRAWIDE_POSITION: Vec3 = [DESK_POSITION[0] + 0.08, DESK_TOP, 0.16]
+
+/** A la izquierda del ultrawide, girado hacia el usuario como en las fotos. */
+export const VERTICAL_MONITOR_POSITION: Vec3 = [DESK_POSITION[0] - 0.6, DESK_TOP, 0.25]
+export const VERTICAL_MONITOR_ROTATION: Vec3 = [0, 0.45, 0]
