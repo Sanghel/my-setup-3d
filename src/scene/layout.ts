@@ -14,3 +14,5 @@ export const DESK_POSITION: Vec3 = [
   0,
   cm(DESK.depth / 2),
 ]
+
+export const ULTRAWIDE_POSITION: Vec3 = [DESK_POSITION[0] + 0.08, DESK_TOP, 0.16]
