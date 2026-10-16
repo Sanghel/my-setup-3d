@@ -1,8 +1,10 @@
 import { makeDesk } from '../voxel/models/desk'
+import { makeKeyboard } from '../voxel/models/keyboard'
 import { makeUltrawide } from '../voxel/models/ultrawide'
 import { makeVerticalMonitor } from '../voxel/models/verticalMonitor'
 import {
   DESK_POSITION,
+  KEYBOARD_POSITION,
   ULTRAWIDE_POSITION,
   VERTICAL_MONITOR_POSITION,
   VERTICAL_MONITOR_ROTATION,
@@ -12,6 +14,7 @@ import { VoxelObject } from './VoxelObject'
 const DESK_MODEL = makeDesk()
 const ULTRAWIDE_MODEL = makeUltrawide()
 const VERTICAL_MONITOR_MODEL = makeVerticalMonitor()
+const KEYBOARD_MODEL = makeKeyboard()
 
 export function Setup() {
   return (
@@ -23,6 +26,7 @@ export function Setup() {
         position={VERTICAL_MONITOR_POSITION}
         rotation={VERTICAL_MONITOR_ROTATION}
       />
+      <VoxelObject model={KEYBOARD_MODEL} position={KEYBOARD_POSITION} />
     </group>
   )
 }
