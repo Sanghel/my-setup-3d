@@ -47,15 +47,15 @@ export function makeVerticalMonitor(): VoxelModel {
   }
 
   // Brazo: abrazadera atrás a la izquierda → poste → dos segmentos → placa VESA
-  const poleX = -6
+  const poleX = 0
   const poleZ = -9
   const elbowY = lift + Math.floor(H / 2) - 4
   const vesa: [number, number, number] = [Math.floor(W / 2) - 2, lift + Math.floor(H / 2) - 2, -2]
   const armVoxels = merge(
     box([poleX - 1, 0, poleZ - 1], [4, 1, 4], arm), // abrazadera sobre el escritorio
     box([poleX, 0, poleZ], [2, elbowY, 2], arm), // poste
-    line([poleX, elbowY, poleZ], [poleX + 10, elbowY + 2, poleZ + 3], arm, [2, 2, 2]),
-    line([poleX + 10, elbowY + 2, poleZ + 3], [vesa[0], vesa[1], vesa[2] - 2], arm, [2, 2, 2]),
+    line([poleX, elbowY, poleZ], [poleX + 7, elbowY + 2, poleZ + 3], arm, [2, 2, 2]),
+    line([poleX + 7, elbowY + 2, poleZ + 3], [vesa[0], vesa[1], vesa[2] - 2], arm, [2, 2, 2]),
     box(vesa, [4, 4, 1], arm), // placa VESA pegada a la parte trasera
   )
 
