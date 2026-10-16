@@ -1,0 +1,39 @@
+{
+  "_status": "estimated",
+  "_notes": [
+    "Medidas en CENTÍMETROS. 'estimated' = sacadas de fotos; pasar a 'measured' al integrar las reales (tarea 5.1).",
+    "Ejes del cuarto: x a lo largo de la pared del fondo (0 = extremo izquierdo, width = esquina), z hacia adentro desde la pared del fondo, y hacia arriba.",
+    "fromCorner = distancia de la esquina compartida al borde más cercano del objeto."
+  ],
+  "room": {
+    "width": 260,
+    "depth": 320,
+    "height": 240,
+    "baseboard": { "height": 8, "thickness": 1.2 }
+  },
+  "window": { "fromCorner": 70, "width": 100, "height": 115, "sill": 95, "depth": 15, "frame": 5 },
+  "desk": {
+    "width": 140,
+    "depth": 60,
+    "height": 76,
+    "top": 2.5,
+    "gapToSideWall": 20,
+    "gapToBackWall": 2,
+    "legThickness": 4
+  },
+  "deskMat": { "width": 90, "depth": 40 },
+  "ultrawide": { "width": 81, "height": 36, "radius": 180, "lift": 12, "wallGap": 15 },
+  "verticalMonitor": { "width": 36, "height": 62, "lift": 10, "angleDeg": 25 },
+  "keyboard": { "width": 32, "depth": 11 },
+  "frames": {
+    "jersey2008": { "wall": "back", "width": 75, "height": 85, "depth": 4, "border": 3, "bottom": 135, "fromCorner": 45 },
+    "jerseyScholes": { "wall": "side", "width": 75, "height": 80, "depth": 4, "border": 3, "bottom": 130, "fromCorner": 210 },
+    "poster": { "wall": "back", "width": 60, "height": 80, "depth": 1.5, "border": 0, "bottom": 125, "fromCorner": 135 }
+  },
+  "led": {
+    "color": "#ff1e1e",
+    "setup": { "wall": "back", "height": 80, "length": 130 },
+    "poster": { "sides": "all" }
+  },
+  "bake": { "exposure": 1.0 }
+}

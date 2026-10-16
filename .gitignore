@@ -4,3 +4,9 @@ dist/
 .env*
 .DS_Store
 *.local
+
+# Blender: archivos de trabajo (el .glb optimizado sí se commitea)
+blender/out/
+*.blend1
+__pycache__/
+public/models/*.raw.glb
