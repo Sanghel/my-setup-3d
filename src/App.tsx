@@ -1,7 +1,8 @@
+import { Suspense } from 'react'
 import { CameraControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
-import { Placeholder } from './scene/Placeholder'
+import { Room } from './scene/Room'
 
 export default function App() {
   return (
@@ -10,7 +11,10 @@ export default function App() {
         <color attach="background" args={['#120c0c']} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[0.5, 2.3, 2.5]} intensity={1.6} />
-        <Placeholder />
+        {/* Suspense: mientras el .glb se descarga no se dibuja nada (el loader real llega en 11.4) */}
+        <Suspense fallback={null}>
+          <Room />
+        </Suspense>
         {import.meta.env.DEV && <DevStatsProbe />}
         {/* makeDefault: otros componentes de drei pueden encontrar estos controles.
             Límites temporales; los del cuarto llegan con el CameraRig (tarea 10.1) */}
