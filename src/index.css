@@ -23,3 +23,13 @@ canvas {
   touch-action: none;
   display: block;
 }
+
+.dev-stats {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  padding: 4px 8px;
+  font: 12px/1.4 ui-monospace, monospace;
+  color: #0f0;
+  background: rgb(0 0 0 / 0.7);
+}
