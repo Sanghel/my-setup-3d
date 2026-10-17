@@ -1,6 +1,7 @@
 """Render de prueba con Cycles desde la vista general de la web, para verificar sin abrir Blender.
 La cámara y las luces de este módulo NO se exportan al .glb."""
 
+import json
 import math
 
 import bpy
@@ -8,10 +9,11 @@ from mathutils import Vector
 
 from .common import ROOT
 
-# Pose de la vista general en la web (three.js, Y arriba): posición y objetivo de la cámara
-WEB_CAMERA = (0.4, 1.55, 2.7)
-WEB_TARGET = (1.6, 0.9, 0.4)
-WEB_FOV_DEG = 50  # vertical, como en <Canvas camera={{ fov: 50 }}>
+# Pose de la vista general: la misma que usa la web (src/scene/overviewCamera.json, Y arriba)
+_POSE = json.loads((ROOT / "src" / "scene" / "overviewCamera.json").read_text(encoding="utf-8"))
+WEB_CAMERA = tuple(_POSE["position"])
+WEB_TARGET = tuple(_POSE["target"])
+WEB_FOV_DEG = _POSE["fov"]  # vertical, como en <Canvas camera={{ fov }}>
 
 
 def web_to_blender(p: tuple[float, float, float]) -> Vector:

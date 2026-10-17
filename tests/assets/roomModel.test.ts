@@ -24,6 +24,8 @@ const ROOM_NODES = [
   'room_baseboard',
   'room_window_frame',
   'room_window_glass',
+  'room_door',
+  'room_door_frame',
 ]
 
 let doc: Document

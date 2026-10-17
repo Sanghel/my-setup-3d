@@ -1,39 +1,45 @@
 {
-  "_status": "estimated",
+  "_status": "measured",
   "_notes": [
-    "Medidas en CENTÍMETROS. 'estimated' = sacadas de fotos; pasar a 'measured' al integrar las reales (tarea 5.1).",
-    "Ejes del cuarto: x a lo largo de la pared del fondo (0 = extremo izquierdo, width = esquina), z hacia adentro desde la pared del fondo, y hacia arriba.",
-    "fromCorner = distancia de la esquina compartida al borde más cercano del objeto."
+    "Medidas en CENTÍMETROS, tomadas por el usuario el 2026-10-17 (ver insumos-fotos-y-medidas.md en el vault).",
+    "Ejes del cuarto: x a lo largo de la pared del fondo (0 = pared izquierda, width = esquina con la pared lateral), d hacia adentro desde la pared del fondo, up hacia arriba.",
+    "Paredes: 'back' = fondo (escritorio, poster, camiseta 2008), 'side' = lateral derecha (ventana, pegboard, Scholes), 'left' = izquierda (puerta), 'front' = frontal.",
+    "Las posiciones a lo largo de una pared usan {from, distance}: from = 'corner' (esquina fondo/lateral), 'leftWall' o 'frontWall'; distance = de esa referencia al borde más cercano del objeto.",
+    "Datos de fichas técnicas (no medidos): curvatura del Xiaomi G34WQi = 1500R."
   ],
   "room": {
-    "width": 260,
-    "depth": 320,
-    "height": 240,
-    "baseboard": { "height": 8, "thickness": 1.2 }
+    "width": 170,
+    "depth": 280,
+    "height": 236,
+    "baseboard": { "height": 8, "thickness": 1 },
+    "floorPlank": { "width": 18.5, "length": 90 }
   },
-  "window": { "fromCorner": 70, "width": 100, "height": 115, "sill": 95, "depth": 15, "frame": 5 },
+  "window": { "wall": "side", "from": "corner", "distance": 55, "width": 100, "height": 145, "sill": 87, "depth": 13, "frame": 3 },
+  "door": { "wall": "left", "from": "backWall", "distance": 55, "width": 100, "height": 236, "_note": "Frente a la ventana, de piso a techo (M5)." },
   "desk": {
-    "width": 140,
-    "depth": 60,
-    "height": 76,
-    "top": 2.5,
-    "gapToSideWall": 20,
-    "gapToBackWall": 2,
-    "legThickness": 4
+    "width": 135,
+    "depth": 75,
+    "height": 71.5,
+    "top": 1.5,
+    "gapToSideWall": 17,
+    "gapToBackWall": 5,
+    "legThickness": 2,
+    "legCrossHeight": 33
   },
-  "deskMat": { "width": 90, "depth": 40 },
-  "ultrawide": { "width": 81, "height": 36, "radius": 180, "lift": 12, "wallGap": 15 },
-  "verticalMonitor": { "width": 36, "height": 62, "lift": 10, "angleDeg": 25 },
-  "keyboard": { "width": 32, "depth": 11 },
+  "deskMat": { "width": 77, "depth": 29 },
+  "ultrawide": { "width": 80, "height": 35, "radius": 150, "lift": 16, "wallGap": 17, "base": { "width": 27.5, "depth": 21.5 } },
+  "verticalMonitor": { "width": 36, "height": 61, "lift": 2, "angleDeg": 30 },
+  "monitorArm": { "fromDeskLeft": 22.5, "fromBackWall": 14 },
+  "keyboard": { "width": 31, "depth": 13, "rows": 6 },
   "frames": {
-    "jersey2008": { "wall": "back", "width": 75, "height": 85, "depth": 4, "border": 3, "bottom": 135, "fromCorner": 45 },
-    "jerseyScholes": { "wall": "side", "width": 75, "height": 80, "depth": 4, "border": 3, "bottom": 130, "fromCorner": 210 },
-    "poster": { "wall": "back", "width": 60, "height": 80, "depth": 1.5, "border": 0, "bottom": 125, "fromCorner": 135 }
+    "jersey2008": { "wall": "back", "from": "corner", "distance": 18.5, "width": 67, "height": 72, "depth": 2.5, "border": 3.5, "bottom": 127 },
+    "jerseyScholes": { "wall": "side", "from": "frontWall", "distance": 26.5, "width": 88, "height": 99, "depth": 2.5, "border": 3.5, "bottom": 120 },
+    "poster": { "wall": "back", "from": "leftWall", "distance": 31.5, "width": 44, "height": 55, "depth": 1.5, "border": 0, "bottom": 140, "_note": "Panel sin marco; profundidad estimada." }
   },
   "led": {
-    "color": "#ff1e1e",
-    "setup": { "wall": "back", "height": 80, "length": 130 },
-    "poster": { "sides": "all" }
+    "poster": { "color": "#ff1e1e", "sides": "all" },
+    "desk": { "color": "#fff4e8", "placement": "bajo el borde del tablero, 4 lados, apuntando hacia afuera" },
+    "ultrawideRear": { "color": "#ffb347", "_note": "Luz trasera propia del monitor." }
   },
   "bake": { "exposure": 1.0 }
 }

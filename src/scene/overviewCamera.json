@@ -1,0 +1,6 @@
+{
+  "_note": "Pose de la vista general (three.js, metros, Y arriba). La leen la web (App.tsx) y el render de preview de Blender (lib/preview.py).",
+  "position": [0.35, 1.45, 2.55],
+  "target": [1.0, 0.95, 0.35],
+  "fov": 60
+}
