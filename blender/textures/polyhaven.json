@@ -1,0 +1,6 @@
+{
+  "_note": "Texturas PBR CC0 de Poly Haven (https://polyhaven.com). Se descargan con `npm run textures:fetch` a blender/textures/polyhaven/ (ignorado en git).",
+  "resolution": "2k",
+  "maps": { "Diffuse": "diff", "nor_gl": "nor_gl", "Rough": "rough" },
+  "assets": ["laminate_floor_02", "laminate_floor_03", "beige_wall_001", "beige_wall_002"]
+}

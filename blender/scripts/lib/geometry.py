@@ -29,8 +29,32 @@ def _box_vertices(b: Bounds) -> list[tuple[float, float, float]]:
     return bottom + top
 
 
-def boxes(name: str, parts: Iterable[Bounds], material: bpy.types.Material, collection=None) -> bpy.types.Object:
-    """Un objeto con una o varias cajas en la misma malla (p. ej. una pared con un hueco)."""
+def add_box_uvs(mesh: bpy.types.Mesh, tile: float, rotate: bool = False) -> None:
+    """UVs por proyección de caja en metros: cada cara usa las dos coordenadas que no son su normal,
+    divididas por `tile` (metros que cubre una repetición de la textura). Así la escala del material
+    es la real en cualquier superficie, sin importar el tamaño de la caja.
+    `rotate` intercambia U y V (p. ej. para orientar las tablas del piso a lo largo del cuarto)."""
+    uv_layer = mesh.uv_layers.new(name="UVMap")
+    for poly in mesh.polygons:
+        n = poly.normal
+        axis = max(range(3), key=lambda i: abs(n[i]))
+        a, b = [i for i in range(3) if i != axis]
+        for loop_index in poly.loop_indices:
+            co = mesh.vertices[mesh.loops[loop_index].vertex_index].co
+            u, v = co[a] / tile, co[b] / tile
+            uv_layer.data[loop_index].uv = (v, u) if rotate else (u, v)
+
+
+def boxes(
+    name: str,
+    parts: Iterable[Bounds],
+    material: bpy.types.Material,
+    collection=None,
+    uv_tile: float | None = None,
+    uv_rotate: bool = False,
+) -> bpy.types.Object:
+    """Un objeto con una o varias cajas en la misma malla (p. ej. una pared con un hueco).
+    Con `uv_tile` (metros por repetición) se generan UVs para materiales con textura."""
     verts: list[tuple[float, float, float]] = []
     faces: list[Sequence[int]] = []
     for part in parts:
@@ -48,11 +72,13 @@ def boxes(name: str, parts: Iterable[Bounds], material: bpy.types.Material, coll
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(mesh)
     bm.free()
+    if uv_tile:
+        add_box_uvs(mesh, uv_tile, uv_rotate)
     mesh.materials.append(material)
     obj = bpy.data.objects.new(name, mesh)
     (collection or bpy.context.scene.collection).objects.link(obj)
     return obj
 
 
-def box(name: str, b: Bounds, material: bpy.types.Material, collection=None) -> bpy.types.Object:
-    return boxes(name, [b], material, collection)
+def box(name: str, b: Bounds, material: bpy.types.Material, collection=None, **uv) -> bpy.types.Object:
+    return boxes(name, [b], material, collection, **uv)

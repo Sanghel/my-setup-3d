@@ -1,6 +1,6 @@
 """Estructura del cuarto: piso, cuatro paredes (ventana en la lateral, puerta en la izquierda), techo,
 zócalo y la ventana corrediza. Todos los nodos llevan el prefijo room_ (no seleccionables en la web).
-Los colores son provisorios (sacados de las fotos); las texturas PBR llegan en la tarea 5.2."""
+Superficies con texturas PBR CC0 de Poly Haven teñidas según las fotos (blender/textures/process.sh)."""
 
 from . import materials
 from .geometry import box, boxes
@@ -14,15 +14,21 @@ def build_room(m: dict) -> None:
     W, D, H = room["width"], room["depth"], room["height"]
     side_t = win["depth"]
 
-    floor_mat = materials.principled("floor_laminate", "#8a7866", roughness=0.45)
-    wall_mat = materials.principled("wall_paint", "#ecebe7", roughness=0.9)
-    ceiling_mat = materials.principled("ceiling_paint", "#e9e8e4", roughness=0.95)
-    baseboard_mat = materials.principled("baseboard_wood", "#4a3427", roughness=0.55)
+    floor_mat = materials.pbr("floor_laminate", "floor_diff.jpg", "floor_nor.jpg", "floor_rough.jpg")
+    wall_mat = materials.pbr("wall_paint", "wall_diff.jpg", "wall_nor.jpg", "wall_rough.jpg", normal_strength=0.6)
+    ceiling_mat = materials.pbr("ceiling_paint", "ceiling_diff.jpg", "ceiling_nor.jpg", "ceiling_rough.jpg")
+    baseboard_mat = materials.pbr("baseboard_wood", "baseboard_diff.jpg", "floor_nor.jpg", roughness_value=0.55)
+
+    # Metros que cubre una repetición de cada textura (ver nota 07):
+    # la textura del laminado mide 1,70 m con 8 tablas de 21,25 cm; las reales miden 18,5 cm.
+    plank_scale = room["floorPlank"]["width"] / (170 / 8)
+    floor_uv = {"uv_tile": 1.70 * plank_scale, "uv_rotate": True}  # tablas a lo largo del cuarto
+    wall_uv = {"uv_tile": 3.0}  # beige_wall_001/002 representan 3 × 3 m
 
     # Piso y techo cubren también el grosor de las paredes, para que no queden rendijas en las esquinas
-    box("room_floor", (-BACK_WALL_THICKNESS, W + side_t, -BACK_WALL_THICKNESS, D + BACK_WALL_THICKNESS, -SLAB, 0), floor_mat)
-    box("room_ceiling", (-BACK_WALL_THICKNESS, W + side_t, -BACK_WALL_THICKNESS, D + BACK_WALL_THICKNESS, H, H + SLAB), ceiling_mat)
-    box("room_wall_back", (0, W + side_t, -BACK_WALL_THICKNESS, 0, 0, H), wall_mat)
+    box("room_floor", (-BACK_WALL_THICKNESS, W + side_t, -BACK_WALL_THICKNESS, D + BACK_WALL_THICKNESS, -SLAB, 0), floor_mat, **floor_uv)
+    box("room_ceiling", (-BACK_WALL_THICKNESS, W + side_t, -BACK_WALL_THICKNESS, D + BACK_WALL_THICKNESS, H, H + SLAB), ceiling_mat, **wall_uv)
+    box("room_wall_back", (0, W + side_t, -BACK_WALL_THICKNESS, 0, 0, H), wall_mat, **wall_uv)
     # Paredes izquierda y frontal: cierran el cuarto para que desde adentro nunca se vea el vacío.
     # Lisas por ahora; la puerta se agrega con las medidas reales (M5).
     # Pared izquierda con el hueco de la puerta (frente a la ventana, de piso a techo según M5)
@@ -37,9 +43,10 @@ def build_room(m: dict) -> None:
             *([(*left, door0, door1, door_top, H)] if door_top < H else []),
         ],
         wall_mat,
+        **wall_uv,
     )
     build_door(door0, door1, door_top)
-    box("room_wall_front", (0, W + side_t, D, D + BACK_WALL_THICKNESS, 0, H), wall_mat)
+    box("room_wall_front", (0, W + side_t, D, D + BACK_WALL_THICKNESS, 0, H), wall_mat, **wall_uv)
 
     # Pared lateral (x = W) armada con 4 bloques alrededor del hueco de la ventana.
     # A lo largo de esta pared la coordenada que avanza es d (desde la esquina).
@@ -55,6 +62,7 @@ def build_room(m: dict) -> None:
             (x0, x1, d0, d1, u1, H),  # sobre la ventana
         ],
         wall_mat,
+        **wall_uv,
     )
 
     # Zócalo en ambas paredes
@@ -69,6 +77,7 @@ def build_room(m: dict) -> None:
             (bt, W - bt, D - bt, D, 0, bh),  # pared frontal
         ],
         baseboard_mat,
+        uv_tile=floor_uv["uv_tile"],  # la veta corre a lo largo del zócalo
     )
 
     build_window(m, x0, x1, d0, d1, u0, u1)
