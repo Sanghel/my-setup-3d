@@ -2,7 +2,8 @@
   "_note": [
     "Fotos del usuario → texturas (npm run textures:photos). Los originales viven en el vault (insumos/), NUNCA en el repo.",
     "corners: esquinas del objeto en la foto ya orientada (-auto-orient), normalizadas 0–1, en orden TL, TR, BR, BL.",
-    "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen."
+    "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen.",
+    "Pantallas: ya no usan los wallpapers; las genera `npm run textures:screens` (editor y terminal con código real del repo)."
   ],
   "photos": {
     "poster": {
@@ -85,22 +86,6 @@
         1200
       ],
       "_note": "Interior del marco (60×65 cm). Provisional: tiene reflejos tenues (celular y una puerta); reemplazar con F1 sin reflejos."
-    }
-  },
-  "screens": {
-    "screen_ultrawide": {
-      "file": "screenshots/Pasted 2026-10-17 at 1.56.02 PM.tiff",
-      "size": [
-        2048,
-        858
-      ]
-    },
-    "screen_vertical": {
-      "file": "screenshots/Pasted 2026-10-17 at 1.55.41 PM.tiff",
-      "size": [
-        1024,
-        1832
-      ]
     }
   },
   "pending": {

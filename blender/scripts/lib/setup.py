@@ -45,8 +45,13 @@ def build_desk(m: dict) -> DeskFrame:
             bar(f"desk_leg_{i}_b", (x, d1 - 4, 0), (x, d0 + 4, under - t), t, t, metal),
             box(f"desk_rail_{i}", (x - t / 2, x + t / 2, d0 + 2, d1 - 2, under - t, under), metal),
         ]
-    # Larguero trasero entre las dos X, para que se vea estable
-    parts.append(box("desk_stretcher", (x0 + 6, x1 - 6, d0 + 8, d0 + 8 + t, 8, 8 + t), metal))
+    # Larguero horizontal que une los cruces de las dos X (como en el escritorio real).
+    # Las diagonales son simétricas, así que se cruzan en el centro del fondo y a media altura de la pata.
+    cross_d = (d0 + d1) / 2
+    cross_up = (under - t) / 2
+    parts.append(
+        box("desk_stretcher", (x0 + 6, x1 - 6, cross_d - t / 2, cross_d + t / 2, cross_up - t / 2, cross_up + t / 2), metal)
+    )
 
     # Desk mat: goma negra de 3 mm con la foto encima, centrado bajo el ultrawide, cerca del borde frontal
     mw, md = mat_size["width"], mat_size["depth"]

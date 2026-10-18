@@ -6,7 +6,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 
 const insumos = process.env.INSUMOS_DIR ?? join(homedir(), 'Documents/Obsidian Vault/my-setup-3d/insumos')
-const { photos, screens, edits = {}, cutouts = {} } = JSON.parse(readFileSync('blender/textures/sources.json', 'utf8'))
+const { photos, screens = {}, edits = {}, cutouts = {} } = JSON.parse(readFileSync('blender/textures/sources.json', 'utf8'))
 const outDir = 'blender/textures/photos'
 mkdirSync(outDir, { recursive: true })
 
