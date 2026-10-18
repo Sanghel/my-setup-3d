@@ -2,6 +2,10 @@
 
 import bpy
 
+from .common import ROOT
+
+TEXTURES = ROOT / "blender" / "textures" / "processed"
+
 
 def srgb_to_linear(c: float) -> float:
     """Los colores hex son sRGB; Blender espera colores lineales en los nodos."""
@@ -35,4 +39,39 @@ def glass(name: str = "glass", alpha: float = 0.12) -> bpy.types.Material:
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     bsdf.inputs["Alpha"].default_value = alpha
     mat.surface_render_method = "BLENDED"
+    return mat
+
+
+def _image_node(mat: bpy.types.Material, filename: str, color: bool, x: int, y: int):
+    path = TEXTURES / filename
+    if not path.exists():
+        raise FileNotFoundError(f"{path} no existe: corre `npm run textures` antes de `npm run assets`")
+    node = mat.node_tree.nodes.new("ShaderNodeTexImage")
+    node.image = bpy.data.images.load(str(path), check_existing=True)
+    # El color base es sRGB; normal y rugosidad son datos, no colores
+    node.image.colorspace_settings.name = "sRGB" if color else "Non-Color"
+    node.location = (x, y)
+    return node
+
+
+def pbr(name: str, base: str, normal: str | None = None, roughness: str | None = None,
+        normal_strength: float = 1.0, roughness_value: float = 0.8) -> bpy.types.Material:
+    """Material PBR con texturas de blender/textures/processed (generadas por `npm run textures`).
+    Solo usa conexiones que el exportador glTF entiende: imagen → Base Color, imagen → Normal Map → Normal,
+    imagen → Roughness. Ajustes con otros nodos (Hue/Saturation, Mix…) no llegarían a la web."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    bsdf = nodes["Principled BSDF"]
+    links.new(_image_node(mat, base, True, -700, 300).outputs["Color"], bsdf.inputs["Base Color"])
+    if normal:
+        nmap = nodes.new("ShaderNodeNormalMap")
+        nmap.location = (-300, -250)
+        nmap.inputs["Strength"].default_value = normal_strength
+        links.new(_image_node(mat, normal, False, -700, -250).outputs["Color"], nmap.inputs["Color"])
+        links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+    if roughness:
+        links.new(_image_node(mat, roughness, False, -700, 0).outputs["Color"], bsdf.inputs["Roughness"])
+    else:
+        bsdf.inputs["Roughness"].default_value = roughness_value
     return mat

@@ -1,6 +1,7 @@
 """Render de prueba con Cycles desde la vista general de la web, para verificar sin abrir Blender.
 La cámara y las luces de este módulo NO se exportan al .glb."""
 
+import json
 import math
 
 import bpy
@@ -8,10 +9,11 @@ from mathutils import Vector
 
 from .common import ROOT
 
-# Pose de la vista general en la web (three.js, Y arriba): posición y objetivo de la cámara
-WEB_CAMERA = (0.4, 1.55, 2.7)
-WEB_TARGET = (1.6, 0.9, 0.4)
-WEB_FOV_DEG = 50  # vertical, como en <Canvas camera={{ fov: 50 }}>
+# Pose de la vista general: la misma que usa la web (src/scene/overviewCamera.json, Y arriba)
+_POSE = json.loads((ROOT / "src" / "scene" / "overviewCamera.json").read_text(encoding="utf-8"))
+WEB_CAMERA = tuple(_POSE["position"])
+WEB_TARGET = tuple(_POSE["target"])
+WEB_FOV_DEG = _POSE["fov"]  # vertical, como en <Canvas camera={{ fov }}>
 
 
 def web_to_blender(p: tuple[float, float, float]) -> Vector:
@@ -54,7 +56,12 @@ def add_preview_lights(m: dict) -> None:
     world = bpy.context.scene.world or bpy.data.worlds.new("World")
     bpy.context.scene.world = world
     world.use_nodes = True
-    world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.15
+    background = world.node_tree.nodes["Background"]
+    # Mismo color de fondo que la web; con fuerza baja para que casi no ilumine
+    from .materials import hex_color
+
+    background.inputs["Color"].default_value = hex_color(_POSE["background"])
+    background.inputs["Strength"].default_value = 1.0
 
 
 def render_preview(m: dict, out: str = "blender/out/preview.png", samples: int = 64) -> str:
