@@ -29,14 +29,16 @@ def principled(name: str, color: str, roughness: float = 0.8, metallic: float = 
     return mat
 
 
-def glass(name: str = "glass", alpha: float = 0.12) -> bpy.types.Material:
+def glass(name: str = "glass", alpha: float = 0.08) -> bpy.types.Material:
     """Vidrio barato para tiempo real: casi transparente, liso y con reflejos (alphaMode BLEND en glTF).
 
     No se usa transmisión (KHR_materials_transmission): en three.js obliga a renderizar la escena
     una segunda vez y bajó de 120 a 75 fps en la prueba. Para ventanas y marcos no hace falta
     refracción; basta con transparencia + reflejos del environment map.
     """
-    mat = principled(name, "#dfe8ec", roughness=0.04)
+    # Color base casi negro: el vidrio aporta reflejos (especular), no "niebla" sobre lo que hay detrás.
+    # Con un color claro, la camiseta detrás del vidrio se veía lechosa.
+    mat = principled(name, "#0e1113", roughness=0.04)
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     bsdf.inputs["Alpha"].default_value = alpha
     mat.surface_render_method = "BLENDED"

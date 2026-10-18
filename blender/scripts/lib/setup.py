@@ -219,3 +219,75 @@ def build_keyboard(m: dict, desk: DeskFrame):
         boxes("keyboard_keys_dark", dark_keys, mods),
     ]
     group("item_keyboard", parts, (x0 + W / 2, d0 + D / 2, desk.top))
+
+
+def _wall_point(m: dict, wall: str):
+    """Convierte (u, out, up) de una pared a coordenadas del cuarto.
+    u avanza de izquierda a derecha para quien mira la pared; out sale de la pared hacia el cuarto."""
+    W = m["room"]["width"]
+    if wall == "back":
+        return lambda u, out, up: (u, out, up)
+    if wall == "side":
+        return lambda u, out, up: (W - out, u, up)
+    raise ValueError(f"pared desconocida: {wall}")
+
+
+def _span(m: dict, spec: dict) -> tuple[float, float]:
+    """Rango [u0, u1] del cuadro a lo largo de su pared, según su referencia (from/distance)."""
+    W, D = m["room"]["width"], m["room"]["depth"]
+    w, dist, ref = spec["width"], spec["distance"], spec["from"]
+    if spec["wall"] == "back":
+        u0 = {"leftWall": dist, "corner": W - dist - w}[ref]
+    else:
+        u0 = {"corner": dist, "frontWall": D - dist - w}[ref]
+    return u0, u0 + w
+
+
+def build_frame(m: dict, key: str, item: str, photo_file: str):
+    """Cuadro con marco negro, fondo con la foto y vidrio, colgado en su pared."""
+    spec = m["frames"][key]
+    p = _wall_point(m, spec["wall"])
+    u0, u1 = _span(m, spec)
+    b0, b1 = spec["bottom"], spec["bottom"] + spec["height"]
+    depth, border = spec["depth"], spec["border"]
+    black = materials.principled("frame_black", "#101011", roughness=0.4)
+
+    def cube(name, ua, ub, oa, ob, za, zb, mat):
+        (xa, da, _), (xb, db, _) = p(ua, oa, 0), p(ub, ob, 0)
+        return box(name, (min(xa, xb), max(xa, xb), min(da, db), max(da, db), za, zb), mat)
+
+    out = 0.4  # la foto queda apenas delante de la pared, dentro del marco
+    parts = [
+        cube(f"{key}_border_bottom", u0, u1, 0, depth, b0, b0 + border, black),
+        cube(f"{key}_border_top", u0, u1, 0, depth, b1 - border, b1, black),
+        cube(f"{key}_border_left", u0, u0 + border, 0, depth, b0, b1, black),
+        cube(f"{key}_border_right", u1 - border, u1, 0, depth, b0, b1, black),
+        quad(
+            f"{key}_photo",
+            [p(u0 + border, out, b0 + border), p(u1 - border, out, b0 + border),
+             p(u1 - border, out, b1 - border), p(u0 + border, out, b1 - border)],
+            materials.photo(f"{key}_photo", photo_file, roughness=0.8),
+        ),
+        cube(f"{key}_glass", u0 + border, u1 - border, depth - 0.5, depth - 0.3, b0 + border, b1 - border,
+             materials.glass(f"{key}_glass")),
+    ]
+    center = p((u0 + u1) / 2, 0, b0)
+    group(item, parts, center)
+
+
+def build_poster(m: dict):
+    """Poster de Old Trafford: panel rígido sin marco, con la foto al frente (brillo leve, tipo acrílico)."""
+    spec = m["frames"]["poster"]
+    p = _wall_point(m, spec["wall"])
+    u0, u1 = _span(m, spec)
+    b0, b1 = spec["bottom"], spec["bottom"] + spec["height"]
+    depth = spec["depth"]
+    edge = materials.principled("poster_edge", "#1a1a1c", roughness=0.5)
+    (xa, da, _), (xb, db, _) = p(u0, 0, 0), p(u1, depth - 0.05, 0)
+    parts = [
+        box("poster_panel", (min(xa, xb), max(xa, xb), min(da, db), max(da, db), b0, b1), edge),
+        quad("poster_print",
+             [p(u0, depth, b0), p(u1, depth, b0), p(u1, depth, b1), p(u0, depth, b1)],
+             materials.photo("poster_print", "poster.jpg", roughness=0.25)),
+    ]
+    group("item_poster", parts, p((u0 + u1) / 2, 0, b0))

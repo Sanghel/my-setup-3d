@@ -13,7 +13,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib.common import export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
 from lib.room import build_room  # noqa: E402
-from lib.setup import build_desk, build_keyboard, build_ultrawide, build_vertical_monitor  # noqa: E402
+from lib.setup import (  # noqa: E402
+    build_desk,
+    build_frame,
+    build_keyboard,
+    build_poster,
+    build_ultrawide,
+    build_vertical_monitor,
+)
 
 
 def main() -> None:
@@ -26,6 +33,9 @@ def main() -> None:
     build_ultrawide(m, desk)
     build_vertical_monitor(m, desk)
     build_keyboard(m, desk)
+    build_frame(m, "jersey2008", "item_jersey_2008", "jersey_2008.jpg")
+    build_frame(m, "jerseyScholes", "item_jersey_scholes", "jersey_scholes.jpg")
+    build_poster(m)
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)
