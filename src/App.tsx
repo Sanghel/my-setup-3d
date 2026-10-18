@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { AgXToneMapping } from 'three'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
 import overviewCamera from './scene/overviewCamera.json'
+import { Effects } from './scene/Effects'
 import { NightEnvironment } from './scene/NightEnvironment'
 import { Room } from './scene/Room'
 
@@ -11,7 +12,7 @@ export default function App() {
   return (
     <>
       <Canvas
-        // Misma curva y exposición que el render de Blender (AgX, +1,3 pasos): la web se ve como el horneado
+        // Exposición de Blender (+1,3 pasos). La curva AgX la aplica <Effects> al final del post-procesado
         gl={{ toneMapping: AgXToneMapping, toneMappingExposure: 2 ** 1.3 }}
         camera={{
           position: overviewCamera.position as [number, number, number],
@@ -22,6 +23,7 @@ export default function App() {
         <color attach="background" args={[overviewCamera.background]} />
         {/* Sin luces en tiempo real: toda la luz difusa está horneada en el lightmap */}
         <NightEnvironment />
+        <Effects />
         {/* Suspense: mientras el .glb se descarga no se dibuja nada (el loader real llega en 11.4) */}
         <Suspense fallback={null}>
           <Room />
