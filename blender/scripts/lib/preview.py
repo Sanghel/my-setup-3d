@@ -30,14 +30,32 @@ def setup_gpu() -> None:
     bpy.context.scene.cycles.device = "GPU"
 
 
-def add_preview_camera(width: int, height: int) -> None:
+def _focus_pose(name: str) -> tuple[Vector, Vector]:
+    """Posición y objetivo para encuadrar el objeto `name` (y sus hijos) desde el mismo ángulo
+    diagonal de la vista general."""
+    root = bpy.data.objects[name]
+    points = [
+        obj.matrix_world @ Vector(corner)
+        for obj in [root, *root.children_recursive]
+        if obj.type == "MESH"
+        for corner in obj.bound_box
+    ]
+    center = sum(points, Vector()) / len(points)
+    radius = max((p - center).length for p in points)
+    direction = (web_to_blender(WEB_CAMERA) - web_to_blender(WEB_TARGET)).normalized()
+    distance = radius / math.sin(math.radians(WEB_FOV_DEG) / 2) * 1.1
+    return center + direction * distance, center
+
+
+def add_preview_camera(width: int, height: int, focus: str | None = None) -> None:
     cam_data = bpy.data.cameras.new("preview_camera")
     cam_data.sensor_fit = "VERTICAL"
     cam_data.angle_y = math.radians(WEB_FOV_DEG)
     cam = bpy.data.objects.new("preview_camera", cam_data)
     bpy.context.scene.collection.objects.link(cam)
-    cam.location = web_to_blender(WEB_CAMERA)
-    direction = web_to_blender(WEB_TARGET) - cam.location
+    position, target = _focus_pose(focus) if focus else (web_to_blender(WEB_CAMERA), web_to_blender(WEB_TARGET))
+    cam.location = position
+    direction = target - cam.location
     cam.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
     bpy.context.scene.camera = cam
     bpy.context.scene.render.resolution_x = width
@@ -64,13 +82,14 @@ def add_preview_lights(m: dict) -> None:
     background.inputs["Strength"].default_value = 1.0
 
 
-def render_preview(m: dict, out: str = "blender/out/preview.png", samples: int = 64) -> str:
+def render_preview(m: dict, focus: str | None = None, samples: int = 64) -> str:
+    out = f"blender/out/preview-{focus}.png" if focus else "blender/out/preview.png"
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
     setup_gpu()
     scene.cycles.samples = samples
     scene.cycles.use_denoising = True
-    add_preview_camera(1280, 720)
+    add_preview_camera(1280, 720, focus)
     add_preview_lights(m)
     path = str(ROOT / out)
     scene.render.filepath = path

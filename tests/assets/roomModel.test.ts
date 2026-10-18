@@ -23,6 +23,18 @@ const ROOM_NODES = [
   'room_window_glass',
 ]
 
+// Objetos seleccionables (spec room-scene: "Objetos del primer lote"). Cada uno es un nodo
+// agrupador con sus piezas como hijos.
+const ITEM_NODES = [
+  'item_desk',
+  'item_ultrawide',
+  'item_vertical_monitor',
+  'item_keyboard',
+  'item_jersey_2008',
+  'item_jersey_scholes',
+  'item_poster',
+]
+
 let doc: Document
 
 beforeAll(async () => {
@@ -45,5 +57,15 @@ describe('room.glb', () => {
       .find((n) => n.getName() === name)
     expect(node, `falta el nodo ${name}: ¿cambió su nombre en blender/scripts?`).toBeDefined()
     expect(node?.getMesh()).not.toBeNull()
+  })
+
+  it.each(ITEM_NODES)('tiene el objeto %s con piezas', (name) => {
+    const node = doc
+      .getRoot()
+      .listNodes()
+      .find((n) => n.getName() === name)
+    expect(node, `falta el objeto ${name}: ¿cambió su nombre en blender/scripts/lib/setup.py?`).toBeDefined()
+    const meshes = node!.listChildren().filter((child) => child.getMesh() !== null)
+    expect(meshes.length).toBeGreaterThan(0)
   })
 })

@@ -2,19 +2,154 @@
   "_note": [
     "Fotos del usuario → texturas (npm run textures:photos). Los originales viven en el vault (insumos/), NUNCA en el repo.",
     "corners: esquinas del objeto en la foto ya orientada (-auto-orient), normalizadas 0–1, en orden TL, TR, BR, BL.",
-    "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen."
+    "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen.",
+    "Pantallas: ya no usan los wallpapers; las genera `npm run textures:screens` (editor y terminal con código real del repo)."
   ],
   "photos": {
-    "poster": { "file": "fotos/IMG_0203.heic", "corners": [[0.033, 0.225], [0.978, 0.223], [0.989, 0.886], [0.02, 0.883]], "size": [1024, 1280] },
-    "desk_mat": { "file": "fotos/IMG_0204.heic", "corners": [[0.036, 0.176], [0.999, 0.147], [0.999, 0.8], [0.006, 0.836]], "size": [2048, 772] }
-  },
-  "screens": {
-    "screen_ultrawide": { "file": "screenshots/Pasted 2026-10-17 at 1.56.02 PM.tiff", "size": [2048, 858] },
-    "screen_vertical": { "file": "screenshots/Pasted 2026-10-17 at 1.55.41 PM.tiff", "size": [1024, 1832] }
+    "poster": {
+      "file": "fotos/IMG_0203.heic",
+      "corners": [
+        [
+          0.033,
+          0.225
+        ],
+        [
+          0.978,
+          0.223
+        ],
+        [
+          0.989,
+          0.886
+        ],
+        [
+          0.02,
+          0.883
+        ]
+      ],
+      "size": [
+        1024,
+        1280
+      ]
+    },
+    "desk_mat": {
+      "file": "fotos/IMG_0204.heic",
+      "corners": [
+        [
+          0.036,
+          0.176
+        ],
+        [
+          0.999,
+          0.147
+        ],
+        [
+          0.999,
+          0.8
+        ],
+        [
+          0.006,
+          0.836
+        ]
+      ],
+      "size": [
+        2048,
+        772
+      ],
+      "post": [
+        "-level",
+        "25%,100%"
+      ],
+      "_post": "La foto de día sale sobreexpuesta (promedio 98); el mat real es negro: niveles 25–100 % → promedio ~45, el texto blanco se mantiene."
+    },
+    "jersey_2008": {
+      "file": "fotos/IMG_3320.HEIC",
+      "corners": [
+        [
+          0.071,
+          0.1925
+        ],
+        [
+          0.879,
+          0.191
+        ],
+        [
+          0.907,
+          0.864
+        ],
+        [
+          0.058,
+          0.866
+        ]
+      ],
+      "size": [
+        1108,
+        1200
+      ],
+      "_note": "Interior del marco (60×65 cm). Provisional: tiene reflejos tenues (celular y una puerta); reemplazar con F1 sin reflejos."
+    },
+    "keyboard_top": {
+      "file": "fotos/IMG_0215.heic",
+      "corners": [
+        [
+          0.817,
+          0.07
+        ],
+        [
+          0.817,
+          0.9625
+        ],
+        [
+          0.148,
+          0.9625
+        ],
+        [
+          0.148,
+          0.07
+        ]
+      ],
+      "size": [
+        1550,
+        650
+      ],
+      "_note": "Teclado desde arriba (31×13 cm). En la foto está girado 90°: las esquinas van en orden atrás-izq, atrás-der, adelante-der, adelante-izq del teclado."
+    }
   },
   "pending": {
-    "jersey_2008": "F1: repetir de frente con el marco completo (IMG_3303 corta la manga derecha y el borde inferior)",
-    "jersey_scholes": "F3: repetir de frente con el marco completo (IMG_3308 corta el borde izquierdo e inferior)",
-    "window_night": "F13: vista nocturna por la ventana (se procesa en la tarea 7.6)"
+    "jersey_2008": "F1: IMG_3320 está completa y de frente, pero refleja el celular, las manos y una puerta; repetir con el cuarto a oscuras y una lámpara de lado (hoy: IMG_3320 provisional)",
+    "jersey_scholes": "F3: IMG_3317 está completa y de frente, pero refleja a la persona, el bombillo y la cama; repetir con el cuarto a oscuras y una lámpara de lado (hoy: foto de producto de internet, provisional)"
+  },
+  "edits": {
+    "window_night": {
+      "file": "fotos/IMG_3315.HEIC",
+      "ops": [
+        "-auto-orient",
+        "-resize",
+        "1024x",
+        "-blur",
+        "0x3",
+        "-modulate",
+        "50,60",
+        "-gamma",
+        "0.7",
+        "-sigmoidal-contrast",
+        "4,40%"
+      ],
+      "_note": "Foto al anochecer (F13) llevada a noche y desenfocada para que no se reconozca la ubicación."
+    }
+  },
+  "cutouts": {
+    "jersey_scholes": {
+      "file": "web/scholes-1998-back-casualfootballshirts.jpg",
+      "source": "https://casualfootballshirts.co.uk/products/1998-00-manchester-united-home-size-xl-l-fit-scholes-18",
+      "background": "#33302D",
+      "size": [
+        1056,
+        1200
+      ],
+      "height": 900,
+      "offsetY": -20,
+      "fuzz": "6%",
+      "_note": "Provisional desde una foto de producto (fondo blanco recortado) sobre el gris del fondo del marco (81×92 cm interior). Reemplazar con F3 propia."
+    }
   }
 }

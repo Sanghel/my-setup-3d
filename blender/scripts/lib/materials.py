@@ -5,6 +5,7 @@ import bpy
 from .common import ROOT
 
 TEXTURES = ROOT / "blender" / "textures" / "processed"
+PHOTOS = ROOT / "blender" / "textures" / "photos"
 
 
 def srgb_to_linear(c: float) -> float:
@@ -28,22 +29,24 @@ def principled(name: str, color: str, roughness: float = 0.8, metallic: float = 
     return mat
 
 
-def glass(name: str = "glass", alpha: float = 0.12) -> bpy.types.Material:
+def glass(name: str = "glass", alpha: float = 0.08) -> bpy.types.Material:
     """Vidrio barato para tiempo real: casi transparente, liso y con reflejos (alphaMode BLEND en glTF).
 
     No se usa transmisión (KHR_materials_transmission): en three.js obliga a renderizar la escena
     una segunda vez y bajó de 120 a 75 fps en la prueba. Para ventanas y marcos no hace falta
     refracción; basta con transparencia + reflejos del environment map.
     """
-    mat = principled(name, "#dfe8ec", roughness=0.04)
+    # Color base casi negro: el vidrio aporta reflejos (especular), no "niebla" sobre lo que hay detrás.
+    # Con un color claro, la camiseta detrás del vidrio se veía lechosa.
+    mat = principled(name, "#0e1113", roughness=0.04)
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     bsdf.inputs["Alpha"].default_value = alpha
     mat.surface_render_method = "BLENDED"
     return mat
 
 
-def _image_node(mat: bpy.types.Material, filename: str, color: bool, x: int, y: int):
-    path = TEXTURES / filename
+def _image_node(mat: bpy.types.Material, filename: str, color: bool, x: int, y: int, folder=None):
+    path = (folder or TEXTURES) / filename
     if not path.exists():
         raise FileNotFoundError(f"{path} no existe: corre `npm run textures` antes de `npm run assets`")
     node = mat.node_tree.nodes.new("ShaderNodeTexImage")
@@ -74,4 +77,30 @@ def pbr(name: str, base: str, normal: str | None = None, roughness: str | None =
         links.new(_image_node(mat, roughness, False, -700, 0).outputs["Color"], bsdf.inputs["Roughness"])
     else:
         bsdf.inputs["Roughness"].default_value = roughness_value
+    return mat
+
+
+def photo(name: str, filename: str, roughness: float = 0.7) -> bpy.types.Material:
+    """Material con una foto procesada (blender/textures/photos) como color base: cuadros, desk mat."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    image = _image_node(mat, filename, True, -500, 200, folder=PHOTOS)
+    mat.node_tree.links.new(image.outputs["Color"], bsdf.inputs["Base Color"])
+    bsdf.inputs["Roughness"].default_value = roughness
+    return mat
+
+
+def screen(name: str, filename: str, strength: float = 1.6) -> bpy.types.Material:
+    """Pantalla encendida: color base negro y la imagen como emisión (emite luz propia).
+    Se exporta como emissiveTexture + KHR_materials_emissive_strength; sirve para hornear la luz
+    de las pantallas (grupo 7) y para el bloom."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    bsdf.inputs["Base Color"].default_value = (0.0, 0.0, 0.0, 1.0)
+    bsdf.inputs["Roughness"].default_value = 0.25
+    image = _image_node(mat, filename, True, -500, 200, folder=PHOTOS)
+    mat.node_tree.links.new(image.outputs["Color"], bsdf.inputs["Emission Color"])
+    bsdf.inputs["Emission Strength"].default_value = strength
     return mat
