@@ -16,7 +16,8 @@
     "assets:build": "blender --background --factory-startup --python blender/scripts/build_room.py -- --out public/models/room.raw.glb",
     "assets:optimize": "gltf-transform optimize public/models/room.raw.glb public/models/room.glb --compress meshopt --texture-compress webp --texture-size 2048 --flatten false --join false --simplify false --palette false && node scripts/asset-sizes.mjs",
     "textures:fetch": "node scripts/fetch-textures.mjs",
-    "textures": "npm run textures:fetch && bash blender/textures/process.sh"
+    "textures": "npm run textures:fetch && bash blender/textures/process.sh",
+    "textures:photos": "node scripts/process-photos.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
