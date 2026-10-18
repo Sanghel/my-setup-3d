@@ -1,6 +1,15 @@
 {
-  "_note": "Pose de la vista general (three.js, metros, Y arriba). La leen la web (App.tsx) y el render de preview de Blender (lib/preview.py).",
-  "position": [0.35, 1.45, 2.55],
-  "target": [1.0, 0.95, 0.35],
-  "fov": 60
+  "_note": "Pose de la vista general del diorama (three.js, metros, Y arriba): lejos, arriba y en diagonal, con lente estrecha para un look casi isométrico (design D13). La leen App.tsx y el preview de Blender (también el color de fondo).",
+  "position": [
+    -3.6,
+    6.55,
+    6.5
+  ],
+  "target": [
+    0.9,
+    0.95,
+    1.1
+  ],
+  "fov": 28,
+  "background": "#1b1d24"
 }

@@ -16,16 +16,11 @@ const MAX_BYTES = 15 * 1024 * 1024 // spec room-scene: descarga inicial ≤ 15 M
 
 const ROOM_NODES = [
   'room_floor',
-  'room_ceiling',
   'room_wall_back',
   'room_wall_side',
-  'room_wall_left',
-  'room_wall_front',
   'room_baseboard',
   'room_window_frame',
   'room_window_glass',
-  'room_door',
-  'room_door_frame',
 ]
 
 let doc: Document

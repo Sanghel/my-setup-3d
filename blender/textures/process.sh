@@ -30,12 +30,9 @@ tint() {
 tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/floor_diff.jpg" 70 117 101 88   # IMG_0207
 tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/baseboard_diff.jpg" 60 95 72 52  # IMG_3306, madera oscura
 tint "$SRC/beige_wall_001_diff_2k.jpg" "$OUT/wall_diff.jpg" 5 215 214 210        # IMG_0208, blanco neutro
-tint "$SRC/beige_wall_002_diff_2k.jpg" "$OUT/ceiling_diff.jpg" 5 200 199 195     # IMG_0209, gris claro
 
 # Normal y rugosidad no cambian de color: se copian tal cual
 cp "$SRC/laminate_floor_02_nor_gl_2k.jpg" "$OUT/floor_nor.jpg"
 cp "$SRC/laminate_floor_02_rough_2k.jpg" "$OUT/floor_rough.jpg"
 cp "$SRC/beige_wall_001_nor_gl_2k.jpg" "$OUT/wall_nor.jpg"
 cp "$SRC/beige_wall_001_rough_2k.jpg" "$OUT/wall_rough.jpg"
-cp "$SRC/beige_wall_002_nor_gl_2k.jpg" "$OUT/ceiling_nor.jpg"
-cp "$SRC/beige_wall_002_rough_2k.jpg" "$OUT/ceiling_rough.jpg"

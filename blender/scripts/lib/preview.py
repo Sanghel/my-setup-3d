@@ -56,7 +56,12 @@ def add_preview_lights(m: dict) -> None:
     world = bpy.context.scene.world or bpy.data.worlds.new("World")
     bpy.context.scene.world = world
     world.use_nodes = True
-    world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.15
+    background = world.node_tree.nodes["Background"]
+    # Mismo color de fondo que la web; con fuerza baja para que casi no ilumine
+    from .materials import hex_color
+
+    background.inputs["Color"].default_value = hex_color(_POSE["background"])
+    background.inputs["Strength"].default_value = 1.0
 
 
 def render_preview(m: dict, out: str = "blender/out/preview.png", samples: int = 64) -> str:

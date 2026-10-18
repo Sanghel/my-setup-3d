@@ -15,7 +15,7 @@ export default function App() {
           near: 0.01,
         }}
       >
-        <color attach="background" args={['#120c0c']} />
+        <color attach="background" args={[overviewCamera.background]} />
         <ambientLight intensity={0.4} />
         <directionalLight position={[0.5, 2.3, 2.5]} intensity={1.6} />
         {/* Suspense: mientras el .glb se descarga no se dibuja nada (el loader real llega en 11.4) */}
@@ -28,7 +28,7 @@ export default function App() {
         <CameraControls
           makeDefault
           minDistance={0.4}
-          maxDistance={3.5}
+          maxDistance={12}
           ref={(controls) => {
             void controls?.setTarget(...(overviewCamera.target as [number, number, number]))
           }}
