@@ -12,6 +12,8 @@ import type { Document } from '@gltf-transform/core'
  */
 
 const GLB = 'public/models/room.glb'
+const LIGHTMAP = 'public/models/lightmap.webp'
+const LIGHTMAP_META = 'public/models/lightmap.json'
 const MAX_BYTES = 15 * 1024 * 1024 // spec room-scene: descarga inicial ≤ 15 MB
 
 const ROOM_NODES = [
@@ -46,8 +48,15 @@ beforeAll(async () => {
 })
 
 describe('room.glb', () => {
-  it('pesa como máximo 15 MB', () => {
-    expect(statSync(GLB).size).toBeLessThanOrEqual(MAX_BYTES)
+  it('el modelo y su lightmap pesan juntos como máximo 15 MB', () => {
+    expect(statSync(GLB).size + statSync(LIGHTMAP).size).toBeLessThanOrEqual(MAX_BYTES)
+  })
+
+  it('tiene el lightmap horneado con su factor de intensidad', () => {
+    const meta = JSON.parse(readFileSync(LIGHTMAP_META, 'utf8'))
+    expect(meta.uv).toBe('TEXCOORD_1')
+    expect(meta.intensity).toBeGreaterThan(0)
+    expect(statSync(LIGHTMAP).size).toBeGreaterThan(0)
   })
 
   it.each(ROOM_NODES)('tiene el nodo %s con geometría', (name) => {

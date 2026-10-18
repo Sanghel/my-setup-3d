@@ -11,14 +11,16 @@
     "test": "vitest run --maxWorkers=2 --testTimeout=15000",
     "test:watch": "vitest --maxWorkers=2",
     "preview": "vite preview",
-    "assets": "npm run assets:build && npm run assets:optimize",
+    "assets": "npm run assets:build -- --bake && npm run assets:optimize && npm run assets:lightmap",
     "assets:preview": "npm run assets:build -- --preview && npm run assets:optimize",
     "assets:build": "blender --background --factory-startup --python blender/scripts/build_room.py -- --out public/models/room.raw.glb",
     "assets:optimize": "gltf-transform optimize public/models/room.raw.glb public/models/room.glb --compress meshopt --texture-compress webp --texture-size 2048 --flatten false --join false --simplify false --palette false --prune-attributes false && node scripts/asset-sizes.mjs",
     "textures:fetch": "node scripts/fetch-textures.mjs",
     "textures": "npm run textures:fetch && bash blender/textures/process.sh",
     "textures:photos": "node scripts/process-photos.mjs",
-    "textures:screens": "node scripts/render-screens.mjs"
+    "textures:screens": "node scripts/render-screens.mjs",
+    "assets:final": "npm run assets:build -- --bake --final && npm run assets:optimize && npm run assets:lightmap",
+    "assets:lightmap": "node scripts/encode-lightmap.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

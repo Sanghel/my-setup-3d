@@ -13,8 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import bpy  # noqa: E402
 
-from lib.bake import add_light_uvs, apply_modifiers, is_bake_target  # noqa: E402
-from lib.common import export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
+from lib.bake import add_light_uvs, apply_modifiers, bake_lightmap, is_bake_target  # noqa: E402
+from lib.common import ROOT, export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
 from lib.lights import build_night_lights  # noqa: E402
 from lib.preview import WEB_BACKGROUND  # noqa: E402
 from lib.room import build_room  # noqa: E402
@@ -46,6 +46,13 @@ def main() -> None:
     targets = [obj for obj in bpy.data.objects if is_bake_target(obj)]
     apply_modifiers(targets)
     add_light_uvs(targets)
+
+    if args.bake:
+        size, samples = (2048, 1024) if args.final else (1024, 128)
+        out = ROOT / "blender" / "out"
+        out.mkdir(parents=True, exist_ok=True)
+        meta = bake_lightmap(targets, size, samples, out / "lightmap.png", out / "lightmap.json")
+        print(f"[build_room] lightmap {size}px · {samples} muestras · intensidad {meta['intensity']:.3f}")
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)

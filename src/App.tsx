@@ -1,14 +1,18 @@
 import { Suspense } from 'react'
 import { CameraControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
+import { AgXToneMapping } from 'three'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
 import overviewCamera from './scene/overviewCamera.json'
+import { NightEnvironment } from './scene/NightEnvironment'
 import { Room } from './scene/Room'
 
 export default function App() {
   return (
     <>
       <Canvas
+        // Misma curva y exposición que el render de Blender (AgX, +1,3 pasos): la web se ve como el horneado
+        gl={{ toneMapping: AgXToneMapping, toneMappingExposure: 2 ** 1.3 }}
         camera={{
           position: overviewCamera.position as [number, number, number],
           fov: overviewCamera.fov,
@@ -16,8 +20,8 @@ export default function App() {
         }}
       >
         <color attach="background" args={[overviewCamera.background]} />
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[0.5, 2.3, 2.5]} intensity={1.6} />
+        {/* Sin luces en tiempo real: toda la luz difusa está horneada en el lightmap */}
+        <NightEnvironment />
         {/* Suspense: mientras el .glb se descarga no se dibuja nada (el loader real llega en 11.4) */}
         <Suspense fallback={null}>
           <Room />
