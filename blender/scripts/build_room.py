@@ -12,6 +12,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib.common import export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
+from lib.lights import build_night_lights  # noqa: E402
+from lib.preview import WEB_BACKGROUND  # noqa: E402
 from lib.room import build_room  # noqa: E402
 from lib.setup import (  # noqa: E402
     build_desk,
@@ -30,12 +32,13 @@ def main() -> None:
 
     build_room(m)
     desk = build_desk(m)
-    build_ultrawide(m, desk)
+    ultrawide = build_ultrawide(m, desk)
     build_vertical_monitor(m, desk)
     build_keyboard(m, desk)
     build_frame(m, "jersey2008", "item_jersey_2008", "jersey_2008.jpg")
     build_frame(m, "jerseyScholes", "item_jersey_scholes", "jersey_scholes.jpg")
-    build_poster(m)
+    poster = build_poster(m)
+    build_night_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)
