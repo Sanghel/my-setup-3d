@@ -53,7 +53,12 @@
       "size": [
         2048,
         772
-      ]
+      ],
+      "post": [
+        "-level",
+        "25%,100%"
+      ],
+      "_post": "La foto de día sale sobreexpuesta (promedio 98); el mat real es negro: niveles 25–100 % → promedio ~45, el texto blanco se mantiene."
     },
     "jersey_2008": {
       "file": "fotos/IMG_3320.HEIC",

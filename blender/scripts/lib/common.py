@@ -17,6 +17,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out", default="public/models/room.raw.glb")
     parser.add_argument("--blend", default="blender/out/room.blend")
     parser.add_argument("--preview", action="store_true", help="renderizar blender/out/preview.png")
+    parser.add_argument("--focus", help="con --preview: encuadrar solo este objeto (p. ej. item_desk)")
     return parser.parse_args(argv)
 
 

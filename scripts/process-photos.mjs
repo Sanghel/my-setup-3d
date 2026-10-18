@@ -18,14 +18,14 @@ const source = (file) => {
 }
 
 // Fotos: corrección de perspectiva. Cada esquina de la foto va a la esquina del rectángulo de salida.
-for (const [name, { file, corners, size }] of Object.entries(photos)) {
+for (const [name, { file, corners, size, post = [] }] of Object.entries(photos)) {
   const input = source(file)
   const [w, h] = magick(input, '-auto-orient', '-format', '%w %h', 'info:').split(' ').map(Number)
   const [W, H] = size
   const targets = [[0, 0], [W, 0], [W, H], [0, H]]
   const pairs = corners.map(([x, y], i) => `${x * w},${y * h} ${targets[i][0]},${targets[i][1]}`).join('  ')
   const out = join(outDir, `${name}.jpg`)
-  magick(input, '-auto-orient', '-virtual-pixel', 'edge', '-distort', 'Perspective', pairs, '-crop', `${W}x${H}+0+0`, '+repage', '-quality', '92', out)
+  magick(input, '-auto-orient', '-virtual-pixel', 'edge', '-distort', 'Perspective', pairs, '-crop', `${W}x${H}+0+0`, '+repage', ...post, '-quality', '92', out)
   console.log(`[photos] ${out} (${W}×${H}) ← ${file}`)
 }
 

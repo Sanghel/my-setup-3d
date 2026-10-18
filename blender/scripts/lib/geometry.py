@@ -82,3 +82,71 @@ def boxes(
 
 def box(name: str, b: Bounds, material: bpy.types.Material, collection=None, **uv) -> bpy.types.Object:
     return boxes(name, [b], material, collection, **uv)
+
+
+def _link(obj: bpy.types.Object, collection=None) -> bpy.types.Object:
+    (collection or bpy.context.scene.collection).objects.link(obj)
+    return obj
+
+
+def _mesh_object(name: str, verts, faces, material: bpy.types.Material, uvs=None) -> bpy.types.Object:
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, [], faces)
+    mesh.validate()
+    if uvs is not None:
+        layer = mesh.uv_layers.new(name="UVMap")
+        for poly in mesh.polygons:
+            for loop_index in poly.loop_indices:
+                layer.data[loop_index].uv = uvs[mesh.loops[loop_index].vertex_index]
+    mesh.materials.append(material)
+    return _link(bpy.data.objects.new(name, mesh))
+
+
+def bar(name: str, p0: Sequence[float], p1: Sequence[float], width: float, depth: float,
+        material: bpy.types.Material, side: Sequence[float] = (1, 0, 0)) -> bpy.types.Object:
+    """Barra de sección rectangular (width × depth, en cm) entre dos puntos del cuarto (x, d, up en cm).
+    `side` indica hacia dónde se mide `width` (por defecto, a lo largo de x)."""
+    from mathutils import Vector
+
+    a, b = Vector(to_blender(*p0)), Vector(to_blender(*p1))
+    axis = (b - a).normalized()
+    s = Vector(to_blender(*side)) - Vector(to_blender(0, 0, 0))
+    u = (s - axis * s.dot(axis)).normalized() * (width / 200)  # mitad del ancho, en metros
+    v = axis.cross(u).normalized() * (depth / 200)
+    corners = [-u - v, u - v, u + v, -u + v]
+    verts = [tuple(a + c) for c in corners] + [tuple(b + c) for c in corners]
+    faces = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]
+    obj = _mesh_object(name, verts, faces, material)
+    _recalc_normals(obj.data)
+    return obj
+
+
+def quad(name: str, corners: Sequence[Sequence[float]], material: bpy.types.Material) -> bpy.types.Object:
+    """Plano de 4 esquinas del cuarto (cm) en orden: abajo-izq, abajo-der, arriba-der, arriba-izq,
+    vistas desde el frente. La imagen del material cubre el plano entero (UV 0–1)."""
+    verts = [to_blender(*c) for c in corners]
+    uvs = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    return _mesh_object(name, verts, [(0, 1, 2, 3)], material, uvs)
+
+
+def _recalc_normals(mesh: bpy.types.Mesh) -> None:
+    import bmesh
+
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(mesh)
+    bm.free()
+
+
+def group(name: str, children: Iterable[bpy.types.Object], origin: Sequence[float]) -> bpy.types.Object:
+    """Nodo vacío (Empty) que agrupa las piezas de un objeto seleccionable (item_*).
+    `origin` (cm del cuarto) es su punto de referencia; los hijos conservan su posición en el mundo."""
+    empty = _link(bpy.data.objects.new(name, None))
+    empty.location = to_blender(*origin)
+    bpy.context.view_layer.update()
+    for child in children:
+        world = child.matrix_world.copy()
+        child.parent = empty
+        child.matrix_world = world
+    return empty

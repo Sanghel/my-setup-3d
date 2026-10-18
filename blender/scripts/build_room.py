@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib.common import export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
 from lib.room import build_room  # noqa: E402
+from lib.setup import build_desk  # noqa: E402
 
 
 def main() -> None:
@@ -21,6 +22,7 @@ def main() -> None:
     reset_scene()
 
     build_room(m)
+    build_desk(m)
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)
@@ -29,7 +31,7 @@ def main() -> None:
     if args.preview:
         from lib.preview import render_preview
 
-        print(f"[build_room] preview: {render_preview(m)}")
+        print(f"[build_room] preview: {render_preview(m, args.focus)}")
 
 
 main()
