@@ -173,3 +173,49 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         bar("arm_upper", elbow, vesa, 4, 3, metal, side=(0, 0, 1)),
     ]
     group("item_vertical_monitor", parts, (cx, cd, desk.top))
+
+
+# Logitech MX Mechanical Mini: anchos de tecla en unidades (1u ≈ 1,86 cm). "m" = modificador (gris oscuro).
+KEY_ROWS = [
+    ["m1"] + ["1"] * 12 + ["m1"] * 3,  # esc, F1–F12, teclas de función extra
+    ["1"] * 13 + ["m2"] + ["m1"],  # ` 1–0 - =, backspace, home
+    ["m1.5"] + ["1"] * 12 + ["m1.5"] + ["m1"],  # tab, Q–], \, pg up
+    ["m1.75"] + ["1"] * 11 + ["m2.25"] + ["m1"],  # caps, A–', enter, pg dn
+    ["m2.25"] + ["1"] * 10 + ["m1.75"] + ["m1"] * 2,  # shift, Z–/, shift, ↑, end
+    ["m1.25"] * 3 + ["6.25"] + ["m1"] * 6,  # ctrl, opt, cmd, espacio, cmd, fn, ctrl, ← ↓ →
+]
+
+
+def build_keyboard(m: dict, desk: DeskFrame):
+    from .geometry import boxes
+
+    kb = m["keyboard"]
+    W, D = kb["width"], kb["depth"]
+    x0 = desk.center_x + 6 - W / 2  # sobre el desk mat, un poco a la izquierda del centro del ultrawide
+    d0 = desk.d1 - 26.5
+    base_top = desk.top + 1.6
+    unit = (W - 1.4) / 16  # 16 unidades por fila entre los márgenes de la carcasa
+    pitch_d = (D - 1.6) / len(KEY_ROWS)
+    gap = 0.17  # separación entre teclas (cm)
+
+    body = materials.principled("keyboard_body", "#3a3d43", roughness=0.4, metallic=0.5)
+    letters = materials.principled("keycap_light", "#6f747d", roughness=0.6)
+    mods = materials.principled("keycap_dark", "#3d4046", roughness=0.6)
+
+    light_keys, dark_keys = [], []
+    for row_i, row in enumerate(KEY_ROWS):
+        x = x0 + 0.7
+        kd0 = d0 + 0.8 + row_i * pitch_d
+        for key in row:
+            dark = key.startswith("m")
+            size = float(key.lstrip("m")) * unit
+            cap = (x + gap, x + size - gap, kd0 + gap, kd0 + pitch_d - gap, base_top, base_top + 0.7)
+            (dark_keys if dark else light_keys).append(cap)
+            x += size
+
+    parts = [
+        box("keyboard_body", (x0, x0 + W, d0, d0 + D, desk.top, base_top), body),
+        boxes("keyboard_keys_light", light_keys, letters),
+        boxes("keyboard_keys_dark", dark_keys, mods),
+    ]
+    group("item_keyboard", parts, (x0 + W / 2, d0 + D / 2, desk.top))
