@@ -54,6 +54,32 @@
         2048,
         772
       ]
+    },
+    "jersey_2008": {
+      "file": "fotos/IMG_3320.HEIC",
+      "corners": [
+        [
+          0.071,
+          0.1925
+        ],
+        [
+          0.879,
+          0.191
+        ],
+        [
+          0.907,
+          0.864
+        ],
+        [
+          0.058,
+          0.866
+        ]
+      ],
+      "size": [
+        1108,
+        1200
+      ],
+      "_note": "Interior del marco (60×65 cm). Provisional: tiene reflejos tenues (celular y una puerta); reemplazar con F1 sin reflejos."
     }
   },
   "screens": {
@@ -73,8 +99,8 @@
     }
   },
   "pending": {
-    "jersey_2008": "F1: IMG_3320 está completa y de frente, pero refleja el celular, las manos y una puerta; repetir con el cuarto a oscuras y una lámpara de lado",
-    "jersey_scholes": "F3: IMG_3317 está completa y de frente, pero refleja a la persona, el bombillo y la cama; repetir con el cuarto a oscuras y una lámpara de lado"
+    "jersey_2008": "F1: IMG_3320 está completa y de frente, pero refleja el celular, las manos y una puerta; repetir con el cuarto a oscuras y una lámpara de lado (hoy: IMG_3320 provisional)",
+    "jersey_scholes": "F3: IMG_3317 está completa y de frente, pero refleja a la persona, el bombillo y la cama; repetir con el cuarto a oscuras y una lámpara de lado (hoy: foto de producto de internet, provisional)"
   },
   "edits": {
     "window_night": {
@@ -93,6 +119,21 @@
         "4,40%"
       ],
       "_note": "Foto al anochecer (F13) llevada a noche y desenfocada para que no se reconozca la ubicación."
+    }
+  },
+  "cutouts": {
+    "jersey_scholes": {
+      "file": "web/scholes-1998-back-casualfootballshirts.jpg",
+      "source": "https://casualfootballshirts.co.uk/products/1998-00-manchester-united-home-size-xl-l-fit-scholes-18",
+      "background": "#33302D",
+      "size": [
+        1056,
+        1200
+      ],
+      "height": 900,
+      "offsetY": -20,
+      "fuzz": "6%",
+      "_note": "Provisional desde una foto de producto (fondo blanco recortado) sobre el gris del fondo del marco (81×92 cm interior). Reemplazar con F3 propia."
     }
   }
 }

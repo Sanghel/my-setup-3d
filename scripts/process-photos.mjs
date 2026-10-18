@@ -6,7 +6,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 
 const insumos = process.env.INSUMOS_DIR ?? join(homedir(), 'Documents/Obsidian Vault/my-setup-3d/insumos')
-const { photos, screens, edits = {} } = JSON.parse(readFileSync('blender/textures/sources.json', 'utf8'))
+const { photos, screens, edits = {}, cutouts = {} } = JSON.parse(readFileSync('blender/textures/sources.json', 'utf8'))
 const outDir = 'blender/textures/photos'
 mkdirSync(outDir, { recursive: true })
 
@@ -41,4 +41,22 @@ for (const [name, { file, ops }] of Object.entries(edits)) {
   const out = join(outDir, `${name}.jpg`)
   magick(source(file), ...ops, '-quality', '90', out)
   console.log(`[photos] ${out} ← ${file} (${ops.join(' ')})`)
+}
+
+// Recortes: foto de producto sobre fondo blanco → se borra el fondo (relleno desde las 4 esquinas)
+// y la prenda se centra sobre un lienzo del color del fondo del marco.
+for (const [name, { file, background, size, height, offsetY, fuzz }] of Object.entries(cutouts)) {
+  const input = source(file)
+  const [w, h] = magick(input, '-format', '%w %h', 'info:').split(' ').map(Number)
+  const corners = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]]
+  const out = join(outDir, `${name}.jpg`)
+  const offset = `${offsetY >= 0 ? '+' : ''}${offsetY}`
+  magick(
+    '-size', `${size[0]}x${size[1]}`, `xc:${background}`,
+    '(', input, '-alpha', 'set', '-fuzz', fuzz, '-fill', 'none',
+    ...corners.flatMap(([x, y]) => ['-draw', `color ${x},${y} floodfill`]),
+    '-trim', '+repage', '-resize', `x${height}`, ')',
+    '-gravity', 'center', '-geometry', `+0${offset}`, '-composite', '-quality', '92', out,
+  )
+  console.log(`[photos] ${out} (${size[0]}×${size[1]}) ← ${file} (recorte sobre ${background})`)
 }
