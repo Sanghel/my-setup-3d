@@ -11,6 +11,9 @@ from pathlib import Path
 # Blender no agrega la carpeta del script al path de Python: lo hacemos a mano para importar lib/
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import bpy  # noqa: E402
+
+from lib.bake import add_light_uvs, apply_modifiers, is_bake_target  # noqa: E402
 from lib.common import export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
 from lib.lights import build_night_lights  # noqa: E402
 from lib.preview import WEB_BACKGROUND  # noqa: E402
@@ -39,6 +42,10 @@ def main() -> None:
     build_frame(m, "jerseyScholes", "item_jersey_scholes", "jersey_scholes.jpg")
     poster = build_poster(m)
     build_night_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
+
+    targets = [obj for obj in bpy.data.objects if is_bake_target(obj)]
+    apply_modifiers(targets)
+    add_light_uvs(targets)
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)

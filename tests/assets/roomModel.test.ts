@@ -68,4 +68,21 @@ describe('room.glb', () => {
     const meshes = node!.listChildren().filter((child) => child.getMesh() !== null)
     expect(meshes.length).toBeGreaterThan(0)
   })
+
+  it('toda malla que recibe luz horneada tiene el segundo set de UV (TEXCOORD_1)', () => {
+    // Las que emiten o son transparentes no se hornean (blender/scripts/lib/bake.py)
+    const skip = (name: string) => name.endsWith('_screen') || name.includes('glass')
+    const missing = doc
+      .getRoot()
+      .listMeshes()
+      .filter((mesh) => !skip(mesh.getName()))
+      .filter((mesh) => mesh.listPrimitives().some((prim) => !prim.getAttribute('TEXCOORD_1')))
+      .map((mesh) => mesh.getName())
+    expect(missing).toEqual([])
+  })
+
+  it('no exporta las mallas de luz led_* (solo iluminan al hornear)', () => {
+    const leds = doc.getRoot().listNodes().filter((n) => n.getName().startsWith('led_'))
+    expect(leds).toEqual([])
+  })
 })

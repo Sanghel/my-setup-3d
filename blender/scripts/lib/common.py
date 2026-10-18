@@ -38,9 +38,14 @@ def reset_scene() -> None:
 
 
 def export_glb(path: str) -> Path:
+    """Exporta todo menos las luces de Blender: las mallas `led_*` solo iluminan al hornear."""
     out = ROOT / path
     out.parent.mkdir(parents=True, exist_ok=True)
+    bpy.ops.object.select_all(action="DESELECT")
+    for obj in bpy.data.objects:
+        obj.select_set(not obj.name.startswith("led_"))
     bpy.ops.export_scene.gltf(
+        use_selection=True,
         filepath=str(out),
         export_format="GLB",
         export_yup=True,
