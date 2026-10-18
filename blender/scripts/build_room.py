@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib.common import export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
 from lib.room import build_room  # noqa: E402
-from lib.setup import build_desk, build_ultrawide  # noqa: E402
+from lib.setup import build_desk, build_ultrawide, build_vertical_monitor  # noqa: E402
 
 
 def main() -> None:
@@ -24,6 +24,7 @@ def main() -> None:
     build_room(m)
     desk = build_desk(m)
     build_ultrawide(m, desk)
+    build_vertical_monitor(m, desk)
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)

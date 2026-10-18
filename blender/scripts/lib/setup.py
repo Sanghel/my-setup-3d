@@ -130,3 +130,46 @@ def build_ultrawide(m: dict, desk: DeskFrame):
         box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand),
     ]
     group("item_ultrawide", parts, (xc, gap, desk.top))
+
+
+def build_vertical_monitor(m: dict, desk: DeskFrame):
+    """Gigabyte 25" en vertical, girado hacia el usuario, sostenido por un brazo Huanuo con abrazadera."""
+    import math
+
+    from .geometry import quad
+
+    vm, arm = m["verticalMonitor"], m["monitorArm"]
+    w, h, lift = vm["width"], vm["height"], vm["lift"]
+    a = math.radians(vm["angleDeg"])
+    n = (math.sin(a), math.cos(a))  # normal de la pantalla en el plano x–d (hacia el usuario, girada a la derecha)
+    s = (math.cos(a), -math.sin(a))  # dirección del ancho del panel
+    cx, cd = desk.x0 + 27, 24  # centro del panel: a la izquierda del ultrawide, como en las fotos
+    bottom, top = desk.top + lift, desk.top + lift + h
+    plastic = materials.principled("vertical_plastic", "#1b1b1e", roughness=0.45)
+    metal = materials.principled("arm_metal", "#141416", roughness=0.35, metallic=0.7)
+
+    def at(along: float, out: float, up: float):
+        """Punto a `along` cm sobre el ancho y `out` cm hacia el frente del centro del panel."""
+        return (cx + s[0] * along + n[0] * out, cd + s[1] * along + n[1] * out, up)
+
+    panel = bar("vertical_panel", at(0, -1, bottom), at(0, -1, top), w, 2.0, plastic, side=(s[0], s[1], 0))
+    screen = quad(
+        "vertical_screen",
+        [at(-w / 2 + 0.6, 0.02, bottom + 0.6), at(w / 2 - 0.6, 0.02, bottom + 0.6),
+         at(w / 2 - 0.6, 0.02, top - 0.6), at(-w / 2 + 0.6, 0.02, top - 0.6)],
+        materials.screen("vertical_screen", "screen_vertical.jpg"),
+    )
+    vesa = at(0, -3.5, (bottom + top) / 2)
+    # Brazo: abrazadera sobre el tablero → poste → codo → placa VESA en la espalda del panel
+    px, pd = desk.x0 + arm["fromDeskLeft"], arm["fromBackWall"]
+    elbow = (px - 6, pd + 10, vesa[2] - 4)
+    parts = [
+        panel,
+        screen,
+        box("vertical_vesa", (vesa[0] - 5, vesa[0] + 5, vesa[1] - 1.5, vesa[1] + 1.5, vesa[2] - 5, vesa[2] + 5), metal),
+        box("arm_clamp", (px - 4, px + 4, pd - 4, pd + 4, desk.top, desk.top + 2.5), metal),
+        bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), 3.5, 3.5, metal),
+        bar("arm_lower", (px, pd, vesa[2] - 4), elbow, 4, 3, metal, side=(0, 0, 1)),
+        bar("arm_upper", elbow, vesa, 4, 3, metal, side=(0, 0, 1)),
+    ]
+    group("item_vertical_monitor", parts, (cx, cd, desk.top))
