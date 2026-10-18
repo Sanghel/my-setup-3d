@@ -5,16 +5,94 @@
     "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen."
   ],
   "photos": {
-    "poster": { "file": "fotos/IMG_0203.heic", "corners": [[0.033, 0.225], [0.978, 0.223], [0.989, 0.886], [0.02, 0.883]], "size": [1024, 1280] },
-    "desk_mat": { "file": "fotos/IMG_0204.heic", "corners": [[0.036, 0.176], [0.999, 0.147], [0.999, 0.8], [0.006, 0.836]], "size": [2048, 772] }
+    "poster": {
+      "file": "fotos/IMG_0203.heic",
+      "corners": [
+        [
+          0.033,
+          0.225
+        ],
+        [
+          0.978,
+          0.223
+        ],
+        [
+          0.989,
+          0.886
+        ],
+        [
+          0.02,
+          0.883
+        ]
+      ],
+      "size": [
+        1024,
+        1280
+      ]
+    },
+    "desk_mat": {
+      "file": "fotos/IMG_0204.heic",
+      "corners": [
+        [
+          0.036,
+          0.176
+        ],
+        [
+          0.999,
+          0.147
+        ],
+        [
+          0.999,
+          0.8
+        ],
+        [
+          0.006,
+          0.836
+        ]
+      ],
+      "size": [
+        2048,
+        772
+      ]
+    }
   },
   "screens": {
-    "screen_ultrawide": { "file": "screenshots/Pasted 2026-10-17 at 1.56.02 PM.tiff", "size": [2048, 858] },
-    "screen_vertical": { "file": "screenshots/Pasted 2026-10-17 at 1.55.41 PM.tiff", "size": [1024, 1832] }
+    "screen_ultrawide": {
+      "file": "screenshots/Pasted 2026-10-17 at 1.56.02 PM.tiff",
+      "size": [
+        2048,
+        858
+      ]
+    },
+    "screen_vertical": {
+      "file": "screenshots/Pasted 2026-10-17 at 1.55.41 PM.tiff",
+      "size": [
+        1024,
+        1832
+      ]
+    }
   },
   "pending": {
-    "jersey_2008": "F1: repetir de frente con el marco completo (IMG_3303 corta la manga derecha y el borde inferior)",
-    "jersey_scholes": "F3: repetir de frente con el marco completo (IMG_3308 corta el borde izquierdo e inferior)",
-    "window_night": "F13: vista nocturna por la ventana (se procesa en la tarea 7.6)"
+    "jersey_2008": "F1: IMG_3320 está completa y de frente, pero refleja el celular, las manos y una puerta; repetir con el cuarto a oscuras y una lámpara de lado",
+    "jersey_scholes": "F3: IMG_3317 está completa y de frente, pero refleja a la persona, el bombillo y la cama; repetir con el cuarto a oscuras y una lámpara de lado"
+  },
+  "edits": {
+    "window_night": {
+      "file": "fotos/IMG_3315.HEIC",
+      "ops": [
+        "-auto-orient",
+        "-resize",
+        "1024x",
+        "-blur",
+        "0x3",
+        "-modulate",
+        "50,60",
+        "-gamma",
+        "0.7",
+        "-sigmoidal-contrast",
+        "4,40%"
+      ],
+      "_note": "Foto al anochecer (F13) llevada a noche y desenfocada para que no se reconozca la ubicación."
+    }
   }
 }
