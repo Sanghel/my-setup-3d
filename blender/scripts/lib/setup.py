@@ -65,3 +65,68 @@ def build_desk(m: dict) -> DeskFrame:
 
     group("item_desk", parts, (frame.center_x, (d0 + d1) / 2, 0))
     return frame
+
+
+def curved_panel(prefix: str, xc: float, dc: float, bottom: float, width: float, height: float,
+                 radius: float, thickness: float, screen_mat, housing_mat, columns: int = 32):
+    """Pantalla curva: frente (con UV 0–1 para la imagen) y carcasa trasera con sus cantos.
+    El arco está en el plano x–d; los bordes quedan más cerca del usuario (más d) que el centro."""
+    import math
+
+    from .geometry import _mesh_object, to_blender
+
+    half = (width / 2) / radius  # ángulo de media pantalla (radianes)
+    center_d = dc + radius  # el centro del círculo está frente a la pantalla
+    front, back = [], []
+    for i in range(columns + 1):
+        a = -half + 2 * half * i / columns
+        x, d = xc + radius * math.sin(a), dc + radius * (1 - math.cos(a))
+        nx, nd = (xc - x) / radius, (center_d - d) / radius  # normal hacia el usuario
+        front.append((x, d))
+        back.append((x - nx * thickness, d - nd * thickness))
+    top = bottom + height
+
+    def strip(points, z0, z1):
+        return [to_blender(x, d, z) for x, d in points for z in (z0, z1)]
+
+    # Frente: columnas (abajo, arriba) con UV u = columna, v = altura
+    verts = strip(front, bottom, top)
+    faces = [(2 * i, 2 * i + 2, 2 * i + 3, 2 * i + 1) for i in range(columns)]
+    uvs = [(i / columns, v) for i in range(columns + 1) for v in (0.0, 1.0)]
+    screen = _mesh_object(f"{prefix}_screen", verts, faces, screen_mat, uvs)
+
+    # Carcasa: espalda + cantos superior, inferior y laterales
+    n = columns + 1
+    verts = strip(front, bottom, top) + strip(back, bottom, top)
+    faces = [(n * 2 + 2 * i + 1, n * 2 + 2 * i + 3, n * 2 + 2 * i + 2, n * 2 + 2 * i) for i in range(columns)]  # espalda
+    faces += [(2 * i + 1, 2 * i + 3, n * 2 + 2 * i + 3, n * 2 + 2 * i + 1) for i in range(columns)]  # canto superior
+    faces += [(2 * i, n * 2 + 2 * i, n * 2 + 2 * i + 2, 2 * i + 2) for i in range(columns)]  # canto inferior
+    faces += [(0, 1, n * 2 + 1, n * 2), (2 * columns, n * 2 + 2 * columns, n * 2 + 2 * columns + 1, 2 * columns + 1)]
+    housing = _mesh_object(f"{prefix}_housing", verts, faces, housing_mat)
+    return screen, housing
+
+
+def build_ultrawide(m: dict, desk: DeskFrame):
+    """Xiaomi G34WQi: 34" curvo 1500R sobre su base, con el wallpaper como pantalla emisiva."""
+    uw = m["ultrawide"]
+    w, h, lift, gap = uw["width"], uw["height"], uw["lift"], uw["wallGap"]
+    xc = desk.x1 - 10 - w / 2  # un poco a la derecha del centro, como en las fotos
+    bottom = desk.top + lift
+    plastic = materials.principled("ultrawide_plastic", "#1c1c1f", roughness=0.45)
+    stand = materials.principled("ultrawide_stand", "#2a2b2f", roughness=0.35, metallic=0.6)
+    screen, housing = curved_panel(
+        "ultrawide", xc, gap, bottom, w, h, uw["radius"], 2.0,
+        materials.screen("ultrawide_screen", "screen_ultrawide.jpg"), plastic,
+    )
+    bw, bd = uw["base"]["width"], uw["base"]["depth"]
+    back = gap - 2.0
+    parts = [
+        screen,
+        housing,
+        # Bulto trasero de la electrónica (donde va la luz ámbar en el grupo 7)
+        box("ultrawide_back", (xc - 18, xc + 18, back - 4, back, bottom + 7, bottom + 27), plastic),
+        # Cuello y base
+        box("ultrawide_neck", (xc - 2.5, xc + 2.5, back - 7, back - 4, desk.top, bottom + 20), stand),
+        box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand),
+    ]
+    group("item_ultrawide", parts, (xc, gap, desk.top))
