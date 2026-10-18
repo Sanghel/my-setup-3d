@@ -6,7 +6,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 
 const insumos = process.env.INSUMOS_DIR ?? join(homedir(), 'Documents/Obsidian Vault/my-setup-3d/insumos')
-const { photos, screens } = JSON.parse(readFileSync('blender/textures/sources.json', 'utf8'))
+const { photos, screens, edits = {} } = JSON.parse(readFileSync('blender/textures/sources.json', 'utf8'))
 const outDir = 'blender/textures/photos'
 mkdirSync(outDir, { recursive: true })
 
@@ -34,4 +34,11 @@ for (const [name, { file, size }] of Object.entries(screens)) {
   const out = join(outDir, `${name}.jpg`)
   magick(source(file), '-resize', `${size[0]}x${size[1]}!`, '-quality', '92', out)
   console.log(`[photos] ${out} (${size[0]}×${size[1]}) ← ${file}`)
+}
+
+// Ediciones libres: una lista de operaciones de ImageMagick por imagen (p. ej. la vista nocturna).
+for (const [name, { file, ops }] of Object.entries(edits)) {
+  const out = join(outDir, `${name}.jpg`)
+  magick(source(file), ...ops, '-quality', '90', out)
+  console.log(`[photos] ${out} ← ${file} (${ops.join(' ')})`)
 }
