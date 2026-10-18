@@ -4,7 +4,7 @@ Coordenadas del cuarto en cm: x a lo largo de la pared del fondo, d hacia adentr
 from dataclasses import dataclass
 
 from . import materials
-from .geometry import bar, box, group, quad
+from .geometry import bar, bevel, box, group, quad
 
 
 @dataclass(frozen=True)
@@ -36,7 +36,7 @@ def build_desk(m: dict) -> DeskFrame:
     t = desk["legThickness"]
     under = top - desk["top"]  # cara inferior del tablero
 
-    parts = [box("desk_top", (x0, x1, d0, d1, under, top), top_mat)]
+    parts = [bevel(box("desk_top", (x0, x1, d0, d1, under, top), top_mat), 0.3)]
 
     # Patas en X a cada lado (en el plano d–up), con un riel bajo el tablero
     for i, x in enumerate((x0 + 6, x1 - 6)):
@@ -127,12 +127,12 @@ def build_ultrawide(m: dict, desk: DeskFrame):
     back = gap - 2.0
     parts = [
         screen,
-        housing,
+        bevel(housing, 0.3),
         # Bulto trasero de la electrónica (donde va la luz ámbar en el grupo 7)
-        box("ultrawide_back", (xc - 18, xc + 18, back - 4, back, bottom + 7, bottom + 27), plastic),
+        bevel(box("ultrawide_back", (xc - 18, xc + 18, back - 4, back, bottom + 7, bottom + 27), plastic), 1.0, 3),
         # Cuello y base
-        box("ultrawide_neck", (xc - 2.5, xc + 2.5, back - 7, back - 4, desk.top, bottom + 20), stand),
-        box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand),
+        bevel(box("ultrawide_neck", (xc - 2.5, xc + 2.5, back - 7, back - 4, desk.top, bottom + 20), stand), 0.4),
+        bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand), 0.3),
     ]
     group("item_ultrawide", parts, (xc, gap, desk.top))
 
@@ -157,7 +157,7 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         """Punto a `along` cm sobre el ancho y `out` cm hacia el frente del centro del panel."""
         return (cx + s[0] * along + n[0] * out, cd + s[1] * along + n[1] * out, up)
 
-    panel = bar("vertical_panel", at(0, -1, bottom), at(0, -1, top), w, 2.0, plastic, side=(s[0], s[1], 0))
+    panel = bevel(bar("vertical_panel", at(0, -1, bottom), at(0, -1, top), w, 2.0, plastic, side=(s[0], s[1], 0)), 0.4)
     screen = quad(
         "vertical_screen",
         [at(-w / 2 + 0.6, 0.02, bottom + 0.6), at(w / 2 - 0.6, 0.02, bottom + 0.6),
@@ -172,7 +172,7 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         panel,
         screen,
         box("vertical_vesa", (vesa[0] - 5, vesa[0] + 5, vesa[1] - 1.5, vesa[1] + 1.5, vesa[2] - 5, vesa[2] + 5), metal),
-        box("arm_clamp", (px - 4, px + 4, pd - 4, pd + 4, desk.top, desk.top + 2.5), metal),
+        bevel(box("arm_clamp", (px - 4, px + 4, pd - 4, pd + 4, desk.top, desk.top + 2.5), metal), 0.4),
         bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), 3.5, 3.5, metal),
         bar("arm_lower", (px, pd, vesa[2] - 4), elbow, 4, 3, metal, side=(0, 0, 1)),
         bar("arm_upper", elbow, vesa, 4, 3, metal, side=(0, 0, 1)),
@@ -180,48 +180,48 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
     group("item_vertical_monitor", parts, (cx, cd, desk.top))
 
 
-# Logitech MX Mechanical Mini: anchos de tecla en unidades (1u ≈ 1,86 cm). "m" = modificador (gris oscuro).
+# Logitech MX Mechanical Mini: anchos de tecla en unidades, medidos sobre la foto rectificada (IMG_0215).
+# La foto se proyecta desde arriba: la geometría de las teclas debe coincidir con las teclas de la foto.
 KEY_ROWS = [
-    ["m1"] + ["1"] * 12 + ["m1"] * 3,  # esc, F1–F12, teclas de función extra
-    ["1"] * 13 + ["m2"] + ["m1"],  # ` 1–0 - =, backspace, home
-    ["m1.5"] + ["1"] * 12 + ["m1.5"] + ["m1"],  # tab, Q–], \, pg up
-    ["m1.75"] + ["1"] * 11 + ["m2.25"] + ["m1"],  # caps, A–', enter, pg dn
-    ["m2.25"] + ["1"] * 10 + ["m1.75"] + ["m1"] * 2,  # shift, Z–/, shift, ↑, end
-    ["m1.25"] * 3 + ["6.25"] + ["m1"] * 6,  # ctrl, opt, cmd, espacio, cmd, fn, ctrl, ← ↓ →
+    [1] * 16,  # esc, F1–F12, luz, volumen, del
+    [1] * 13 + [2, 1],  # ` 1–0 - =, backspace, home
+    [1.5] + [1] * 12 + [1.5, 1],  # tab, Q–], \, end
+    [1.75] + [1] * 11 + [2.25, 1],  # caps, A–', enter, pg up
+    [2.25] + [1] * 10 + [1.75, 1, 1],  # shift, Z–/, shift, ↑, pg dn
+    [1.25] * 3 + [6.25] + [1] * 6,  # ctrl, opt, cmd, espacio, cmd, fn, ctrl, ← ↓ →
 ]
+KEYBOARD_MARGINS = {"side": 0.15, "back": 1.13, "front": 0.25}  # cm, medidos en la foto ("logi" atrás)
 
 
 def build_keyboard(m: dict, desk: DeskFrame):
-    from .geometry import boxes
+    from .geometry import bevel, boxes
 
     kb = m["keyboard"]
     W, D = kb["width"], kb["depth"]
     x0 = desk.center_x + 6 - W / 2  # sobre el desk mat, un poco a la izquierda del centro del ultrawide
     d0 = desk.d1 - 26.5
     base_top = desk.top + 1.6
-    unit = (W - 1.4) / 16  # 16 unidades por fila entre los márgenes de la carcasa
-    pitch_d = (D - 1.6) / len(KEY_ROWS)
-    gap = 0.17  # separación entre teclas (cm)
+    side, back, front = (KEYBOARD_MARGINS[k] for k in ("side", "back", "front"))
+    unit = (W - 2 * side) / 16
+    pitch_d = (D - back - front) / len(KEY_ROWS)
+    gap = 0.12  # separación entre teclas (cm)
 
-    body = materials.principled("keyboard_body", "#3a3d43", roughness=0.4, metallic=0.5)
-    letters = materials.principled("keycap_light", "#6f747d", roughness=0.6)
-    mods = materials.principled("keycap_dark", "#3d4046", roughness=0.6)
+    # Una sola foto (tu teclado desde arriba) para carcasa y teclas: letras, íconos y desgaste reales
+    photo = materials.photo("keyboard_photo", "keyboard_top.jpg", roughness=0.55)
+    uv = (x0, x0 + W, d0, d0 + D)
 
-    light_keys, dark_keys = [], []
+    caps = []
     for row_i, row in enumerate(KEY_ROWS):
-        x = x0 + 0.7
-        kd0 = d0 + 0.8 + row_i * pitch_d
-        for key in row:
-            dark = key.startswith("m")
-            size = float(key.lstrip("m")) * unit
-            cap = (x + gap, x + size - gap, kd0 + gap, kd0 + pitch_d - gap, base_top, base_top + 0.7)
-            (dark_keys if dark else light_keys).append(cap)
+        x = x0 + side
+        kd0 = d0 + back + row_i * pitch_d
+        for width in row:
+            size = width * unit
+            caps.append((x + gap, x + size - gap, kd0 + gap, kd0 + pitch_d - gap, base_top, base_top + 0.7))
             x += size
 
     parts = [
-        box("keyboard_body", (x0, x0 + W, d0, d0 + D, desk.top, base_top), body),
-        boxes("keyboard_keys_light", light_keys, letters),
-        boxes("keyboard_keys_dark", dark_keys, mods),
+        bevel(boxes("keyboard_body", [(x0, x0 + W, d0, d0 + D, desk.top, base_top)], photo, uv_top=uv), 0.3),
+        bevel(boxes("keyboard_keys", caps, photo, uv_top=uv), 0.12, segments=1),
     ]
     group("item_keyboard", parts, (x0 + W / 2, d0 + D / 2, desk.top))
 
@@ -257,9 +257,9 @@ def build_frame(m: dict, key: str, item: str, photo_file: str):
     depth, border = spec["depth"], spec["border"]
     black = materials.principled("frame_black", "#101011", roughness=0.4)
 
-    def cube(name, ua, ub, oa, ob, za, zb, mat):
+    def cube(name, ua, ub, oa, ob, za, zb, mat, round_cm=0.25):
         (xa, da, _), (xb, db, _) = p(ua, oa, 0), p(ub, ob, 0)
-        return box(name, (min(xa, xb), max(xa, xb), min(da, db), max(da, db), za, zb), mat)
+        return bevel(box(name, (min(xa, xb), max(xa, xb), min(da, db), max(da, db), za, zb), mat), round_cm)
 
     out = 0.4  # la foto queda apenas delante de la pared, dentro del marco
     parts = [
@@ -274,7 +274,7 @@ def build_frame(m: dict, key: str, item: str, photo_file: str):
             materials.photo(f"{key}_photo", photo_file, roughness=0.8),
         ),
         cube(f"{key}_glass", u0 + border, u1 - border, depth - 0.5, depth - 0.3, b0 + border, b1 - border,
-             materials.glass(f"{key}_glass")),
+             materials.glass(f"{key}_glass"), round_cm=0.05),
     ]
     center = p((u0 + u1) / 2, 0, b0)
     group(item, parts, center)
@@ -290,7 +290,7 @@ def build_poster(m: dict):
     edge = materials.principled("poster_edge", "#1a1a1c", roughness=0.5)
     (xa, da, _), (xb, db, _) = p(u0, 0, 0), p(u1, depth - 0.05, 0)
     parts = [
-        box("poster_panel", (min(xa, xb), max(xa, xb), min(da, db), max(da, db), b0, b1), edge),
+        bevel(box("poster_panel", (min(xa, xb), max(xa, xb), min(da, db), max(da, db), b0, b1), edge), 0.1),
         quad("poster_print",
              [p(u0, depth, b0), p(u1, depth, b0), p(u1, depth, b1), p(u0, depth, b1)],
              materials.photo("poster_print", "poster.jpg", roughness=0.25)),

@@ -45,6 +45,27 @@ def add_box_uvs(mesh: bpy.types.Mesh, tile: float, rotate: bool = False) -> None
             uv_layer.data[loop_index].uv = (v, u) if rotate else (u, v)
 
 
+def add_top_uvs(mesh: bpy.types.Mesh, x0: float, x1: float, d0: float, d1: float) -> None:
+    """Proyecta una imagen desde arriba sobre el rectángulo (x0..x1, d0..d1) en cm del cuarto:
+    la parte superior de la imagen queda hacia la pared del fondo (d0). Útil para fotos tomadas desde arriba."""
+    uv_layer = mesh.uv_layers.new(name="UVMap")
+    for poly in mesh.polygons:
+        for loop_index in poly.loop_indices:
+            co = mesh.vertices[mesh.loops[loop_index].vertex_index].co
+            x, d = co.x * 100, -co.y * 100
+            uv_layer.data[loop_index].uv = ((x - x0) / (x1 - x0), (d1 - d) / (d1 - d0))
+
+
+def bevel(obj: bpy.types.Object, width_cm: float, segments: int = 2) -> bpy.types.Object:
+    """Redondea las aristas (el mundo real no tiene bordes perfectos y los bordes atrapan la luz).
+    Es un modificador: el exportador lo aplica al generar el .glb (export_apply)."""
+    mod = obj.modifiers.new("Bevel", "BEVEL")
+    mod.width = width_cm / 100
+    mod.segments = segments
+    mod.limit_method = "ANGLE"
+    return obj
+
+
 def boxes(
     name: str,
     parts: Iterable[Bounds],
@@ -52,6 +73,7 @@ def boxes(
     collection=None,
     uv_tile: float | None = None,
     uv_rotate: bool = False,
+    uv_top: Sequence[float] | None = None,
 ) -> bpy.types.Object:
     """Un objeto con una o varias cajas en la misma malla (p. ej. una pared con un hueco).
     Con `uv_tile` (metros por repetición) se generan UVs para materiales con textura."""
@@ -74,6 +96,8 @@ def boxes(
     bm.free()
     if uv_tile:
         add_box_uvs(mesh, uv_tile, uv_rotate)
+    elif uv_top:
+        add_top_uvs(mesh, *uv_top)
     mesh.materials.append(material)
     obj = bpy.data.objects.new(name, mesh)
     (collection or bpy.context.scene.collection).objects.link(obj)

@@ -46,6 +46,7 @@ def export_glb(path: str) -> Path:
         export_yup=True,
         export_cameras=False,  # la cámara y las luces de preview no van a la web
         export_lights=False,
+        export_apply=True,  # aplica los modificadores (bevel) a la geometría exportada
     )
     return out
 

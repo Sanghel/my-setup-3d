@@ -86,6 +86,32 @@
         1200
       ],
       "_note": "Interior del marco (60×65 cm). Provisional: tiene reflejos tenues (celular y una puerta); reemplazar con F1 sin reflejos."
+    },
+    "keyboard_top": {
+      "file": "fotos/IMG_0215.heic",
+      "corners": [
+        [
+          0.817,
+          0.07
+        ],
+        [
+          0.817,
+          0.9625
+        ],
+        [
+          0.148,
+          0.9625
+        ],
+        [
+          0.148,
+          0.07
+        ]
+      ],
+      "size": [
+        1550,
+        650
+      ],
+      "_note": "Teclado desde arriba (31×13 cm). En la foto está girado 90°: las esquinas van en orden atrás-izq, atrás-der, adelante-der, adelante-izq del teclado."
     }
   },
   "pending": {
