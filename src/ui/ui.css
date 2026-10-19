@@ -1,19 +1,27 @@
-/* Interfaz sobre el canvas: paneles oscuros translúcidos, coherentes con la escena nocturna. */
+/* Interfaz sobre el canvas, con los colores y tipografías del mock de Claude Design (redesign D9). */
 :root {
-  --ui-bg: rgb(16 18 24 / 0.78);
-  --ui-border: rgb(255 255 255 / 0.12);
-  --ui-text: #eef0f6;
-  --ui-muted: #a3a9b8;
-  --ui-accent: #ff4d4d; /* el rojo del LED del poster */
+  --ui-bg: rgb(26 20 16 / 0.74); /* paneles: madera muy oscura translúcida */
+  --ui-bg-solid: rgb(26 20 16 / 0.94); /* panel de detalle */
+  --ui-border: rgb(255 235 215 / 0.08);
+  --ui-border-strong: rgb(255 235 215 / 0.14);
+  --ui-text: #f3eae1;
+  --ui-muted: #c9b7a7;
+  --ui-faint: #9a8878;
+  --ui-accent: #ffb27a; /* durazno: categoría, foco */
+  --ui-dot: #fff3e6;
+  --ui-dot-hover: #ff7a5c; /* coral: punto bajo el puntero */
+  --ui-hover: rgb(255 200 150 / 0.1);
+  --ui-active: rgb(255 170 110 / 0.16);
   --ui-radius: 16px;
-  --ui-gap: 16px;
+  --ui-gap: 20px;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 .overlay {
   position: fixed;
   inset: 0;
   pointer-events: none; /* el canvas sigue recibiendo el mouse; solo los paneles lo capturan */
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: Manrope, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--ui-text);
 }
 
@@ -381,4 +389,45 @@
   height: 26%;
   mask-image: linear-gradient(transparent, #000);
   -webkit-mask-image: linear-gradient(transparent, #000);
+}
+
+/* Título y texto de ayuda (mock) */
+.brand {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  display: grid;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.brand__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.brand__subtitle {
+  margin: 0;
+  font: 11px/1.4 var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--ui-muted);
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 12px;
+  color: #d8c8ba;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.hint--off {
+  opacity: 0;
 }

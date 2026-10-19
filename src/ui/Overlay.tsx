@@ -1,6 +1,7 @@
 import { ITEMS } from '../data/items'
 import { AmbienceToggle } from './AmbienceToggle'
 import { BackButton } from './BackButton'
+import { Brand, Hint } from './Brand'
 import { DetailsPanel } from './DetailsPanel'
 import { ItemList } from './ItemList'
 import { Loader } from './Loader'
@@ -17,6 +18,7 @@ export function Overlay() {
   return (
     <div className="overlay">
       <TiltShift />
+      <Brand />
       <ItemList items={ITEMS} defaultOpen={!isNarrow()} closeOnSelect={isNarrow()} />
       <DetailsPanel items={ITEMS}>
         <BackButton />
@@ -24,6 +26,7 @@ export function Overlay() {
       <div className="bottom-bar">
         <AmbienceToggle />
       </div>
+      <Hint />
       <Loader />
     </div>
   )
