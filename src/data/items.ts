@@ -102,15 +102,30 @@ export const ITEMS: Item[] = [
   {
     id: 'keyboard',
     group: 'setup',
+    short: 'Teclado',
     node: 'item_keyboard',
-    name: 'Teclado',
-    description: 'Logitech MX Mechanical Mini: mecánico low-profile, compacto y retroiluminado.',
+    name: 'Teclado y mouse',
+    description:
+      'Logitech MX Mechanical Mini: mecánico low-profile, compacto y con retroiluminación, junto al mouse sobre el desk mat "Engineers".',
     details: [
-      { label: 'Modelo', value: 'Logitech MX Mechanical Mini' },
+      { label: 'Teclado', value: 'Logitech MX Mechanical Mini' },
       { label: 'Formato', value: 'Compacto, 6 filas' },
       { label: 'Medidas', value: '31 × 13 cm' },
+      { label: 'Desk mat', value: 'Engineers, negro' },
     ],
     view: { azimuth: -10, polar: 40, azimuthRange: [-60, 40] },
+  },
+  {
+    id: 'chair',
+    group: 'setup',
+    node: 'item_chair',
+    name: 'Silla',
+    description: 'Silla ergonómica de malla negra con cabecero y apoyabrazos ajustables, frente al escritorio.',
+    details: [
+      { label: 'Material', value: 'Malla negra' },
+      { label: 'Extras', value: 'Cabecero y apoyabrazos ajustables' },
+    ],
+    view: { azimuth: -35, polar: 70, azimuthRange: [-90, 20] },
   },
   {
     id: 'jersey-2008',
@@ -156,6 +171,33 @@ export const ITEMS: Item[] = [
       { label: 'Luz', value: 'LED rojo en los 4 lados' },
     ],
     view: { azimuth: 0, polar: 84, azimuthRange: [-50, 45] },
+  },
+  {
+    id: 'pegboard',
+    group: 'detalles',
+    short: 'Organizador',
+    node: 'item_pegboard',
+    name: 'Organizador de pared',
+    description:
+      'Pegboard negro en la esquina con vasos, un parlante JBL naranja, el control de PS5 rojo, llaveros, un mini balón del United y un cactus.',
+    details: [
+      { label: 'Incluye', value: 'Parlante JBL Clip 4 · control DualSense · mini balón' },
+      { label: 'Medidas', value: '28 × 62 cm (aprox.)' },
+    ],
+    view: { azimuth: -90, polar: 82, azimuthRange: [-130, -50] },
+  },
+  {
+    id: 'funko',
+    group: 'detalles',
+    short: 'Funko Madara',
+    node: 'item_funko',
+    name: 'Funko de Madara',
+    description: 'Figura Funko Pop! de Madara Uchiha en modo Seis Caminos, parada frente a la base del ultrawide.',
+    details: [
+      { label: 'Serie', value: 'Naruto Shippuden' },
+      { label: 'Ubicación', value: 'Frente al monitor' },
+    ],
+    view: { azimuth: -20, polar: 72, azimuthRange: [-70, 30] },
   },
 ]
 

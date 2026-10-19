@@ -16,11 +16,11 @@ describe('DetailsDrawer', () => {
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument()
   })
 
-  it('al enfocar el monitor vertical: "03 / 07", SETUP, nombre, descripción y ficha', () => {
+  it('al enfocar el monitor vertical: "03 / 10", SETUP, nombre, descripción y ficha', () => {
     render(<DetailsDrawer />)
     select('vertical-monitor')
     const item = ITEMS.find((i) => i.id === 'vertical-monitor')!
-    expect(within(panel()).getByText('03 / 07')).toBeInTheDocument()
+    expect(within(panel()).getByText('03 / 10')).toBeInTheDocument()
     expect(within(panel()).getByText('SETUP · 03')).toBeInTheDocument()
     expect(within(panel()).getByRole('heading', { name: item.name })).toBeInTheDocument()
     expect(within(panel()).getByText(item.description)).toBeInTheDocument()
@@ -51,13 +51,13 @@ describe('DetailsDrawer', () => {
     expect(images[0]).toHaveClass('drawer__photo--main')
   })
 
-  it('Siguiente pasa al objeto 05 y el contador se actualiza; desde el último vuelve al primero', async () => {
+  it('Siguiente pasa al objeto 05 (la silla) y el contador se actualiza; desde el último vuelve al primero', async () => {
     render(<DetailsDrawer />)
     select('keyboard')
     await userEvent.click(within(panel()).getByRole('button', { name: /Siguiente/ }))
-    expect(useSceneStore.getState().selectedId).toBe('jersey-2008')
-    expect(within(panel()).getByText('05 / 07')).toBeInTheDocument()
-    select('poster')
+    expect(useSceneStore.getState().selectedId).toBe('chair')
+    expect(within(panel()).getByText('05 / 10')).toBeInTheDocument()
+    select('funko')
     await userEvent.click(within(panel()).getByRole('button', { name: /Siguiente/ }))
     expect(useSceneStore.getState().selectedId).toBe('desk')
   })
