@@ -3,7 +3,13 @@ import { Group, Mesh, Object3D } from 'three'
 import type { Item } from '../data/items'
 import { bindCatalog, itemIdOf } from './bindCatalog'
 
-const item = (id: string, node: string): Item => ({ id, node, name: id, description: id })
+const item = (id: string, node: string): Item => ({
+  id,
+  node,
+  name: id,
+  description: id,
+  view: { azimuth: 0, polar: 90, azimuthRange: [-45, 45] },
+})
 
 /** Escena falsa con la misma forma que el .glb: un nodo item_* con piezas y un nodo room_*. */
 function fakeScene() {

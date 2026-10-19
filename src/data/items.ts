@@ -8,12 +8,25 @@ export interface ItemDetail {
   value: string
 }
 
+/**
+ * Desde dónde se inspecciona el objeto (grados, convención de camera-controls):
+ * azimut 0 = de frente a la pared del fondo (+z); negativo = desde la izquierda (-x).
+ * polar 0 = desde arriba; 90 = a la altura del objeto. `azimuthRange` impide ver un objeto
+ * de pared desde atrás.
+ */
+export interface ItemView {
+  azimuth: number
+  polar: number
+  azimuthRange: [number, number]
+}
+
 export interface Item {
   id: string
   node: string
   name: string
   description: string
   details?: ItemDetail[]
+  view: ItemView
 }
 
 export const ITEMS: Item[] = [
@@ -29,6 +42,7 @@ export const ITEMS: Item[] = [
       { label: 'Desk mat', value: '77 × 29 cm' },
       { label: 'Luz', value: 'Tira LED blanca en los 4 lados, bajo el tablero' },
     ],
+    view: { azimuth: -35, polar: 58, azimuthRange: [-75, 15] },
   },
   {
     id: 'ultrawide',
@@ -41,6 +55,7 @@ export const ITEMS: Item[] = [
       { label: 'Curvatura', value: '1500R' },
       { label: 'Medidas', value: '80 × 35 cm' },
     ],
+    view: { azimuth: -15, polar: 72, azimuthRange: [-60, 40] },
   },
   {
     id: 'vertical-monitor',
@@ -53,6 +68,7 @@ export const ITEMS: Item[] = [
       { label: 'Orientación', value: 'Vertical, girado 30°' },
       { label: 'Brazo', value: 'Huanuo, con abrazadera al tablero' },
     ],
+    view: { azimuth: 25, polar: 74, azimuthRange: [-30, 60] },
   },
   {
     id: 'keyboard',
@@ -64,6 +80,7 @@ export const ITEMS: Item[] = [
       { label: 'Formato', value: 'Compacto, 6 filas' },
       { label: 'Medidas', value: '31 × 13 cm' },
     ],
+    view: { azimuth: -10, polar: 40, azimuthRange: [-60, 40] },
   },
   {
     id: 'jersey-2008',
@@ -77,6 +94,7 @@ export const ITEMS: Item[] = [
       { label: 'Final', value: '21 de mayo de 2008, estadio Luzhniki (Moscú)' },
       { label: 'Marco', value: '67 × 72 cm' },
     ],
+    view: { azimuth: -8, polar: 84, azimuthRange: [-50, 45] },
   },
   {
     id: 'jersey-scholes',
@@ -90,6 +108,7 @@ export const ITEMS: Item[] = [
       { label: 'Jugador', value: 'Paul Scholes, #18' },
       { label: 'Marco', value: '88 × 99 cm' },
     ],
+    view: { azimuth: -90, polar: 84, azimuthRange: [-130, -50] },
   },
   {
     id: 'poster',
@@ -101,6 +120,7 @@ export const ITEMS: Item[] = [
       { label: 'Medidas', value: '44 × 55 cm' },
       { label: 'Luz', value: 'LED rojo en los 4 lados' },
     ],
+    view: { azimuth: 0, polar: 84, azimuthRange: [-50, 45] },
   },
 ]
 
