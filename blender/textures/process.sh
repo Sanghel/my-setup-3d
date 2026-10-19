@@ -26,10 +26,14 @@ tint() {
   echo "[textures] $out → promedio $(magick "$out" -resize 64x64! -format '%[fx:round(255*mean.r)],%[fx:round(255*mean.g)],%[fx:round(255*mean.b)]' info:) (meta $r,$g,$b)"
 }
 
-# Metas de color (albedo) a partir de las fotos del cuarto; ver nota 07 de la bitácora.
-tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/floor_diff.jpg" 70 117 101 88   # IMG_0207
-tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/baseboard_diff.jpg" 60 95 72 52  # IMG_3306, madera oscura
-tint "$SRC/beige_wall_001_diff_2k.jpg" "$OUT/wall_diff.jpg" 5 215 214 210        # IMG_0208, blanco neutro
+# Metas de color (albedo). Hasta el grupo 12 salían de las fotos del cuarto (nota 07);
+# el rediseño (redesign-showroom-style, D4) usa la paleta cálida del mock de Claude Design:
+#   piso   hsl(26 28% 30%) del mock, algo más claro porque el horneado lo oscurece  (antes 117,101,88)
+#   zócalo #3a2a20                                                                 (antes 95,72,52)
+#   pared  #f0e6da crema                                                           (antes 215,214,210)
+tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/floor_diff.jpg" 70 112 82 60
+tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/baseboard_diff.jpg" 60 58 42 32
+tint "$SRC/beige_wall_001_diff_2k.jpg" "$OUT/wall_diff.jpg" 25 240 230 218
 
 # Normal y rugosidad no cambian de color: se copian tal cual
 cp "$SRC/laminate_floor_02_nor_gl_2k.jpg" "$OUT/floor_nor.jpg"
