@@ -91,9 +91,9 @@ export const ITEMS: Item[] = [
     node: 'item_vertical_monitor',
     name: 'Monitor vertical',
     description:
-      'Monitor Gigabyte de 25 pulgadas en vertical, girado 30° hacia el centro y sostenido por un brazo de gas Huanuo. Ideal para código, logs y documentación.',
+      'Monitor Gigabyte de 27 pulgadas en vertical, girado 30° hacia el centro y sostenido por un brazo de gas Huanuo. Ideal para código, logs y documentación.',
     details: [
-      { label: 'Modelo', value: 'Gigabyte 25"' },
+      { label: 'Modelo', value: 'Gigabyte 27"' },
       { label: 'Orientación', value: 'Vertical, girado 30°' },
       { label: 'Brazo', value: 'Huanuo, con abrazadera al tablero' },
     ],
