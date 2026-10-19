@@ -7,6 +7,7 @@ import overviewCamera from './scene/overviewCamera.json'
 import { AmbienceDriver } from './scene/AmbienceDriver'
 import { CameraRig } from './scene/CameraRig'
 import { Effects } from './scene/Effects'
+import { LiveEffects } from './scene/LiveEffects'
 import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
 import { AmbienceEnvironments } from './scene/AmbienceEnvironments'
 import { Room } from './scene/Room'
@@ -54,6 +55,7 @@ export default function App() {
         <Suspense fallback={null}>
           <Room />
         </Suspense>
+        <LiveEffects />
         {import.meta.env.DEV && <DevStatsProbe />}
         <CameraRig />
       </Canvas>
