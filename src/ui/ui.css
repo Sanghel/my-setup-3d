@@ -121,3 +121,57 @@
   border: 1px solid var(--ui-border);
   color: var(--ui-muted);
 }
+
+/* Lista de objetos */
+.item-list {
+  position: absolute;
+  left: var(--ui-gap);
+  bottom: var(--ui-gap);
+  width: 240px;
+  padding: 8px;
+}
+
+.list-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ui-muted);
+  font: 600 0.78rem/1 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.item-list ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.item-list li button {
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ui-text);
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.item-list li button:hover {
+  background: rgb(255 255 255 / 0.07);
+}
+
+.item-list li button[aria-current='true'] {
+  background: rgb(255 77 77 / 0.16);
+  box-shadow: inset 3px 0 0 var(--ui-accent);
+}
