@@ -1,4 +1,5 @@
 import type CameraControlsImpl from 'camera-controls'
+import type { Object3D } from 'three'
 import { useSceneStore } from '../state/sceneStore'
 
 // Solo en desarrollo: inspeccionar el estado y la cámara desde la consola
@@ -7,6 +8,7 @@ declare global {
   interface Window {
     __scene?: typeof useSceneStore
     __controls?: CameraControlsImpl
+    __room?: Object3D
   }
 }
 

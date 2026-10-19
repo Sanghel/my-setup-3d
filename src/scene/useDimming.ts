@@ -11,7 +11,15 @@ interface DimState {
   factor: number
   lightMap: number
   emissive: number
+  env: number
 }
+
+/**
+ * El environment map (NightEnvironment) es solo para REFLEJOS. En three.js, scene.environment
+ * también ilumina en difuso a todos los materiales: en las superficies mates eso se sumaba a la luz
+ * horneada (doble iluminación). Solo lo que refleja (vidrio, pantallas, metal pulido) lo conserva.
+ */
+const reflective = (material: MeshStandardMaterial) => material.roughness < 0.5 || material.metalness > 0.3
 
 /**
  * En inspección, el resto del cuarto se atenúa para que el objeto destaque (design D10).
@@ -27,10 +35,13 @@ export function useDimming(scene: Object3D) {
       if (!mesh.isMesh) return
       if (mesh.userData.itemId) mesh.material = (mesh.material as MeshStandardMaterial).clone()
       const material = mesh.material as MeshStandardMaterial
+      const env = reflective(material) ? 1 : 0
+      material.envMapIntensity = env
       mesh.userData.dim = {
         factor: 1,
         lightMap: material.lightMapIntensity,
         emissive: material.emissiveIntensity,
+        env,
       } satisfies DimState
     })
   }, [scene])
@@ -48,7 +59,7 @@ export function useDimming(scene: Object3D) {
       const material = mesh.material as MeshStandardMaterial
       material.lightMapIntensity = dim.lightMap * dim.factor
       material.emissiveIntensity = dim.emissive * dim.factor
-      material.envMapIntensity = dim.factor
+      material.envMapIntensity = dim.env * dim.factor
     })
   })
 }

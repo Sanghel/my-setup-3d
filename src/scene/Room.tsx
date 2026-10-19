@@ -51,6 +51,9 @@ export function Room() {
 
   // En inspección el resto del cuarto se atenúa (después de unir el catálogo: necesita los itemId)
   useDimming(scene)
+  useLayoutEffect(() => {
+    if (import.meta.env.DEV) window.__room = scene // solo para inspeccionar desde la consola
+  }, [scene])
 
   // Raycasting: R3F lanza un rayo desde la cámara por el puntero y entrega la malla más cercana.
   // Con stopPropagation solo cuenta esa; si es una pared o el piso (sin itemId), no hay hover.
