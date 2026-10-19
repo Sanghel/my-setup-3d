@@ -6,6 +6,10 @@ from dataclasses import dataclass
 from . import materials
 from .geometry import bar, bevel, box, group, quad
 
+# Emisión de las pantallas. Con los fondos claros del mock (match-mock-content D4), 1,6 —calibrado para el
+# código oscuro de antes— las quemaba a casi blanco con mucho bloom; 1,0 es el valor del mock.
+SCREEN_STRENGTH = 1.0
+
 
 @dataclass(frozen=True)
 class DeskFrame:
@@ -121,7 +125,7 @@ def build_ultrawide(m: dict, desk: DeskFrame):
     stand = materials.principled("ultrawide_stand", "#2a2b2f", roughness=0.35, metallic=0.6)
     screen, housing = curved_panel(
         "ultrawide", xc, gap, bottom, w, h, uw["radius"], 2.0,
-        materials.screen("ultrawide_screen", "screen_ultrawide.jpg"), plastic,
+        materials.screen("ultrawide_screen", "screen_ultrawide.jpg", strength=SCREEN_STRENGTH), plastic,
     )
     bw, bd = uw["base"]["width"], uw["base"]["depth"]
     back = gap - 2.0
@@ -163,7 +167,7 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         "vertical_screen",
         [at(-w / 2 + 0.6, 0.02, bottom + 0.6), at(w / 2 - 0.6, 0.02, bottom + 0.6),
          at(w / 2 - 0.6, 0.02, top - 0.6), at(-w / 2 + 0.6, 0.02, top - 0.6)],
-        materials.screen("vertical_screen", "screen_vertical.jpg"),
+        materials.screen("vertical_screen", "screen_vertical.jpg", strength=SCREEN_STRENGTH),
     )
     vesa = at(0, -3.5, (bottom + top) / 2)
     # Brazo: abrazadera sobre el tablero → poste → codo → placa VESA en la espalda del panel
