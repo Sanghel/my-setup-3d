@@ -1,9 +1,12 @@
 import { useLayoutEffect } from 'react'
+import type { ThreeEvent } from '@react-three/fiber'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { SRGBColorSpace, type Mesh, type MeshStandardMaterial, type Texture } from 'three'
 import lightmap from '../../public/models/lightmap.json'
 import { ITEMS } from '../data/items'
-import { bindCatalog } from './bindCatalog'
+import { useSceneStore } from '../state/sceneStore'
+import { bindCatalog, itemIdOf } from './bindCatalog'
+import { useCatalogRegistry } from './catalogRegistry'
 
 export const ROOM_URL = '/models/room.glb'
 export const LIGHTMAP_URL = '/models/lightmap.webp'
@@ -35,12 +38,22 @@ export function Room() {
   }, [scene, lightMap])
 
   // Une el catálogo con la escena: las piezas de cada objeto quedan marcadas con su itemId
+  const setRoots = useCatalogRegistry((s) => s.setRoots)
   useLayoutEffect(() => {
-    const { missing } = bindCatalog(scene, ITEMS)
+    const { roots, missing } = bindCatalog(scene, ITEMS)
+    setRoots(roots)
     if (missing.length) console.warn('[Room] objetos del catálogo sin nodo en room.glb:', missing)
-  }, [scene])
+  }, [scene, setRoots])
 
-  return <primitive object={scene} />
+  // Raycasting: R3F lanza un rayo desde la cámara por el puntero y entrega la malla más cercana.
+  // Con stopPropagation solo cuenta esa; si es una pared o el piso (sin itemId), no hay hover.
+  const onPointerMove = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation()
+    useSceneStore.getState().hover(itemIdOf(event.object) ?? null)
+  }
+  const onPointerOut = () => useSceneStore.getState().hover(null)
+
+  return <primitive object={scene} onPointerMove={onPointerMove} onPointerOut={onPointerOut} />
 }
 
 function configureLightMap(texture: Texture) {
