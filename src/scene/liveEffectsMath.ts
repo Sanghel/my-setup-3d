@@ -14,8 +14,11 @@ export function breath(seconds: number, reducedMotion: boolean, min = 0.6): numb
 /** Opacidad del halo animado: solo de noche (uAmbience → 1), multiplicada por la respiración. */
 export const ledGlowOpacity = (ambience: number, breathing: number, peak = 0.9) => peak * ambience * breathing
 
-/** Opacidad del polvo: solo de tarde (uAmbience → 0). */
-export const dustOpacity = (ambience: number, peak = 0.7) => peak * (1 - ambience)
+/**
+ * Opacidad del polvo: solo de tarde (uAmbience → 0) y solo en la vista general (`overview` → 1): al
+ * inspeccionar, la cámara queda muy cerca de las partículas y se verían como manchas grandes.
+ */
+export const dustOpacity = (ambience: number, overview = 1, peak = 0.7) => peak * (1 - ambience) * overview
 
 /** Volumen del haz de sol donde flota el polvo, en metros (coordenadas de la web: x, y arriba, z = d). */
 export interface DustBox {

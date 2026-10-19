@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, Box3, CanvasTexture, SRGBColorSpace, Vector3, type Mesh, type Points } from 'three'
+import { AdditiveBlending, Box3, CanvasTexture, MathUtils, SRGBColorSpace, Vector3, type Mesh, type Points } from 'three'
+import { useSceneStore } from '../state/sceneStore'
 import { useReducedMotion } from '../ui/useReducedMotion'
 import { ambienceUniforms } from './ambience'
 import { useCatalogRegistry } from './catalogRegistry'
@@ -85,11 +86,15 @@ function Dust() {
   const reducedMotion = useReducedMotion()
   const points = useRef<Points>(null)
   const positions = useMemo(() => seedDust(DUST_COUNT, SUN_BEAM), [])
+  const sprite = useMemo(() => radialTexture('rgba(255,255,255,1)'), []) // punto redondo y difuso
+  const overview = useRef(1) // 1 en la vista general, 0 al inspeccionar (animado)
 
   useFrame(({ clock }, delta) => {
     const object = points.current
     if (!object) return
-    const opacity = dustOpacity(ambienceUniforms.uAmbience.value)
+    const goal = useSceneStore.getState().mode === 'overview' ? 1 : 0
+    overview.current = MathUtils.damp(overview.current, goal, 5, delta)
+    const opacity = dustOpacity(ambienceUniforms.uAmbience.value, overview.current)
     ;(object.material as { opacity: number }).opacity = opacity
     object.visible = opacity > 0.01
     if (!object.visible || reducedMotion) return
@@ -102,7 +107,15 @@ function Dust() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#ffd9a8" size={0.008} transparent opacity={0} blending={AdditiveBlending} depthWrite={false} />
+      <pointsMaterial
+        color="#ffd9a8"
+        map={sprite}
+        size={0.012}
+        transparent
+        opacity={0}
+        blending={AdditiveBlending}
+        depthWrite={false}
+      />
     </points>
   )
 }
