@@ -118,12 +118,14 @@ const CATALOG: Item[] = [
     node: 'item_vertical_monitor',
     name: 'Monitor vertical',
     description:
-      'Monitor Gigabyte de 27 pulgadas en vertical, girado 30° hacia el centro y sostenido por un brazo de gas Huanuo. Ideal para código, logs y documentación.',
+      'Gigabyte GS27FA de 27 pulgadas en vertical, girado 30° hacia el centro y sostenido por un brazo de gas Huanuo. Ideal para código, logs y documentación.',
     details: [
-      { label: 'Modelo', value: 'Gigabyte 27"' },
+      { label: 'Modelo', value: 'Gigabyte GS27FA' },
+      { label: 'Panel', value: '27" IPS, Full HD, 180 Hz' },
       { label: 'Orientación', value: 'Vertical, girado 30°' },
       { label: 'Brazo', value: 'Huanuo, con abrazadera al tablero' },
     ],
+    buy: [{ product: 'Gigabyte GS27FA', store: 'Amazon', url: 'https://www.amazon.com/dp/B0DTYX5QP8' }],
     view: { azimuth: 25, polar: 74, azimuthRange: [-30, 60] },
   },
   {
