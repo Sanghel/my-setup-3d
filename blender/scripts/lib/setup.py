@@ -135,6 +135,7 @@ def build_ultrawide(m: dict, desk: DeskFrame):
         bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand), 0.3),
     ]
     group("item_ultrawide", parts, (xc, gap, desk.top))
+    return {"xc": xc, "back": back - 4, "bottom": bottom}
 
 
 def build_vertical_monitor(m: dict, desk: DeskFrame):
@@ -287,12 +288,32 @@ def build_poster(m: dict):
     u0, u1 = _span(m, spec)
     b0, b1 = spec["bottom"], spec["bottom"] + spec["height"]
     depth = spec["depth"]
+    standoff = 1.5  # separadores: el panel no toca la pared y la luz del LED sale por los bordes
     edge = materials.principled("poster_edge", "#1a1a1c", roughness=0.5)
-    (xa, da, _), (xb, db, _) = p(u0, 0, 0), p(u1, depth - 0.05, 0)
+    (xa, da, _), (xb, db, _) = p(u0, standoff, 0), p(u1, standoff + depth - 0.05, 0)
     parts = [
         bevel(box("poster_panel", (min(xa, xb), max(xa, xb), min(da, db), max(da, db), b0, b1), edge), 0.1),
         quad("poster_print",
-             [p(u0, depth, b0), p(u1, depth, b0), p(u1, depth, b1), p(u0, depth, b1)],
+             [p(u0, standoff + depth, b0), p(u1, standoff + depth, b0), p(u1, standoff + depth, b1), p(u0, standoff + depth, b1)],
              materials.photo("poster_print", "poster.jpg", roughness=0.25)),
     ]
     group("item_poster", parts, p((u0 + u1) / 2, 0, b0))
+    return {"u0": u0, "u1": u1, "b0": b0, "b1": b1, "depth": depth}
+
+
+def build_window_view(m: dict):
+    """La ciudad de noche detrás de la ventana: un plano emisivo con la foto (F13, desenfocada).
+    En un diorama la pared está cortada y la cámara mira desde arriba: un plano detrás de la pared
+    asomaría por el borde. Por eso va DENTRO del hueco, junto al borde exterior y del tamaño exacto
+    del hueco: la propia pared lo enmarca."""
+    win = m["window"]
+    p = _wall_point(m, "side")
+    outer = -(win["depth"] - 0.5)  # `out` negativo = hacia afuera; casi en la cara exterior de la pared
+    u0, u1 = win["distance"], win["distance"] + win["width"]
+    z0, z1 = win["sill"], win["sill"] + win["height"]
+    view = quad(
+        "window_view_screen",  # sufijo _screen: no recibe luz horneada (emite la suya)
+        [p(u0, outer, z0), p(u1, outer, z0), p(u1, outer, z1), p(u0, outer, z1)],
+        materials.screen("window_view", "window_night.jpg", strength=0.35),
+    )
+    group("room_window_view", [view], p((u0 + u1) / 2, outer, z0))

@@ -14,6 +14,7 @@ _POSE = json.loads((ROOT / "src" / "scene" / "overviewCamera.json").read_text(en
 WEB_CAMERA = tuple(_POSE["position"])
 WEB_TARGET = tuple(_POSE["target"])
 WEB_FOV_DEG = _POSE["fov"]  # vertical, como en <Canvas camera={{ fov }}>
+WEB_BACKGROUND = _POSE["background"]
 
 
 def web_to_blender(p: tuple[float, float, float]) -> Vector:
@@ -90,7 +91,6 @@ def render_preview(m: dict, focus: str | None = None, samples: int = 64) -> str:
     scene.cycles.samples = samples
     scene.cycles.use_denoising = True
     add_preview_camera(1280, 720, focus)
-    add_preview_lights(m)
     path = str(ROOT / out)
     scene.render.filepath = path
     bpy.ops.render.render(write_still=True)

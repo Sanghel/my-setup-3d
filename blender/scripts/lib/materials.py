@@ -104,3 +104,14 @@ def screen(name: str, filename: str, strength: float = 1.6) -> bpy.types.Materia
     mat.node_tree.links.new(image.outputs["Color"], bsdf.inputs["Emission Color"])
     bsdf.inputs["Emission Strength"].default_value = strength
     return mat
+
+
+def emission(name: str, color: str, strength: float) -> bpy.types.Material:
+    """Superficie que emite luz (tiras LED). En Cycles, una malla emisiva ilumina la escena como una luz real."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    bsdf.inputs["Base Color"].default_value = (0.0, 0.0, 0.0, 1.0)
+    bsdf.inputs["Emission Color"].default_value = hex_color(color)
+    bsdf.inputs["Emission Strength"].default_value = strength
+    return mat
