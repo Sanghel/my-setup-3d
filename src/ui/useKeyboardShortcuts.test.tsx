@@ -40,7 +40,7 @@ describe('atajos de teclado', () => {
   it('→ y ← recorren el catálogo en inspección', async () => {
     act(() => state().select('keyboard'))
     await userEvent.keyboard('{ArrowRight}')
-    expect(state().selectedId).toBe('jersey-2008')
+    expect(state().selectedId).toBe('chair')
     await userEvent.keyboard('{ArrowLeft}{ArrowLeft}')
     expect(state().selectedId).toBe('vertical-monitor')
   })

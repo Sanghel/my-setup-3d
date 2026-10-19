@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { groupedItems, ITEMS, itemById, itemCategory, itemNumber, itemTotal } from './items'
 
 describe('catálogo de objetos', () => {
-  it('tiene los 7 objetos del primer lote', () => {
-    expect(ITEMS).toHaveLength(7)
+  it('tiene los 10 objetos del mock', () => {
+    expect(ITEMS).toHaveLength(10)
   })
 
   it('los ids y los nodos son únicos', () => {
@@ -28,22 +28,23 @@ describe('catálogo de objetos', () => {
 })
 
 describe('numeración y grupos (índice del mock)', () => {
-  it('numera del 01 al 07 en el orden del catálogo, con total "07"', () => {
-    expect(ITEMS.map((item) => itemNumber(item.id))).toEqual(['01', '02', '03', '04', '05', '06', '07'])
+  it('numera del 01 al 10 en el orden del catálogo, con total "10"', () => {
+    expect(ITEMS.map((item) => itemNumber(item.id))).toEqual(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'])
     expect(itemNumber('no-existe')).toBe('')
-    expect(itemTotal()).toBe('07')
+    expect(itemTotal()).toBe('10')
   })
 
-  it('agrupa SETUP (01–04) y COLECCIÓN (05–07); DETALLES no aparece porque no tiene objetos', () => {
+  it('agrupa como el mock: SETUP (01–05), COLECCIÓN (06–08) y DETALLES (09–10)', () => {
     const groups = groupedItems()
-    expect(groups.map((g) => g.title)).toEqual(['SETUP', 'COLECCIÓN'])
-    expect(groups[0].items.map((i) => i.id)).toEqual(['desk', 'ultrawide', 'vertical-monitor', 'keyboard'])
+    expect(groups.map((g) => g.title)).toEqual(['SETUP', 'COLECCIÓN', 'DETALLES'])
+    expect(groups[0].items.map((i) => i.id)).toEqual(['desk', 'ultrawide', 'vertical-monitor', 'keyboard', 'chair'])
     expect(groups[1].items.map((i) => i.id)).toEqual(['jersey-2008', 'jersey-scholes', 'poster'])
+    expect(groups[2].items.map((i) => i.id)).toEqual(['pegboard', 'funko'])
   })
 
-  it('un grupo vuelve a aparecer en cuanto tiene un objeto (preparado para 10)', () => {
-    const funko = { ...ITEMS[0], id: 'funko', node: 'item_funko', group: 'detalles' as const }
-    expect(groupedItems([...ITEMS, funko]).map((g) => g.title)).toEqual(['SETUP', 'COLECCIÓN', 'DETALLES'])
+  it('un grupo sin objetos no aparece', () => {
+    const sinDetalles = ITEMS.filter((item) => item.group !== 'detalles')
+    expect(groupedItems(sinDetalles).map((g) => g.title)).toEqual(['SETUP', 'COLECCIÓN'])
   })
 
   it('la categoría combina grupo y número', () => {

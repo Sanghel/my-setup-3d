@@ -65,8 +65,8 @@ describe('anterior / siguiente', () => {
     expect(transitions.step(state(), 1, ids)).toEqual({})
   })
 
-  it('por defecto usa el orden del catálogo: del último (poster) pasa al primero (desk)', () => {
-    expect(transitions.step(state({ mode: 'inspecting', selectedId: 'poster' }), 1)).toEqual({ selectedId: 'desk' })
+  it('por defecto usa el orden del catálogo: del último (Funko) pasa al primero (escritorio)', () => {
+    expect(transitions.step(state({ mode: 'inspecting', selectedId: 'funko' }), 1)).toEqual({ selectedId: 'desk' })
   })
 })
 

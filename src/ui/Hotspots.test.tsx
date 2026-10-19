@@ -11,7 +11,7 @@ describe('Hotspots', () => {
   it('un punto por objeto, anunciado con el nombre (no solo el número)', () => {
     render(<Hotspots />)
     for (const item of ITEMS) expect(screen.getByRole('button', { name: item.name })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Camiseta final de Moscú 2008' })).toHaveTextContent('05')
+    expect(screen.getByRole('button', { name: 'Camiseta final de Moscú 2008' })).toHaveTextContent('06')
   })
 
   it('click en un punto inspecciona su objeto', async () => {
@@ -22,9 +22,9 @@ describe('Hotspots', () => {
 
   it('al pasar el puntero se destaca y muestra el nombre; el hover del objeto en la escena también', async () => {
     render(<Hotspots />)
-    await userEvent.hover(screen.getByRole('button', { name: 'Teclado' }))
+    await userEvent.hover(screen.getByRole('button', { name: 'Teclado y mouse' }))
     expect(useSceneStore.getState().hoveredId).toBe('keyboard')
-    expect(screen.getByText('Teclado', { selector: '.hotspot__label' })).toBeInTheDocument()
+    expect(screen.getByText('Teclado y mouse', { selector: '.hotspot__label' })).toBeInTheDocument()
     act(() => useSceneStore.getState().hover('poster'))
     expect(screen.getByText('Old Trafford', { selector: '.hotspot__label' })).toBeInTheDocument()
   })
@@ -32,9 +32,9 @@ describe('Hotspots', () => {
   it('se ocultan con "ocultar puntos" y en inspección (y salen del orden de tabulación)', () => {
     render(<Hotspots />)
     act(() => useSceneStore.getState().toggleHotspots())
-    expect(screen.queryByRole('button', { name: 'Teclado' })).not.toBeInTheDocument() // aria-hidden
+    expect(screen.queryByRole('button', { name: 'Teclado y mouse' })).not.toBeInTheDocument() // aria-hidden
     act(() => useSceneStore.getState().toggleHotspots())
     act(() => useSceneStore.getState().select('desk'))
-    expect(screen.queryByRole('button', { name: 'Teclado' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Teclado y mouse' })).not.toBeInTheDocument()
   })
 })

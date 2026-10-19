@@ -7,7 +7,7 @@ import { Index } from './Index'
 describe('Index', () => {
   beforeEach(() => useSceneStore.setState(initialState))
 
-  it('agrupa en SETUP y COLECCIÓN, numerados 01–07 como los puntos', () => {
+  it('agrupa en SETUP, COLECCIÓN y DETALLES, numerados 01–10 como los puntos', () => {
     render(<Index />)
     const setup = screen.getByRole('region', { name: 'SETUP' })
     const coleccion = screen.getByRole('region', { name: 'COLECCIÓN' })
@@ -16,13 +16,15 @@ describe('Index', () => {
       '02Ultrawide',
       '03Vertical',
       '04Teclado',
+      '05Silla',
     ])
     expect(within(coleccion).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      '05Moscú 2008',
-      '06Scholes 18',
-      '07Old Trafford',
+      '06Moscú 2008',
+      '07Scholes 18',
+      '08Old Trafford',
     ])
-    expect(screen.queryByRole('region', { name: 'DETALLES' })).not.toBeInTheDocument()
+    const detalles = screen.getByRole('region', { name: 'DETALLES' })
+    expect(within(detalles).getAllByRole('button').map((b) => b.textContent)).toEqual(['09Organizador', '10Funko Madara'])
   })
 
   it('solo con teclado: Tab hasta "Escritorio" y Enter lo inspecciona', async () => {
