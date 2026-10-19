@@ -51,6 +51,44 @@ describe('DetailsDrawer', () => {
     expect(images[0]).toHaveClass('drawer__photo--main')
   })
 
+  it('las fotos se cargan solo al abrir el panel (loading="lazy")', () => {
+    render(<DetailsDrawer />)
+    select('ultrawide')
+    for (const img of within(panel()).getAllByRole('img')) expect(img).toHaveAttribute('loading', 'lazy')
+  })
+
+  it('teclado: fotos oficiales del MX Mechanical Mini y del MX Master 3S, con crédito "Fotos: Logitech"', () => {
+    render(<DetailsDrawer />)
+    select('keyboard')
+    const alts = within(panel()).getAllByRole('img').map((img) => img.getAttribute('alt'))
+    expect(alts.some((alt) => alt?.includes('MX Mechanical Mini'))).toBe(true)
+    expect(alts.some((alt) => alt?.includes('MX Master 3S'))).toBe(true)
+    const credit = panel().querySelector('.drawer__credit')!
+    expect(credit.textContent).toMatch(/^Fotos: Logitech/)
+    expect(within(credit as HTMLElement).getAllByRole('link')).toHaveLength(1)
+  })
+
+  it('organizador: el crédito nombra a JBL y a PlayStation, cada uno con enlace en pestaña nueva', () => {
+    render(<DetailsDrawer />)
+    select('pegboard')
+    const links = within(panel().querySelector('.drawer__credit') as HTMLElement).getAllByRole('link')
+    expect(links.map((link) => link.textContent)).toEqual([
+      'JBL (se abre en una pestaña nueva)',
+      'PlayStation (se abre en una pestaña nueva)',
+    ])
+    for (const link of links) {
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
+  })
+
+  it('objeto personalizado (Scholes 18): sin galería ni crédito', () => {
+    render(<DetailsDrawer />)
+    select('jersey-scholes')
+    expect(within(panel()).queryByRole('img')).not.toBeInTheDocument()
+    expect(panel().querySelector('.drawer__credit')).toBeNull()
+  })
+
   it('Siguiente pasa al objeto 05 (la silla) y el contador se actualiza; desde el último vuelve al primero', async () => {
     render(<DetailsDrawer />)
     select('keyboard')

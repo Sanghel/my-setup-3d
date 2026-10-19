@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import productPhotos from '../../src/data/productPhotos.json'
+import productPhotos from '../../src/data/productPhotos.json' with { type: 'json' }
 
 const photos = Object.values(productPhotos).flat()
 
