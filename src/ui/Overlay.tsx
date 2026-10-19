@@ -1,8 +1,8 @@
-import { ITEMS } from '../data/items'
-import { AmbienceToggle } from './AmbienceToggle'
-import { BackButton } from './BackButton'
-import { DetailsPanel } from './DetailsPanel'
-import { ItemList } from './ItemList'
+import { BottomBar } from './BottomBar'
+import { Brand, Hint } from './Brand'
+import { Hotspots } from './Hotspots'
+import { DetailsDrawer } from './DetailsDrawer'
+import { Index } from './Index'
 import { Loader } from './Loader'
 import { TiltShift } from './TiltShift'
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
@@ -17,13 +17,12 @@ export function Overlay() {
   return (
     <div className="overlay">
       <TiltShift />
-      <ItemList items={ITEMS} defaultOpen={!isNarrow()} closeOnSelect={isNarrow()} />
-      <DetailsPanel items={ITEMS}>
-        <BackButton />
-      </DetailsPanel>
-      <div className="bottom-bar">
-        <AmbienceToggle />
-      </div>
+      <Hotspots />
+      <Brand />
+      <Index collapsible={isNarrow()} defaultOpen={!isNarrow()} />
+      <DetailsDrawer />
+      <BottomBar />
+      <Hint />
       <Loader />
     </div>
   )

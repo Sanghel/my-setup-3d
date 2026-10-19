@@ -39,5 +39,5 @@ export function DevStatsProbe() {
     }
     gl.info.reset()
   }, 0)
-  return <Stats />
+  return <Stats className="dev-fps" />
 }

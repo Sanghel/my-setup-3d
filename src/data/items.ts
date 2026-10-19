@@ -66,6 +66,8 @@ export const ITEMS: Item[] = [
       { label: 'Luz', value: 'Tira LED blanca en los 4 lados, bajo el tablero' },
     ],
     view: { azimuth: -35, polar: 58, azimuthRange: [-75, 15] },
+    // El centro del tablero cae sobre el teclado: el punto va a la esquina delantera izquierda (como el mock)
+    anchorOffset: [-0.5, 0, 0.25],
   },
   {
     id: 'ultrawide',
