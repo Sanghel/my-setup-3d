@@ -2,6 +2,8 @@ import { useLayoutEffect } from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { SRGBColorSpace, type Mesh, type MeshStandardMaterial, type Texture } from 'three'
 import lightmap from '../../public/models/lightmap.json'
+import { ITEMS } from '../data/items'
+import { bindCatalog } from './bindCatalog'
 
 export const ROOM_URL = '/models/room.glb'
 export const LIGHTMAP_URL = '/models/lightmap.webp'
@@ -31,6 +33,12 @@ export function Room() {
       material.needsUpdate = true
     })
   }, [scene, lightMap])
+
+  // Une el catálogo con la escena: las piezas de cada objeto quedan marcadas con su itemId
+  useLayoutEffect(() => {
+    const { missing } = bindCatalog(scene, ITEMS)
+    if (missing.length) console.warn('[Room] objetos del catálogo sin nodo en room.glb:', missing)
+  }, [scene])
 
   return <primitive object={scene} />
 }
