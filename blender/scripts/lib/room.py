@@ -21,7 +21,8 @@ def build_room(m: dict) -> None:
     W, D, H = room["width"], room["depth"], room["height"]
     side_t = win["depth"]
 
-    floor_mat = materials.pbr("floor_laminate", "floor_diff.jpg", "floor_nor.jpg", "floor_rough.jpg")
+    # Normal reforzada: las juntas de las tablas se marcan como en el mock
+    floor_mat = materials.pbr("floor_laminate", "floor_diff.jpg", "floor_nor.jpg", "floor_rough.jpg", normal_strength=2.0)
     wall_mat = materials.pbr("wall_paint", "wall_diff.jpg", "wall_nor.jpg", "wall_rough.jpg", normal_strength=0.6)
     baseboard_mat = materials.pbr("baseboard_wood", "baseboard_diff.jpg", "floor_nor.jpg", roughness_value=0.55)
 
@@ -85,7 +86,9 @@ def build_plinth(width: float, depth: float) -> None:
 def build_window(m: dict, x0: float, x1: float, d0: float, d1: float, u0: float, u1: float) -> None:
     """Ventana corrediza de dos hojas: marco perimetral, parteluz central y dos vidrios."""
     f = m["window"]["frame"]
-    frame_mat = materials.principled("window_aluminium", "#cfd0cc", roughness=0.35, metallic=0.7)
+    # Como el mock: marco y parteluz grafito, alféizar de aluminio claro
+    frame_mat = materials.principled("window_frame_dark", "#2a2a2c", roughness=0.4, metallic=0.5)
+    sill_mat = materials.principled("window_aluminium", "#cfcac2", roughness=0.4, metallic=0.5)
     # El marco ocupa una franja centrada en el grosor de la pared
     mid = (x0 + x1) / 2
     fx0, fx1 = mid - 3, mid + 3
@@ -93,7 +96,6 @@ def build_window(m: dict, x0: float, x1: float, d0: float, d1: float, u0: float,
     boxes(
         "room_window_frame",
         [
-            (fx0, fx1, d0, d1, u0, u0 + f),  # inferior
             (fx0, fx1, d0, d1, u1 - f, u1),  # superior
             (fx0, fx1, d0, d0 + f, u0, u1),  # lado cercano a la esquina
             (fx0, fx1, d1 - f, d1, u0, u1),  # lado lejano
@@ -101,6 +103,8 @@ def build_window(m: dict, x0: float, x1: float, d0: float, d1: float, u0: float,
         ],
         frame_mat,
     )
+    # Alféizar claro: un poco más ancho y profundo que el marco, como el del mock
+    box("room_window_sill", (fx0 - 3, fx1 + 1, d0, d1, u0, u0 + f + 1.5), sill_mat)
     # Dos hojas de vidrio en rieles distintos (una un poco más adentro), como una corrediza real
     glass_mat = materials.glass("window_glass")
     boxes(
