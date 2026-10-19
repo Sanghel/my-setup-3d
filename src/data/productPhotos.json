@@ -1,0 +1,132 @@
+{
+  "ultrawide": [
+    {
+      "src": "/products/ultrawide/1.webp",
+      "alt": "Monitor curvo Xiaomi G34WQi de frente",
+      "credit": {
+        "label": "Xiaomi",
+        "url": "https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/"
+      }
+    },
+    {
+      "src": "/products/ultrawide/2.webp",
+      "alt": "Xiaomi G34WQi en tres cuartos, con su pie",
+      "credit": {
+        "label": "Xiaomi",
+        "url": "https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/"
+      }
+    }
+  ],
+  "keyboard": [
+    {
+      "src": "/products/keyboard/1.webp",
+      "alt": "Teclado Logitech MX Mechanical Mini grafito en tres cuartos",
+      "credit": {
+        "label": "Logitech",
+        "url": "https://www.logitech.com/en-ch/products/keyboards/mx-mechanical-mini.920-010779.html"
+      }
+    },
+    {
+      "src": "/products/keyboard/2.webp",
+      "alt": "MX Mechanical Mini visto desde arriba",
+      "credit": {
+        "label": "Logitech",
+        "url": "https://www.logitech.com/en-ch/products/keyboards/mx-mechanical-mini.920-010779.html"
+      }
+    },
+    {
+      "src": "/products/keyboard/3.webp",
+      "alt": "Mouse Logitech MX Master 3S grafito",
+      "credit": {
+        "label": "Logitech",
+        "url": "https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006557.html"
+      }
+    },
+    {
+      "src": "/products/keyboard/4.webp",
+      "alt": "MX Master 3S visto desde arriba",
+      "credit": {
+        "label": "Logitech",
+        "url": "https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006557.html"
+      }
+    }
+  ],
+  "chair": [
+    {
+      "src": "/products/chair/1.webp",
+      "alt": "Silla ergonómica Signature de malla negra con cabecero (modelo de referencia)",
+      "credit": {
+        "label": "Mublex",
+        "url": "https://www.mublex.com/sillas/sillas-de-escritorio-y-oficina/sillas-ergonomicas/sillas-con-ergonomia-avanzada/silla-ergonomica-signature-con-soporte-lumbar-ajustable"
+      }
+    },
+    {
+      "src": "/products/chair/2.webp",
+      "alt": "Silla Signature frente a un escritorio",
+      "credit": {
+        "label": "Mublex",
+        "url": "https://www.mublex.com/sillas/sillas-de-escritorio-y-oficina/sillas-ergonomicas/sillas-con-ergonomia-avanzada/silla-ergonomica-signature-con-soporte-lumbar-ajustable"
+      }
+    },
+    {
+      "src": "/products/chair/3.webp",
+      "alt": "Silla Signature de perfil",
+      "credit": {
+        "label": "Mublex",
+        "url": "https://www.mublex.com/sillas/sillas-de-escritorio-y-oficina/sillas-ergonomicas/sillas-con-ergonomia-avanzada/silla-ergonomica-signature-con-soporte-lumbar-ajustable"
+      }
+    }
+  ],
+  "pegboard": [
+    {
+      "src": "/products/pegboard/1.webp",
+      "alt": "Parlante JBL Clip 4 naranja",
+      "credit": {
+        "label": "JBL",
+        "url": "https://global.jbl.com/all-portable-speakers/CLIP+4-.html"
+      }
+    },
+    {
+      "src": "/products/pegboard/2.webp",
+      "alt": "Control DualSense Cosmic Red de frente",
+      "credit": {
+        "label": "PlayStation",
+        "url": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/cosmic-red/"
+      }
+    },
+    {
+      "src": "/products/pegboard/3.webp",
+      "alt": "DualSense Cosmic Red en tres cuartos",
+      "credit": {
+        "label": "PlayStation",
+        "url": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/cosmic-red/"
+      }
+    }
+  ],
+  "funko": [
+    {
+      "src": "/products/funko/1.webp",
+      "alt": "Funko Pop! Madara Uchiha (Six Paths) Glow",
+      "credit": {
+        "label": "Funko",
+        "url": "https://funko.com/pop-madara-uchiha-six-paths-glow/60333.html"
+      }
+    },
+    {
+      "src": "/products/funko/2.webp",
+      "alt": "Caja del Funko Pop! #1196 Madara Uchiha, exclusivo GameStop",
+      "credit": {
+        "label": "Funko",
+        "url": "https://funko.com/pop-madara-uchiha-six-paths-glow/60333.html"
+      }
+    },
+    {
+      "src": "/products/funko/3.webp",
+      "alt": "La figura brillando en la oscuridad",
+      "credit": {
+        "label": "Funko",
+        "url": "https://funko.com/pop-madara-uchiha-six-paths-glow/60333.html"
+      }
+    }
+  ]
+}

@@ -51,7 +51,9 @@ describe('numeración y grupos (índice del mock)', () => {
     expect(itemCategory(itemById('vertical-monitor')!)).toBe('SETUP · 03')
   })
 
-  it('ningún objeto publica fotos todavía', () => {
-    expect(ITEMS.every((item) => !item.photos || item.photos.length === 0)).toBe(true)
+  it('los productos llevan fotos oficiales con crédito; los personalizados y el vertical (modelo pendiente), ninguna', () => {
+    const withPhotos = ITEMS.filter((item) => item.photos?.length).map((item) => item.id)
+    expect(withPhotos).toEqual(['ultrawide', 'keyboard', 'chair', 'pegboard', 'funko'])
+    for (const item of ITEMS) for (const photo of item.photos ?? []) expect(photo.credit?.url).toMatch(/^https:\/\//)
   })
 })

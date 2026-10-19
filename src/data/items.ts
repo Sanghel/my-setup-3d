@@ -1,3 +1,5 @@
+import productPhotos from './productPhotos.json' with { type: 'json' }
+
 /**
  * Catálogo de objetos seleccionables: QUÉ es cada cosa y qué se cuenta de ella.
  * `node` es el nombre del nodo en public/models/room.glb (blender/scripts/lib/setup.py).
@@ -29,10 +31,18 @@ export const GROUPS = [
 
 export type GroupId = (typeof GROUPS)[number]['id']
 
-/** Foto real del objeto para la galería del panel. Nunca fotos con pantallas de trabajo. */
+/** De dónde viene una foto: se muestra como "Fotos: <label>" con enlace a `url`. */
+export interface PhotoCredit {
+  label: string
+  url: string
+}
+
+/** Foto del objeto para la galería del panel. Nunca fotos con pantallas de trabajo. */
 export interface ItemPhoto {
   src: string
   alt: string
+  /** Fuente de la foto (las oficiales del fabricante siempre la llevan). */
+  credit?: PhotoCredit
 }
 
 export interface Item {
@@ -47,11 +57,14 @@ export interface Item {
   view: ItemView
   /** Ajuste (metros) del punto de interés respecto al centro superior de la caja del objeto. */
   anchorOffset?: [number, number, number]
-  /** Galería del panel. Vacía por ahora: el usuario agregará sus fotos más adelante. */
+  /**
+   * Galería del panel. Los productos comerciales toman las fotos oficiales de productPhotos.json
+   * (npm run products:photos); los personalizados quedan sin fotos hasta que el usuario tome las suyas.
+   */
   photos?: ItemPhoto[]
 }
 
-export const ITEMS: Item[] = [
+const CATALOG: Item[] = [
   {
     id: 'desk',
     group: 'setup',
@@ -91,9 +104,9 @@ export const ITEMS: Item[] = [
     node: 'item_vertical_monitor',
     name: 'Monitor vertical',
     description:
-      'Monitor Gigabyte de 25 pulgadas en vertical, girado 30° hacia el centro y sostenido por un brazo de gas Huanuo. Ideal para código, logs y documentación.',
+      'Monitor Gigabyte de 27 pulgadas en vertical, girado 30° hacia el centro y sostenido por un brazo de gas Huanuo. Ideal para código, logs y documentación.',
     details: [
-      { label: 'Modelo', value: 'Gigabyte 25"' },
+      { label: 'Modelo', value: 'Gigabyte 27"' },
       { label: 'Orientación', value: 'Vertical, girado 30°' },
       { label: 'Brazo', value: 'Huanuo, con abrazadera al tablero' },
     ],
@@ -200,6 +213,12 @@ export const ITEMS: Item[] = [
     view: { azimuth: -20, polar: 72, azimuthRange: [-70, 30] },
   },
 ]
+
+/** El catálogo con las fotos oficiales de cada producto (match-mock-content D6). */
+export const ITEMS: Item[] = CATALOG.map((item) => {
+  const photos = (productPhotos as Record<string, ItemPhoto[]>)[item.id]
+  return photos ? { ...item, photos } : item
+})
 
 export const itemById = (id: string) => ITEMS.find((item) => item.id === id)
 

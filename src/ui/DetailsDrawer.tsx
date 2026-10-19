@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ITEMS, itemCategory, itemNumber, itemTotal, type Item } from '../data/items'
+import { ITEMS, itemCategory, itemNumber, itemTotal, type Item, type ItemPhoto, type PhotoCredit } from '../data/items'
 import { useSceneStore } from '../state/sceneStore'
 import { BackButton } from './BackButton'
 
@@ -45,11 +45,15 @@ export function DetailsDrawer({ items = ITEMS }: { items?: readonly Item[] }) {
                   key={photo.src}
                   src={photo.src}
                   alt={photo.alt}
+                  // Solo se descargan al abrir el panel de este objeto: no suman a la carga inicial
+                  loading="lazy"
+                  decoding="async"
                   className={index === 0 ? 'drawer__photo drawer__photo--main' : 'drawer__photo'}
                 />
               ))}
             </div>
           )}
+          {item.photos && <PhotoCredits photos={item.photos} />}
           <p className="drawer__category">{itemCategory(item, items)}</p>
           <h2 id="drawer-title" className="drawer__title">
             {item.name}
@@ -76,5 +80,26 @@ export function DetailsDrawer({ items = ITEMS }: { items?: readonly Item[] }) {
         </button>
       </nav>
     </aside>
+  )
+}
+
+/** "Fotos: JBL · PlayStation": una vez cada fuente (por nombre), con enlace a su página. */
+function PhotoCredits({ photos }: { photos: ItemPhoto[] }) {
+  const credits = new Map<string, PhotoCredit>()
+  for (const { credit } of photos) if (credit && !credits.has(credit.label)) credits.set(credit.label, credit)
+  if (credits.size === 0) return null
+  return (
+    <p className="drawer__credit">
+      Fotos:{' '}
+      {[...credits.values()].map((credit, index) => (
+        <span key={credit.label}>
+          {index > 0 && ' · '}
+          <a href={credit.url} target="_blank" rel="noopener noreferrer">
+            {credit.label}
+            <span className="visually-hidden"> (se abre en una pestaña nueva)</span>
+          </a>
+        </span>
+      ))}
+    </p>
   )
 }
