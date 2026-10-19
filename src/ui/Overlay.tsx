@@ -1,10 +1,8 @@
-import { ITEMS } from '../data/items'
 import { AmbienceToggle } from './AmbienceToggle'
-import { BackButton } from './BackButton'
 import { Brand, Hint } from './Brand'
 import { Hotspots } from './Hotspots'
 import { Index } from './Index'
-import { DetailsPanel } from './DetailsPanel'
+import { DetailsDrawer } from './DetailsDrawer'
 import { Loader } from './Loader'
 import { TiltShift } from './TiltShift'
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
@@ -22,9 +20,7 @@ export function Overlay() {
       <Hotspots />
       <Brand />
       <Index collapsible={isNarrow()} defaultOpen={!isNarrow()} />
-      <DetailsPanel items={ITEMS}>
-        <BackButton />
-      </DetailsPanel>
+      <DetailsDrawer />
       <div className="bottom-bar">
         <AmbienceToggle />
       </div>
