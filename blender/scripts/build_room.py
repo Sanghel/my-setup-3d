@@ -45,8 +45,11 @@ def main() -> None:
     build_window_view(m)
     build_night_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
 
-    targets = [obj for obj in bpy.data.objects if is_bake_target(obj)]
+    targets = [obj for obj in bpy.data.objects if is_bake_target(obj) and not obj.get("cutter")]
     apply_modifiers(targets)
+    # Los cortadores de los booleanos (hueco de la ventana) ya cumplieron: no se hornean ni se exportan
+    for cutter in [obj for obj in bpy.data.objects if obj.get("cutter")]:
+        bpy.data.objects.remove(cutter)
     add_light_uvs(targets)
 
     if args.bake:
