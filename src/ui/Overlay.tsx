@@ -1,4 +1,5 @@
 import { ITEMS } from '../data/items'
+import { AmbienceToggle } from './AmbienceToggle'
 import { BackButton } from './BackButton'
 import { DetailsPanel } from './DetailsPanel'
 import { ItemList } from './ItemList'
@@ -18,6 +19,9 @@ export function Overlay() {
       <DetailsPanel items={ITEMS}>
         <BackButton />
       </DetailsPanel>
+      <div className="bottom-bar">
+        <AmbienceToggle />
+      </div>
       <Loader />
     </div>
   )

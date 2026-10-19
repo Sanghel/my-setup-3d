@@ -299,3 +299,54 @@
   background: radial-gradient(ellipse 80% 70% at 55% 45%, #2a1c22, #0c0a0e 75%);
   transition: opacity 1s ease;
 }
+
+/* Barra inferior (selector de ambiente; "Vista general" llega en el grupo 8) */
+.bottom-bar {
+  position: absolute;
+  left: var(--ui-gap);
+  bottom: var(--ui-gap);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.segmented {
+  pointer-events: auto;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(26 20 16 / 0.78);
+  border: 1px solid rgb(255 235 215 / 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.segmented button {
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9b7a7;
+  font: 600 13px/1 system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+
+.segmented button[aria-pressed='true'] {
+  background: rgb(255 190 140 / 0.2);
+  color: #fff;
+}
+
+.segmented button:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+/* Mientras exista la lista del grupo 11, va sobre la barra inferior (el índice del mock la reemplaza).
+   Solo en pantallas anchas: en móvil la lista está arriba. */
+@media (min-width: 641px) {
+  .item-list {
+    bottom: calc(var(--ui-gap) + 56px);
+  }
+}
