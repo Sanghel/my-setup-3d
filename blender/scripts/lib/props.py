@@ -90,3 +90,48 @@ def build_chair(m: dict) -> None:
         parts.append(rbox(f"chair_arm_pad_{side}", (ax, cd + 3, arm["padHeight"]), (7, arm["padLength"], 2.5), frame, 1))
     chair = group("item_chair", parts, (cx, cd, 0))
     chair.rotation_euler = (0, 0, math.radians(c["yawDeg"]))
+
+
+def build_pegboard(m: dict) -> None:
+    """Organizador de pared (pegboard) en la pared de la ventana, con los accesorios del mock.
+    Posiciones locales del mock (cm): `lx` a lo largo de la pared, `ly` hacia arriba, `lz` hacia el cuarto."""
+    from .geometry import quad
+    from .setup import _wall_point
+
+    pb = m["pegboard"]
+    W = m["room"]["width"]
+    p = _wall_point(m, pb["wall"])
+    cu, cup, w, h, t = pb["centerU"], pb["centerUp"], pb["width"], pb["height"], pb["thickness"]
+
+    def at(lx, ly, lz):  # local del mock → cuarto
+        return p(cu + lx, lz, cup + ly)
+
+    def item_box(name, local, size, mat, radius=0.6):
+        """Caja en la pared: `size` = (a lo largo, alto, hacia el cuarto)."""
+        x, d, up = at(*local)
+        return rbox(name, (x, d, up), (size[2], size[0], size[1]), mat, radius)
+
+    board_mat = materials.principled("pegboard_board", "#1b1b1d", roughness=0.6)
+    black = materials.principled("pegboard_black", "#151517", roughness=0.5)
+    parts = [
+        box("pegboard_board", (W - t, W, cu - w / 2, cu + w / 2, cup - h / 2, cup + h / 2), board_mat),
+        # Frente con la textura de perforaciones (generada por código, como en el mock)
+        quad("pegboard_holes", [at(-w / 2, -h / 2, t + 0.01), at(w / 2, -h / 2, t + 0.01),
+                                at(w / 2, h / 2, t + 0.01), at(-w / 2, h / 2, t + 0.01)],
+             materials.photo("pegboard_holes", "pegboard.jpg", roughness=0.6)),
+        item_box("pegboard_cup_top", (-7, 24, 3.6), (8, 7, 6), black),
+        item_box("pegboard_card", (-7, 29, 3), (5, 6, 0.2), materials.principled("pegboard_card", "#cfe1ea", roughness=0.8), 0.05),
+        cylinder("pegboard_jbl", at(8, 16, 3), 4.5, 3.5, materials.principled("jbl_orange", "#c7682f", roughness=0.6), axis="x"),
+        item_box("pegboard_shelf_top", (-3, -2, 3.6), (17, 1, 7), black, 0.3),
+        item_box("pegboard_ps5", (-3, 0.6, 4), (14, 4, 6), materials.principled("ps5_red", "#b3172a", roughness=0.4), 1.5),
+        item_box("pegboard_ps5_center", (-3, 1.2, 5), (6, 3, 4.5), materials.principled("ps5_black", "#111111", roughness=0.4), 1.0),
+        sphere("pegboard_keychain", at(10, -6, 2), 1.5, materials.principled("keychain_white", "#f2eee6", roughness=0.5)),
+        cylinder("pegboard_keychain_strap", at(11, -13, 2), 0.2, 8, materials.principled("keychain_strap", "#d04a2a", roughness=0.5)),
+        item_box("pegboard_shelf_bottom", (3, -26, 3.8), (17, 1, 7.5), black, 0.3),
+        # Mini balón del United: blanco con una franja roja
+        sphere("pegboard_ball", at(-1, -22.8, 4.5), 2.6, materials.principled("ball_white", "#f4f0ea", roughness=0.45)),
+        cylinder("pegboard_ball_band", at(-1, -22.8, 4.5), 2.65, 1.6, materials.principled("ball_red", "#c8102e", roughness=0.45)),
+        cylinder("pegboard_cactus", at(5.5, -23, 4.5), 1.3, 5, materials.principled("cactus_green", "#6cbf4a", roughness=0.6), top_radius=1.5),
+        item_box("pegboard_cup_bottom", (-13, -29, 3.6), (6, 8, 6), black),
+    ]
+    group("item_pegboard", parts, at(0, -h / 2, 0))
