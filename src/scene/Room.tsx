@@ -16,6 +16,9 @@ export const LIGHTMAP_URL = '/models/lightmap.webp'
 const USE_DRACO = false
 const USE_MESHOPT = true
 
+/** Desplazamiento máximo (px) entre presionar y soltar para que cuente como click y no como arrastre. */
+const DRAG_THRESHOLD_PX = 6
+
 /**
  * El cuarto exportado desde Blender con su luz horneada (design D5).
  * lightMapIntensity = el factor con el que se escaló el lightmap al guardarlo en 8 bits.
@@ -53,7 +56,20 @@ export function Room() {
   }
   const onPointerOut = () => useSceneStore.getState().hover(null)
 
-  return <primitive object={scene} onPointerMove={onPointerMove} onPointerOut={onPointerOut} />
+  // Click/tap: R3F mide en `delta` los píxeles recorridos entre presionar y soltar. Si se arrastró
+  // (para orbitar la cámara) no es una selección, aunque se suelte sobre un objeto.
+  const onClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
+    if (event.delta > DRAG_THRESHOLD_PX) return
+    const id = itemIdOf(event.object)
+    const { mode, select } = useSceneStore.getState()
+    // En inspección los demás objetos no reaccionan; para cambiar de objeto está la lista (grupo 11)
+    if (id && mode === 'overview') select(id)
+  }
+
+  return (
+    <primitive object={scene} onPointerMove={onPointerMove} onPointerOut={onPointerOut} onClick={onClick} />
+  )
 }
 
 function configureLightMap(texture: Texture) {
