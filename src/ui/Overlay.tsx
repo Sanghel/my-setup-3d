@@ -2,6 +2,7 @@ import { ITEMS } from '../data/items'
 import { AmbienceToggle } from './AmbienceToggle'
 import { BackButton } from './BackButton'
 import { Brand, Hint } from './Brand'
+import { Hotspots } from './Hotspots'
 import { DetailsPanel } from './DetailsPanel'
 import { ItemList } from './ItemList'
 import { Loader } from './Loader'
@@ -18,6 +19,7 @@ export function Overlay() {
   return (
     <div className="overlay">
       <TiltShift />
+      <Hotspots />
       <Brand />
       <ItemList items={ITEMS} defaultOpen={!isNarrow()} closeOnSelect={isNarrow()} />
       <DetailsPanel items={ITEMS}>

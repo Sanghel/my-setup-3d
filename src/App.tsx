@@ -8,7 +8,7 @@ import { AmbienceDriver } from './scene/AmbienceDriver'
 import { CameraRig } from './scene/CameraRig'
 import { Effects } from './scene/Effects'
 import { LiveEffects } from './scene/LiveEffects'
-import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
+import { HotspotProbe } from './scene/HotspotProbe'
 import { AmbienceEnvironments } from './scene/AmbienceEnvironments'
 import { Room } from './scene/Room'
 import { useSceneStore } from './state/sceneStore'
@@ -50,7 +50,7 @@ export default function App() {
         <AmbienceEnvironments />
         <AmbienceDriver />
         <Effects />
-        <TooltipProbe />
+        <HotspotProbe />
         {/* Suspense: mientras el .glb se descarga no se dibuja nada; el porcentaje lo muestra <Loader> */}
         <Suspense fallback={null}>
           <Room />
@@ -59,7 +59,6 @@ export default function App() {
         {import.meta.env.DEV && <DevStatsProbe />}
         <CameraRig />
       </Canvas>
-      <HoverTooltip />
       <Overlay />
       {import.meta.env.DEV && <DevStatsLabel />}
     </LoadError>

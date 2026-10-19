@@ -1,14 +1,11 @@
-import { Bloom, EffectComposer, Outline, ToneMapping } from '@react-three/postprocessing'
+import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing'
 import { useCursor } from '@react-three/drei'
 import { ToneMappingMode } from 'postprocessing'
-import { useMemo } from 'react'
 import { useSceneStore } from '../state/sceneStore'
-import { meshesOf, useCatalogRegistry } from './catalogRegistry'
 
 /**
- * Post-procesado de la escena nocturna.
- * - Outline: contorno blanco del objeto bajo el puntero (como el showroom de referencia).
- *   Envuelve TODAS las mallas del objeto, no solo la pieza que tocó el rayo.
+ * Post-procesado de la escena.
+ * - (Sin contorno: desde el rediseño, el objeto bajo el puntero se marca con su punto de interés.)
  * - Bloom selectivo POR BRILLO: solo lo que supera el umbral (pantallas, zonas pegadas a los LED)
  *   "sangra" luz sobre su entorno, como en una cámara real. mipmapBlur da un halo amplio y barato.
  * - ToneMapping AgX al final: con un EffectComposer el tone mapping se hace aquí (no en el renderer),
@@ -16,21 +13,12 @@ import { meshesOf, useCatalogRegistry } from './catalogRegistry'
  */
 export function Effects() {
   const hoveredId = useSceneStore((s) => s.hoveredId)
-  const roots = useCatalogRegistry((s) => s.roots)
-  const selection = useMemo(() => (hoveredId ? meshesOf(roots.get(hoveredId)) : []), [hoveredId, roots])
-  useCursor(hoveredId !== null) // cursor de "mano" sobre un objeto seleccionable
+  // Mano de "click" sobre un objeto seleccionable; mano de "arrastrar" sobre el resto (se puede orbitar)
+  useCursor(hoveredId !== null, 'pointer', 'grab')
 
   return (
     <EffectComposer autoClear={false}>
       <Bloom mipmapBlur luminanceThreshold={0.6} luminanceSmoothing={0.25} intensity={1.4} radius={0.75} />
-      <Outline
-        selection={selection}
-        visibleEdgeColor={0xffffff}
-        hiddenEdgeColor={0xffffff}
-        edgeStrength={4}
-        width={1200}
-        blur
-      />
       <ToneMapping mode={ToneMappingMode.AGX} />
     </EffectComposer>
   )
