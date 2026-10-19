@@ -1,7 +1,7 @@
 """Punto de entrada: arma el cuarto a partir de measurements.json y exporta el .glb.
 
 Uso (desde la raíz del repo):
-    npm run assets            → blender/out/room.blend + public/models/room.raw.glb (+ optimizado)
+    npm run assets            → blender/out/room.blend + blender/out/room.raw.glb (+ optimizado)
     npm run assets:preview    → además renderiza blender/out/preview.png con Cycles
 """
 
