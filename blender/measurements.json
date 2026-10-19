@@ -120,7 +120,7 @@
       "color": "#ff4a5a",
       "placement": "bajo el borde del tablero, 4 lados, apuntando hacia afuera",
       "_note": "Roja como el mock de Claude Design (match-mock-content D5); la tira real es blanca (#fff4e8). strength: potencia de la emisión en Blender (con la blanca era 40; el rojo saturado necesita menos para no teñir todo el piso).",
-      "strength": 15
+      "strength": 22
     },
     "ultrawideRear": {
       "color": "#ffb347",
