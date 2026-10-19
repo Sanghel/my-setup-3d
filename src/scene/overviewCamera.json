@@ -11,5 +11,20 @@
     1.1
   ],
   "fov": 28,
-  "background": "#1b1d24"
+  "background": "#1b1d24",
+  "limits": {
+    "_note": "Grados y metros. Azimut 0 = cámara en +z del objetivo; negativo = hacia -x. El cuadrante abierto del diorama (frente a las dos paredes) es azimut -90..0.",
+    "azimuthDeg": [
+      -80,
+      -10
+    ],
+    "polarDeg": [
+      25,
+      75
+    ],
+    "distance": [
+      4,
+      14
+    ]
+  }
 }
