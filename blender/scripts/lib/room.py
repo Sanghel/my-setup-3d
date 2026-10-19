@@ -2,13 +2,18 @@
 (la del escritorio y la de la ventana), sin techo ni paredes frontales. Piso y paredes se cortan
 justo en el borde del cuarto, así sus cantos muestran el grosor, como una maqueta.
 Todos los nodos llevan el prefijo room_ (no seleccionables en la web).
+Acabado del mock (redesign D4): cantos redondeados (bevel) en paredes y piso, y una base tipo plinto.
 Superficies con texturas PBR CC0 de Poly Haven teñidas según las fotos (blender/textures/process.sh)."""
 
+import bpy
+
 from . import materials
-from .geometry import box, boxes
+from .geometry import bevel, box, boxes
 
 BACK_WALL_THICKNESS = 10  # cm; la pared lateral usa la profundidad del hueco de la ventana
 SLAB = 10  # grosor del piso (cm): se ve en los bordes del diorama
+EDGE_BEVEL = 2  # cm: cantos redondeados de paredes y piso (en el mock, radio 0,02 m)
+PLINTH = {"height": 16, "overhang": 6, "bevel": 3, "color": "#2e1f16"}  # base oscura bajo el piso
 
 
 def build_room(m: dict) -> None:
@@ -28,25 +33,19 @@ def build_room(m: dict) -> None:
 
     # El piso llega hasta el grosor de las paredes del fondo (sin rendijas en la esquina)
     # y se corta en los lados abiertos del diorama.
-    box("room_floor", (0, W + side_t, -BACK_WALL_THICKNESS, D, -SLAB, 0), floor_mat, **floor_uv)
-    box("room_wall_back", (0, W + side_t, -BACK_WALL_THICKNESS, 0, 0, H), wall_mat, **wall_uv)
+    bevel(box("room_floor", (0, W + side_t, -BACK_WALL_THICKNESS, D, -SLAB, 0), floor_mat, **floor_uv), EDGE_BEVEL, 3)
+    bevel(box("room_wall_back", (0, W + side_t, -BACK_WALL_THICKNESS, 0, 0, H), wall_mat, **wall_uv), EDGE_BEVEL, 3)
+    build_plinth(W + side_t, D)
 
-    # Pared lateral (x = W) armada con 4 bloques alrededor del hueco de la ventana.
+    # Pared lateral (x = W): un solo bloque con el hueco de la ventana recortado (booleano).
+    # Con 4 bloques pegados, el bevel marcaría surcos en cada unión alrededor del hueco.
     # A lo largo de esta pared la coordenada que avanza es d (desde la esquina).
     d0, d1 = win["distance"], win["distance"] + win["width"]
     u0, u1 = win["sill"], win["sill"] + win["height"]
     x0, x1 = W, W + side_t
-    boxes(
-        "room_wall_side",
-        [
-            (x0, x1, 0, d0, 0, H),  # entre la esquina y la ventana
-            (x0, x1, d1, D, 0, H),  # después de la ventana
-            (x0, x1, d0, d1, 0, u0),  # bajo el alféizar
-            (x0, x1, d0, d1, u1, H),  # sobre la ventana
-        ],
-        wall_mat,
-        **wall_uv,
-    )
+    side = box("room_wall_side", (x0, x1, 0, D, 0, H), wall_mat, **wall_uv)
+    cut_hole(side, box("cut_window", (x0 - 1, x1 + 1, d0, d1, u0, u1), wall_mat, **wall_uv))
+    bevel(side, EDGE_BEVEL, 3)
 
     # Zócalo en las dos paredes
     bh, bt = base["height"], base["thickness"]
@@ -61,6 +60,26 @@ def build_room(m: dict) -> None:
     )
 
     build_window(m, x0, x1, d0, d1, u0, u1)
+
+
+def cut_hole(obj: bpy.types.Object, cutter: bpy.types.Object) -> None:
+    """Recorta `cutter` de `obj` con un booleano (se aplica al exportar, antes del bevel).
+    El cortador lleva las mismas UVs de pared, así las caras nuevas del vano heredan una textura coherente."""
+    mod = obj.modifiers.new("Hueco", "BOOLEAN")
+    mod.operation = "DIFFERENCE"
+    mod.solver = "EXACT"
+    mod.object = cutter
+    cutter.hide_render = True
+    cutter.hide_set(True)
+    cutter["cutter"] = True  # no se exporta ni se hornea (ver bake.is_bake_target / common.export_glb)
+
+
+def build_plinth(width: float, depth: float) -> None:
+    """Base tipo maqueta bajo el piso: un poco más grande que el piso y de color madera muy oscura."""
+    o, h = PLINTH["overhang"], PLINTH["height"]
+    mat = materials.principled("plinth", PLINTH["color"], roughness=0.7)
+    plinth = box("room_plinth", (-o, width + o, -BACK_WALL_THICKNESS - o, depth + o, -SLAB - h, -SLAB), mat)
+    bevel(plinth, PLINTH["bevel"], 3)
 
 
 def build_window(m: dict, x0: float, x1: float, d0: float, d1: float, u0: float, u1: float) -> None:
