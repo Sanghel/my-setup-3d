@@ -7,6 +7,7 @@ import { ITEMS } from '../data/items'
 import { useSceneStore } from '../state/sceneStore'
 import { bindCatalog, itemIdOf } from './bindCatalog'
 import { useCatalogRegistry } from './catalogRegistry'
+import { useDimming } from './useDimming'
 
 export const ROOM_URL = '/models/room.glb'
 export const LIGHTMAP_URL = '/models/lightmap.webp'
@@ -47,6 +48,9 @@ export function Room() {
     setRoots(roots)
     if (missing.length) console.warn('[Room] objetos del catálogo sin nodo en room.glb:', missing)
   }, [scene, setRoots])
+
+  // En inspección el resto del cuarto se atenúa (después de unir el catálogo: necesita los itemId)
+  useDimming(scene)
 
   // Raycasting: R3F lanza un rayo desde la cámara por el puntero y entrega la malla más cercana.
   // Con stopPropagation solo cuenta esa; si es una pared o el piso (sin itemId), no hay hover.
