@@ -1,6 +1,7 @@
 import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing'
-import { useCursor } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 import { ToneMappingMode } from 'postprocessing'
+import { useEffect } from 'react'
 import { useSceneStore } from '../state/sceneStore'
 
 /**
@@ -13,8 +14,12 @@ import { useSceneStore } from '../state/sceneStore'
  */
 export function Effects() {
   const hoveredId = useSceneStore((s) => s.hoveredId)
-  // Mano de "click" sobre un objeto seleccionable; mano de "arrastrar" sobre el resto (se puede orbitar)
-  useCursor(hoveredId !== null, 'pointer', 'grab')
+  // Cursor del canvas: mano de "click" sobre un objeto seleccionable y mano de "arrastrar" sobre el
+  // resto, desde el primer momento (useCursor de drei solo ponía "grab" después de un primer hover)
+  const get = useThree((s) => s.get)
+  useEffect(() => {
+    get().gl.domElement.style.cursor = hoveredId !== null ? 'pointer' : 'grab'
+  }, [get, hoveredId])
 
   return (
     <EffectComposer autoClear={false}>
