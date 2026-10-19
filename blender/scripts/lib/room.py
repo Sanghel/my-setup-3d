@@ -21,8 +21,9 @@ def build_room(m: dict) -> None:
     W, D, H = room["width"], room["depth"], room["height"]
     side_t = win["depth"]
 
-    # Normal reforzada: las juntas de las tablas se marcan como en el mock
-    floor_mat = materials.pbr("floor_laminate", "floor_diff.jpg", "floor_nor.jpg", "floor_rough.jpg", normal_strength=2.0)
+    # Normal a intensidad 1: con 2 las juntas no se marcaban más y de noche el piso se veía granulado
+    # (la normal reacciona con los reflejos del environment); el tono oscuro ya marca las tablas
+    floor_mat = materials.pbr("floor_laminate", "floor_diff.jpg", "floor_nor.jpg", "floor_rough.jpg")
     wall_mat = materials.pbr("wall_paint", "wall_diff.jpg", "wall_nor.jpg", "wall_rough.jpg", normal_strength=0.6)
     baseboard_mat = materials.pbr("baseboard_wood", "baseboard_diff.jpg", "floor_nor.jpg", roughness_value=0.55)
 
