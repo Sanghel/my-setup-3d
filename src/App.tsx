@@ -9,6 +9,7 @@ import { Effects } from './scene/Effects'
 import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
 import { NightEnvironment } from './scene/NightEnvironment'
 import { Room } from './scene/Room'
+import { Overlay } from './ui/Overlay'
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
         <CameraRig />
       </Canvas>
       <HoverTooltip />
+      <Overlay />
       {import.meta.env.DEV && <DevStatsLabel />}
     </>
   )
