@@ -412,10 +412,24 @@
     max-height: calc(54dvh - 64px);
   }
 
+  /* La hoja de detalle ocupa la parte de abajo: la barra se esconde mientras se inspecciona */
+  .bottom-bar--inspecting {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .bottom-bar {
+    bottom: calc(var(--ui-gap) + env(safe-area-inset-bottom));
+  }
+
   /* Botones de al menos 44 px de alto: tamaño mínimo cómodo para un dedo */
   .index__item,
   .index__toggle,
-  .back-button {
+  .back-button,
+  .pill,
+  .segmented button,
+  .drawer__nav button {
     min-height: 44px;
   }
 }
@@ -440,7 +454,7 @@
   transition: opacity 1s ease;
 }
 
-/* Barra inferior (selector de ambiente; "Vista general" llega en el grupo 8) */
+/* Barra inferior (mock): selector de ambiente y "Vista general" */
 .bottom-bar {
   position: absolute;
   left: var(--ui-gap);
@@ -448,6 +462,31 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  transition: opacity 0.3s;
+}
+
+.pill {
+  pointer-events: auto;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--ui-border);
+  background: rgb(26 20 16 / 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #e5d6c9;
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.pill:hover {
+  background: rgb(46 34 26 / 0.85);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
 }
 
 .segmented {
@@ -652,5 +691,26 @@
   .hotspot__ring {
     animation: none;
     opacity: 0.6;
+  }
+}
+
+/* Celular: ajustes de elementos definidos más arriba en este archivo (este bloque va al final para
+   que gane a sus reglas base, que tienen la misma especificidad) */
+@media (max-width: 640px) {
+  /* Ayuda sobre la barra inferior, no encima */
+  .hint {
+    bottom: calc(var(--ui-gap) + 64px + env(safe-area-inset-bottom));
+    font-size: 11px;
+  }
+
+  /* Puntos más chicos: el diorama ocupa poco y se pisarían. Se escala el botón y no .hotspot: en
+     .hotspot, `scale` se aplicaría también al translate que lo posiciona y lo correría hacia la esquina */
+  .hotspot__button {
+    scale: 0.8;
+  }
+
+  .brand {
+    top: 14px;
+    left: 16px;
   }
 }
