@@ -316,4 +316,5 @@ def build_window_view(m: dict):
         [p(u0, outer, z0), p(u1, outer, z0), p(u1, outer, z1), p(u0, outer, z1)],
         materials.screen("window_view", "window_night.jpg", strength=0.35),
     )
+    view.visible_shadow = False  # el sol de tarde entra a través del exterior (si no, no habría mancha en el piso)
     group("room_window_view", [view], p((u0 + u1) / 2, outer, z0))

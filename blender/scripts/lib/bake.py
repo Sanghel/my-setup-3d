@@ -59,11 +59,10 @@ def add_light_uvs(objects, margin: float = 0.004) -> None:
         uvs["UVMap"].active_render = True
 
 
-def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
+def bake_lightmap(objects, size: int, samples: int, out_png) -> float:
     """Hornea la iluminación difusa (directa + indirecta, sin el color del material) de todas las
-    mallas a un único atlas, usando UVMap_light. Devuelve el factor de escala usado al codificar."""
-    import json
-
+    mallas a un único atlas, usando UVMap_light, con las luces del ambiente activo.
+    Devuelve el factor de escala k usado al codificar (la web lo usa como lightMapIntensity)."""
     import numpy as np
 
     from .preview import setup_gpu
@@ -78,7 +77,7 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     bake.margin = 6
     bake.margin_type = "EXTEND"
 
-    image = bpy.data.images.new("lightmap_hdr", size, size, float_buffer=True, alpha=False)
+    image = bpy.data.images.new(f"lightmap_hdr_{out_png.stem}", size, size, float_buffer=True, alpha=False)
 
     # Cycles hornea en la imagen del nodo ACTIVO de cada material, sobre la UV activa de cada malla
     added = []
@@ -101,8 +100,11 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     for obj in objects:
         obj.data.uv_layers.active = obj.data.uv_layers["UVMap"]
 
+    # Quitar el ruido del horneado (OIDN) antes de codificar: el granulado se ve como "lija" en las
+    # paredes, sobre todo con pocas muestras (redesign D2 / tarea 4.2)
+    hdr = denoise(image, out_png.with_suffix(".exr"))[..., :3]
+
     # Codificación: luz lineal / k → sRGB 8 bits (más precisión en las sombras)
-    hdr = np.array(image.pixels[:], dtype=np.float32).reshape(size, size, 4)[..., :3]
     # k: percentil 97 del brillo, SOLO sobre píxeles iluminados (los huecos del atlas son ceros).
     # Lo más brillante (junto a los LED) satura; el bloom de la web lo disimula.
     brightness = hdr.max(axis=2)
@@ -110,7 +112,7 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     k = float(np.percentile(lit, 97)) if lit.size else 1.0
     linear = np.clip(hdr / k, 0.0, 1.0)
     srgb = np.where(linear <= 0.0031308, linear * 12.92, 1.055 * np.power(linear, 1 / 2.4) - 0.055)
-    ldr = bpy.data.images.new("lightmap", size, size, alpha=False)
+    ldr = bpy.data.images.new(out_png.stem, size, size, alpha=False)
     ldr.colorspace_settings.name = "sRGB"
     rgba = np.concatenate([srgb, np.ones((size, size, 1), dtype=np.float32)], axis=2)
     ldr.pixels[:] = rgba.ravel()
@@ -118,6 +120,47 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     ldr.file_format = "PNG"
     ldr.save()
 
-    meta = {"intensity": k, "size": size, "samples": samples, "encoding": "srgb", "uv": "TEXCOORD_1"}
-    out_json.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
-    return meta
+    return k
+
+
+def denoise(image: bpy.types.Image, tmp_exr) -> "np.ndarray":
+    """Pasa una imagen HDR por el nodo Denoise (Open Image Denoise) del compositor y devuelve los
+    píxeles (alto × ancho × 4, lineales). Blender no tiene un operador para "quitar ruido a una imagen":
+    se arma un compositor mínimo (Imagen → Denoise → salida), se "renderiza" con Workbench (barato,
+    el resultado lo reemplaza el compositor) y se lee el EXR. La configuración de render se restaura."""
+    import numpy as np
+
+    scene = bpy.context.scene
+    render = scene.render
+    saved = (render.engine, render.resolution_x, render.resolution_y, render.resolution_percentage,
+             render.use_compositing, scene.compositing_node_group, render.filepath,
+             render.image_settings.file_format, render.image_settings.color_depth)
+    width, height = image.size
+
+    tree = bpy.data.node_groups.new("denoise_lightmap", "CompositorNodeTree")
+    tree.interface.new_socket("Image", in_out="OUTPUT", socket_type="NodeSocketColor")
+    source = tree.nodes.new("CompositorNodeImage")
+    source.image = image
+    node = tree.nodes.new("CompositorNodeDenoise")
+    node.inputs["HDR"].default_value = True  # la luz horneada supera 1.0 cerca de los LEDs
+    output = tree.nodes.new("NodeGroupOutput")
+    tree.links.new(source.outputs["Image"], node.inputs["Image"])
+    tree.links.new(node.outputs["Image"], output.inputs[0])
+
+    scene.compositing_node_group = tree
+    render.engine = "BLENDER_WORKBENCH"
+    render.resolution_x, render.resolution_y, render.resolution_percentage = width, height, 100
+    render.use_compositing = True
+    render.image_settings.file_format = "OPEN_EXR"
+    render.image_settings.color_depth = "32"
+    render.filepath = str(tmp_exr)
+    bpy.ops.render.render(write_still=True)
+
+    result = bpy.data.images.load(str(tmp_exr))
+    pixels = np.array(result.pixels[:], dtype=np.float32).reshape(height, width, 4)
+    bpy.data.images.remove(result)
+    bpy.data.node_groups.remove(tree)
+    (render.engine, render.resolution_x, render.resolution_y, render.resolution_percentage,
+     render.use_compositing, scene.compositing_node_group, render.filepath,
+     render.image_settings.file_format, render.image_settings.color_depth) = saved
+    return pixels
