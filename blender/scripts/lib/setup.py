@@ -223,7 +223,7 @@ KEYBOARD_MARGINS = {"side": 0.15, "back": 1.13, "front": 0.25}  # cm, medidos en
 
 
 def build_keyboard(m: dict, desk: DeskFrame):
-    from .geometry import bevel, boxes
+    from .geometry import boxes
 
     kb = m["keyboard"]
     W, D = kb["width"], kb["depth"]
@@ -235,9 +235,14 @@ def build_keyboard(m: dict, desk: DeskFrame):
     pitch_d = (D - back - front) / len(KEY_ROWS)
     gap = 0.12  # separación entre teclas (cm)
 
-    # Una sola foto (tu teclado desde arriba) para carcasa y teclas: letras, íconos y desgaste reales
-    photo = materials.photo("keyboard_photo", "keyboard_top.jpg", roughness=0.55)
-    uv = (x0, x0 + W, d0, d0 + D)
+    # Acabado del mock (match-mock-content D9): cuerpo gris metálico, teclas oscuras con un leve brillo azul
+    # y una placa azul emisiva bajo las teclas, que asoma por las separaciones (retroiluminación)
+    body_mat = materials.principled("keyboard_body", "#2c2d31", roughness=0.4, metallic=0.5)
+    key_mat = materials.principled("keyboard_keys", "#1f2026", roughness=0.6)
+    key_bsdf = key_mat.node_tree.nodes["Principled BSDF"]
+    key_bsdf.inputs["Emission Color"].default_value = materials.hex_color("#2a46a8")
+    key_bsdf.inputs["Emission Strength"].default_value = 0.12  # brillo tenue: el azul fuerte es el de la placa
+    glow = materials.emission("keyboard_backlight", "#4d7dff", 2.0)
 
     caps = []
     for row_i, row in enumerate(KEY_ROWS):
@@ -249,10 +254,26 @@ def build_keyboard(m: dict, desk: DeskFrame):
             x += size
 
     parts = [
-        bevel(boxes("keyboard_body", [(x0, x0 + W, d0, d0 + D, desk.top, base_top)], photo, uv_top=uv), 0.3),
-        bevel(boxes("keyboard_keys", caps, photo, uv_top=uv), 0.12, segments=1),
+        bevel(box("keyboard_body", (x0, x0 + W, d0, d0 + D, desk.top, base_top), body_mat), 0.4, 3),
+        # Sufijo _screen: emite su propia luz y no recibe luz horneada (como las pantallas)
+        box("keyboard_backlight_screen", (x0 + side, x0 + W - side, d0 + back, d0 + D - front, base_top, base_top + 0.08), glow),
+        bevel(boxes("keyboard_keys", caps, key_mat), 0.15, segments=2),
+        build_mouse(x0 + W + 12, d0 + D / 2, desk.top),
     ]
     group("item_keyboard", parts, (x0 + W / 2, d0 + D / 2, desk.top))
+
+
+def build_mouse(x: float, d: float, on: float) -> bpy.types.Object:
+    """Mouse negro del mock: una esfera achatada y alargada (6,7 × 3,5 × 10,5 cm)."""
+    from .geometry import to_blender
+
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, radius=0.035, location=to_blender(x, d, on + 1.2))
+    mouse = bpy.context.active_object
+    mouse.name = mouse.data.name = "keyboard_mouse"
+    mouse.scale = (0.95, 1.5, 0.5)  # ejes de Blender: x ancho, y largo (d), z alto
+    bpy.ops.object.transform_apply(scale=True)
+    mouse.data.materials.append(materials.principled("mouse_black", "#26272b", roughness=0.45))
+    return mouse
 
 
 def _wall_point(m: dict, wall: str):
