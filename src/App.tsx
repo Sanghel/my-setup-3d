@@ -12,6 +12,7 @@ import { AmbienceEnvironments } from './scene/AmbienceEnvironments'
 import { Room } from './scene/Room'
 import { useSceneStore } from './state/sceneStore'
 import { LoadError } from './ui/LoadError'
+import { Backdrop } from './ui/Backdrop'
 import { Overlay } from './ui/Overlay'
 
 /** Desplazamiento máximo (px) para que un click en el vacío cuente como click y no como arrastre. */
@@ -31,18 +32,19 @@ export default function App() {
 
   return (
     <LoadError>
+      <Backdrop />
       <Canvas
         onPointerDown={onPointerDown}
         onPointerMissed={onPointerMissed}
-        // Exposición de Blender (+1,3 pasos). La curva AgX la aplica <Effects> al final del post-procesado
-        gl={{ toneMapping: AgXToneMapping, toneMappingExposure: 2 ** 1.3 }}
+        // La exposición la anima <AmbienceDriver> según el ambiente; la curva AgX la aplica <Effects>.
+        // Sin color de fondo: el canvas es transparente y detrás va el gradiente del ambiente (<Backdrop>)
+        gl={{ toneMapping: AgXToneMapping }}
         camera={{
           position: overviewCamera.position as [number, number, number],
           fov: overviewCamera.fov,
           near: 0.01,
         }}
       >
-        <color attach="background" args={[overviewCamera.background]} />
         {/* Sin luces en tiempo real: toda la luz difusa está horneada en el lightmap */}
         <AmbienceEnvironments />
         <AmbienceDriver />

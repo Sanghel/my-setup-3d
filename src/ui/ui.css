@@ -279,3 +279,23 @@
     transform: translateY(24px);
   }
 }
+
+/* Fondo del diorama (detrás del canvas transparente), del mock de Claude Design */
+.backdrop,
+.backdrop__layer {
+  position: fixed;
+  inset: 0;
+}
+
+.backdrop {
+  z-index: -1;
+}
+
+.backdrop__layer--tarde {
+  background: radial-gradient(ellipse 80% 70% at 55% 45%, #3b2a20, #140f0c 75%);
+}
+
+.backdrop__layer--noche {
+  background: radial-gradient(ellipse 80% 70% at 55% 45%, #2a1c22, #0c0a0e 75%);
+  transition: opacity 1s ease;
+}
