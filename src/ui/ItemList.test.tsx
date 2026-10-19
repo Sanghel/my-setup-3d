@@ -45,3 +45,14 @@ describe('ItemList', () => {
     expect(screen.getByRole('button', { name: 'Escritorio' })).toBeInTheDocument()
   })
 })
+
+describe('ItemList en móvil', () => {
+  beforeEach(() => useSceneStore.setState(initialState))
+
+  it('con closeOnSelect se pliega al elegir un objeto', async () => {
+    render(<ItemList items={ITEMS} closeOnSelect />)
+    await userEvent.click(screen.getByRole('button', { name: 'Old Trafford' }))
+    expect(useSceneStore.getState().selectedId).toBe('poster')
+    expect(screen.getByRole('button', { name: /objetos/i })).toHaveAttribute('aria-expanded', 'false')
+  })
+})

@@ -228,3 +228,54 @@
   color: var(--ui-muted);
   font-size: 0.85rem;
 }
+
+/* Móvil: el panel de detalles es una hoja inferior y la lista pasa arriba, plegada */
+@media (max-width: 640px) {
+  :root {
+    --ui-gap: 10px;
+  }
+
+  .details {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 46dvh;
+    border-radius: var(--ui-radius) var(--ui-radius) 0 0;
+    border-bottom: 0;
+    padding: 14px 18px calc(18px + env(safe-area-inset-bottom));
+    animation-name: sheet-in;
+  }
+
+  .details h2 {
+    font-size: 1.15rem;
+    margin-top: 10px;
+  }
+
+  .details__row {
+    grid-template-columns: 6.5rem 1fr;
+  }
+
+  .item-list {
+    top: var(--ui-gap);
+    bottom: auto;
+    width: min(240px, calc(100vw - 2 * var(--ui-gap)));
+    max-height: calc(54dvh - 2 * var(--ui-gap));
+    overflow-y: auto;
+  }
+
+  /* Botones de al menos 44 px de alto: tamaño mínimo cómodo para un dedo */
+  .item-list li button,
+  .list-toggle,
+  .back-button {
+    min-height: 44px;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}

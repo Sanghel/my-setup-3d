@@ -7,7 +7,16 @@ import { useSceneStore } from '../state/sceneStore'
  * Tab/Enter y lector de pantalla, para enfocar un objeto sin usar el canvas. También permite saltar de un
  * objeto a otro durante la inspección. Plegable (en celular empieza plegada para no tapar el cuarto).
  */
-export function ItemList({ items, defaultOpen = true }: { items: readonly Item[]; defaultOpen?: boolean }) {
+export function ItemList({
+  items,
+  defaultOpen = true,
+  closeOnSelect = false,
+}: {
+  items: readonly Item[]
+  defaultOpen?: boolean
+  /** En móvil la lista se pliega al elegir, para no tapar el objeto. */
+  closeOnSelect?: boolean
+}) {
   const [open, setOpen] = useState(defaultOpen)
   const selectedId = useSceneStore((s) => s.selectedId)
   const select = useSceneStore((s) => s.select)
@@ -30,7 +39,10 @@ export function ItemList({ items, defaultOpen = true }: { items: readonly Item[]
               <button
                 type="button"
                 aria-current={item.id === selectedId ? 'true' : undefined}
-                onClick={() => select(item.id)}
+                onClick={() => {
+                  select(item.id)
+                  if (closeOnSelect) setOpen(false)
+                }}
               >
                 {item.name}
               </button>
