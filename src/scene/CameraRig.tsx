@@ -9,8 +9,11 @@ import {
   applyInspectionLimits,
   applyOverviewLimits,
   inspectionPose,
-  OVERVIEW_POSITION,
+  isNarrowScreen,
+  MOBILE_SHEET,
+  overviewPosition,
   OVERVIEW_TARGET,
+  visibleArea,
 } from './cameraPoses'
 import { useCatalogRegistry } from './catalogRegistry'
 
@@ -49,19 +52,20 @@ export function CameraRig() {
     const root = selectedId ? roots.get(selectedId) : undefined
     if (mode === 'inspecting' && item && root) {
       const sphere = new Box3().setFromObject(root).getBoundingSphere(new Sphere())
-      const pose = inspectionPose(
-        sphere.center.toArray(),
-        sphere.radius,
-        item.view,
-        camera.fov,
-        size.width / size.height,
-      )
+      // En móvil el panel de detalles tapa la parte de abajo: encuadrar en la parte visible
+      const covered = isNarrowScreen(size.width) ? MOBILE_SHEET : 0
+      const area = visibleArea(camera.fov, size.width / size.height, covered)
+      const pose = inspectionPose(sphere.center.toArray(), sphere.radius, item.view, area.fovDeg, area.aspect)
+      const distance = Math.hypot(...pose.position.map((p, i) => p - pose.target[i]))
       // Primero los límites del objeto, después el vuelo (que ya cae dentro de ellos)
       applyInspectionLimits(controls, pose, item.view.azimuthRange)
+      void controls.setFocalOffset(0, area.offsetAt(distance), 0, animate)
       void controls.setLookAt(...pose.position, ...pose.target, animate)
     } else {
-      applyOverviewLimits(controls)
-      void controls.setLookAt(...OVERVIEW_POSITION, ...OVERVIEW_TARGET, animate)
+      const aspect = size.width / size.height
+      applyOverviewLimits(controls, aspect)
+      void controls.setFocalOffset(0, 0, 0, animate)
+      void controls.setLookAt(...overviewPosition(aspect), ...OVERVIEW_TARGET, animate)
     }
     // size: al girar el celular cambia el aspecto y el encuadre se recalcula
   }, [mode, selectedId, roots, camera, size])

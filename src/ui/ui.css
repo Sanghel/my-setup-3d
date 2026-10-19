@@ -1,0 +1,281 @@
+/* Interfaz sobre el canvas: paneles oscuros translúcidos, coherentes con la escena nocturna. */
+:root {
+  --ui-bg: rgb(16 18 24 / 0.78);
+  --ui-border: rgb(255 255 255 / 0.12);
+  --ui-text: #eef0f6;
+  --ui-muted: #a3a9b8;
+  --ui-accent: #ff4d4d; /* el rojo del LED del poster */
+  --ui-radius: 16px;
+  --ui-gap: 16px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* el canvas sigue recibiendo el mouse; solo los paneles lo capturan */
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ui-text);
+}
+
+.panel {
+  pointer-events: auto;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
+}
+
+/* Panel de detalles */
+.details {
+  position: absolute;
+  top: var(--ui-gap);
+  right: var(--ui-gap);
+  width: min(380px, calc(100vw - 2 * var(--ui-gap)));
+  max-height: calc(100dvh - 2 * var(--ui-gap));
+  overflow-y: auto;
+  padding: 20px 22px 22px;
+  animation: panel-in 220ms ease-out;
+}
+
+.details h2 {
+  margin: 14px 0 8px;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  outline: none;
+}
+
+.details__description {
+  margin: 0 0 16px;
+  color: var(--ui-muted);
+  line-height: 1.55;
+}
+
+.details__list {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.details__row {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ui-border);
+}
+
+.details__row dt {
+  color: var(--ui-muted);
+  font-size: 0.85rem;
+}
+
+.details__row dd {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .details {
+    animation: none;
+  }
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--ui-border);
+  background: rgb(255 255 255 / 0.06);
+  color: var(--ui-text);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.back-button:focus-visible,
+.item-list button:focus-visible,
+.list-toggle:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+.back-button kbd {
+  font: 600 0.72rem/1 ui-monospace, monospace;
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--ui-border);
+  color: var(--ui-muted);
+}
+
+/* Lista de objetos */
+.item-list {
+  position: absolute;
+  left: var(--ui-gap);
+  bottom: var(--ui-gap);
+  width: 240px;
+  padding: 8px;
+}
+
+.list-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ui-muted);
+  font: 600 0.78rem/1 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.item-list ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.item-list li button {
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--ui-text);
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.item-list li button:hover {
+  background: rgb(255 255 255 / 0.07);
+}
+
+.item-list li button[aria-current='true'] {
+  background: rgb(255 77 77 / 0.16);
+  box-shadow: inset 3px 0 0 var(--ui-accent);
+}
+
+/* Indicador de carga */
+.loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #1b1d24;
+  transition: opacity 400ms ease;
+  pointer-events: auto;
+}
+
+.loader--done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader__card {
+  width: min(280px, 80vw);
+  text-align: center;
+}
+
+.loader__title {
+  margin: 0 0 14px;
+  color: var(--ui-muted);
+  font-size: 0.95rem;
+}
+
+.loader__bar {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  overflow: hidden;
+}
+
+.loader__fill {
+  height: 100%;
+  background: var(--ui-accent);
+  box-shadow: 0 0 12px var(--ui-accent);
+  transition: width 200ms ease;
+}
+
+.loader__percent {
+  margin: 10px 0 0;
+  font: 600 0.85rem/1 ui-monospace, monospace;
+  color: var(--ui-text);
+}
+
+.loader__hint {
+  margin: 0 0 18px;
+  color: var(--ui-muted);
+  font-size: 0.85rem;
+}
+
+/* Móvil: el panel de detalles es una hoja inferior y la lista pasa arriba, plegada */
+@media (max-width: 640px) {
+  :root {
+    --ui-gap: 10px;
+  }
+
+  .details {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 46dvh;
+    border-radius: var(--ui-radius) var(--ui-radius) 0 0;
+    border-bottom: 0;
+    padding: 14px 18px calc(18px + env(safe-area-inset-bottom));
+    animation-name: sheet-in;
+  }
+
+  .details h2 {
+    font-size: 1.15rem;
+    margin-top: 10px;
+  }
+
+  .details__row {
+    grid-template-columns: 6.5rem 1fr;
+  }
+
+  .item-list {
+    top: var(--ui-gap);
+    bottom: auto;
+    width: min(240px, calc(100vw - 2 * var(--ui-gap)));
+    max-height: calc(54dvh - 2 * var(--ui-gap));
+    overflow-y: auto;
+  }
+
+  /* Botones de al menos 44 px de alto: tamaño mínimo cómodo para un dedo */
+  .item-list li button,
+  .list-toggle,
+  .back-button {
+    min-height: 44px;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
