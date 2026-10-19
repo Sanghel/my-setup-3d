@@ -116,8 +116,7 @@
 }
 
 .back-button:focus-visible,
-.item-list button:focus-visible,
-.list-toggle:focus-visible {
+.index button:focus-visible {
   outline: 2px solid var(--ui-accent);
   outline-offset: 2px;
 }
@@ -130,58 +129,106 @@
   color: var(--ui-muted);
 }
 
-/* Lista de objetos */
-.item-list {
+/* Índice (mock): arriba a la izquierda, bajo el título */
+.index {
   position: absolute;
+  top: 76px;
   left: var(--ui-gap);
-  bottom: var(--ui-gap);
-  width: 240px;
+  width: 224px;
+  max-height: calc(100% - 150px);
+  overflow: auto;
   padding: 8px;
+  background: var(--ui-bg);
+  border-color: var(--ui-border);
 }
 
-.list-toggle {
-  width: 100%;
+.index__header {
   display: flex;
   justify-content: space-between;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 10px;
-  background: none;
-  color: var(--ui-muted);
-  font: 600 0.78rem/1 system-ui, sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
+  align-items: center;
+  padding: 4px 8px 6px;
 }
 
-.item-list ul {
-  list-style: none;
-  margin: 4px 0 0;
+.index__title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #d8c8ba;
+}
+
+.index__toggle {
   padding: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.item-list li button {
-  width: 100%;
-  text-align: left;
-  padding: 9px 10px;
   border: 0;
-  border-radius: 10px;
   background: none;
-  color: var(--ui-text);
-  font: inherit;
-  font-size: 0.92rem;
+  font-family: inherit;
   cursor: pointer;
 }
 
-.item-list li button:hover {
-  background: rgb(255 255 255 / 0.07);
+.chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid rgb(255 235 215 / 0.16);
+  border-radius: 999px;
+  background: none;
+  color: #e5d6c9;
+  font: inherit;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-.item-list li button[aria-current='true'] {
-  background: rgb(255 77 77 / 0.16);
-  box-shadow: inset 3px 0 0 var(--ui-accent);
+.chip kbd {
+  font: 11px/1 var(--font-mono);
+  color: var(--ui-faint);
+}
+
+.index__group {
+  margin: 0;
+  padding: 8px 8px 2px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--ui-faint);
+}
+
+.index ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.index__item {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #e5d6c9;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.index__item:hover {
+  background: var(--ui-hover);
+}
+
+.index__item--hover,
+.index__item[aria-current='true'] {
+  background: var(--ui-active);
+  color: #fff;
+}
+
+.index__number {
+  font: 10.5px/1 var(--font-mono);
+  color: #a08f80;
 }
 
 /* Indicador de carga */
@@ -265,17 +312,15 @@
     grid-template-columns: 6.5rem 1fr;
   }
 
-  .item-list {
-    top: var(--ui-gap);
-    bottom: auto;
-    width: min(240px, calc(100vw - 2 * var(--ui-gap)));
-    max-height: calc(54dvh - 2 * var(--ui-gap));
-    overflow-y: auto;
+  .index {
+    top: 64px;
+    width: min(224px, calc(100vw - 2 * var(--ui-gap)));
+    max-height: calc(54dvh - 64px);
   }
 
   /* Botones de al menos 44 px de alto: tamaño mínimo cómodo para un dedo */
-  .item-list li button,
-  .list-toggle,
+  .index__item,
+  .index__toggle,
   .back-button {
     min-height: 44px;
   }
@@ -349,14 +394,6 @@
 .segmented button:focus-visible {
   outline: 2px solid var(--ui-accent);
   outline-offset: 2px;
-}
-
-/* Mientras exista la lista del grupo 11, va sobre la barra inferior (el índice del mock la reemplaza).
-   Solo en pantallas anchas: en móvil la lista está arriba. */
-@media (min-width: 641px) {
-  .item-list {
-    bottom: calc(var(--ui-gap) + 56px);
-  }
 }
 
 /* Tilt-shift: franjas desenfocadas arriba y abajo (medidas del mock) */
