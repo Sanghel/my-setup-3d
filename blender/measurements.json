@@ -11,11 +11,33 @@
     "width": 170,
     "depth": 280,
     "height": 236,
-    "baseboard": { "height": 8, "thickness": 1 },
-    "floorPlank": { "width": 18.5, "length": 90 }
+    "baseboard": {
+      "height": 8,
+      "thickness": 1
+    },
+    "floorPlank": {
+      "width": 18.5,
+      "length": 90
+    }
   },
-  "window": { "wall": "side", "from": "corner", "distance": 55, "width": 100, "height": 145, "sill": 87, "depth": 13, "frame": 3 },
-  "door": { "wall": "left", "from": "backWall", "distance": 55, "width": 100, "height": 236, "_note": "Frente a la ventana, de piso a techo (M5)." },
+  "window": {
+    "wall": "side",
+    "from": "corner",
+    "distance": 55,
+    "width": 100,
+    "height": 145,
+    "sill": 87,
+    "depth": 13,
+    "frame": 3
+  },
+  "door": {
+    "wall": "left",
+    "from": "backWall",
+    "distance": 55,
+    "width": 100,
+    "height": 236,
+    "_note": "Frente a la ventana, de piso a techo (M5)."
+  },
   "desk": {
     "width": 135,
     "depth": 75,
@@ -26,20 +48,86 @@
     "legThickness": 2,
     "legCrossHeight": 33
   },
-  "deskMat": { "width": 77, "depth": 29 },
-  "ultrawide": { "width": 80, "height": 35, "radius": 150, "lift": 16, "wallGap": 17, "base": { "width": 27.5, "depth": 21.5 } },
-  "verticalMonitor": { "width": 36, "height": 61, "lift": 2, "angleDeg": 30 },
-  "monitorArm": { "fromDeskLeft": 22.5, "fromBackWall": 14 },
-  "keyboard": { "width": 31, "depth": 13, "rows": 6 },
+  "deskMat": {
+    "width": 77,
+    "depth": 29
+  },
+  "ultrawide": {
+    "width": 80,
+    "height": 35,
+    "radius": 150,
+    "lift": 16,
+    "wallGap": 17,
+    "base": {
+      "width": 27.5,
+      "depth": 21.5
+    }
+  },
+  "verticalMonitor": {
+    "width": 36,
+    "height": 61,
+    "lift": 2,
+    "angleDeg": 30
+  },
+  "monitorArm": {
+    "fromDeskLeft": 22.5,
+    "fromBackWall": 14
+  },
+  "keyboard": {
+    "width": 31,
+    "depth": 13,
+    "rows": 6
+  },
   "frames": {
-    "jersey2008": { "wall": "back", "from": "corner", "distance": 18.5, "width": 67, "height": 72, "depth": 2.5, "border": 3.5, "bottom": 127 },
-    "jerseyScholes": { "wall": "side", "from": "frontWall", "distance": 26.5, "width": 88, "height": 99, "depth": 2.5, "border": 3.5, "bottom": 120 },
-    "poster": { "wall": "back", "from": "leftWall", "distance": 31.5, "width": 44, "height": 55, "depth": 1.5, "border": 0, "bottom": 140, "_note": "Panel sin marco; profundidad estimada." }
+    "jersey2008": {
+      "wall": "back",
+      "from": "corner",
+      "distance": 18.5,
+      "width": 67,
+      "height": 72,
+      "depth": 2.5,
+      "border": 3.5,
+      "bottom": 127
+    },
+    "jerseyScholes": {
+      "wall": "side",
+      "from": "frontWall",
+      "distance": 26.5,
+      "width": 88,
+      "height": 99,
+      "depth": 2.5,
+      "border": 3.5,
+      "bottom": 120
+    },
+    "poster": {
+      "wall": "back",
+      "from": "leftWall",
+      "distance": 31.5,
+      "width": 44,
+      "height": 55,
+      "depth": 1.5,
+      "border": 0,
+      "bottom": 140,
+      "_note": "Panel sin marco; profundidad estimada."
+    }
   },
   "led": {
-    "poster": { "color": "#ff1e1e", "sides": "all" },
-    "desk": { "color": "#fff4e8", "placement": "bajo el borde del tablero, 4 lados, apuntando hacia afuera" },
-    "ultrawideRear": { "color": "#ffb347", "_note": "Luz trasera propia del monitor." }
+    "poster": {
+      "color": "#ff1e1e",
+      "sides": "all"
+    },
+    "desk": {
+      "color": "#ff4a5a",
+      "placement": "bajo el borde del tablero, 4 lados, apuntando hacia afuera",
+      "_note": "Roja como el mock de Claude Design (match-mock-content D5); la tira real es blanca (#fff4e8). strength: potencia de la emisión en Blender (con la blanca era 40; el rojo saturado necesita menos para no teñir todo el piso).",
+      "strength": 15
+    },
+    "ultrawideRear": {
+      "color": "#ffb347",
+      "_note": "Luz trasera propia del monitor."
+    }
   },
-  "bake": { "exposure": 1.0 }
+  "bake": {
+    "exposure": 1.0
+  }
 }

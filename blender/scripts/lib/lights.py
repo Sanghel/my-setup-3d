@@ -124,8 +124,8 @@ def build_leds(m: dict, desk, ultrawide: dict, poster: dict) -> None:
     }.items():
         box(f"led_poster_{name}", bounds, red)  # pared del fondo: u = x, out = d
 
-    # Tira LED blanca bajo el borde del tablero, en los 4 lados (ilumina hacia afuera y al piso)
-    white = materials.emission("led_desk", led["desk"]["color"], 40.0)
+    # Tira LED bajo el borde del tablero (roja como el mock; color y potencia en measurements.json), en los 4 lados (ilumina hacia afuera y al piso)
+    white = materials.emission("led_desk", led["desk"]["color"], led["desk"].get("strength", 40.0))
     under = desk.top - m["desk"]["top"]
     x0, x1, d0, d1 = desk.x0 + 1.5, desk.x1 - 1.5, desk.d0 + 1.5, desk.d1 - 1.5
     z0, z1 = under - 0.6, under
