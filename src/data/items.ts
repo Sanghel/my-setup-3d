@@ -20,18 +20,41 @@ export interface ItemView {
   azimuthRange: [number, number]
 }
 
+/** Categorías del índice, en el orden en que se muestran (como en el mock de Claude Design). */
+export const GROUPS = [
+  { id: 'setup', title: 'SETUP' },
+  { id: 'coleccion', title: 'COLECCIÓN' },
+  { id: 'detalles', title: 'DETALLES' },
+] as const
+
+export type GroupId = (typeof GROUPS)[number]['id']
+
+/** Foto real del objeto para la galería del panel. Nunca fotos con pantallas de trabajo. */
+export interface ItemPhoto {
+  src: string
+  alt: string
+}
+
 export interface Item {
   id: string
   node: string
   name: string
+  /** Nombre corto para el índice (por defecto, `name`). */
+  short?: string
+  group: GroupId
   description: string
   details?: ItemDetail[]
   view: ItemView
+  /** Ajuste (metros) del punto de interés respecto al centro superior de la caja del objeto. */
+  anchorOffset?: [number, number, number]
+  /** Galería del panel. Vacía por ahora: el usuario agregará sus fotos más adelante. */
+  photos?: ItemPhoto[]
 }
 
 export const ITEMS: Item[] = [
   {
     id: 'desk',
+    group: 'setup',
     node: 'item_desk',
     name: 'Escritorio',
     description:
@@ -46,6 +69,8 @@ export const ITEMS: Item[] = [
   },
   {
     id: 'ultrawide',
+    group: 'setup',
+    short: 'Ultrawide',
     node: 'item_ultrawide',
     name: 'Monitor ultrawide',
     description: 'Xiaomi Curved Gaming Monitor G34WQi (2026): 34 pulgadas, curvo y con una luz trasera ámbar propia.',
@@ -59,6 +84,8 @@ export const ITEMS: Item[] = [
   },
   {
     id: 'vertical-monitor',
+    group: 'setup',
+    short: 'Vertical',
     node: 'item_vertical_monitor',
     name: 'Monitor vertical',
     description:
@@ -72,6 +99,7 @@ export const ITEMS: Item[] = [
   },
   {
     id: 'keyboard',
+    group: 'setup',
     node: 'item_keyboard',
     name: 'Teclado',
     description: 'Logitech MX Mechanical Mini: mecánico low-profile, compacto y retroiluminado.',
@@ -84,6 +112,8 @@ export const ITEMS: Item[] = [
   },
   {
     id: 'jersey-2008',
+    group: 'coleccion',
+    short: 'Moscú 2008',
     node: 'item_jersey_2008',
     name: 'Camiseta final de Moscú 2008',
     description:
@@ -98,6 +128,8 @@ export const ITEMS: Item[] = [
   },
   {
     id: 'jersey-scholes',
+    group: 'coleccion',
+    short: 'Scholes 18',
     node: 'item_jersey_scholes',
     name: 'Camiseta Scholes 18',
     description:
@@ -112,6 +144,7 @@ export const ITEMS: Item[] = [
   },
   {
     id: 'poster',
+    group: 'coleccion',
     node: 'item_poster',
     name: 'Old Trafford',
     description:
@@ -125,3 +158,25 @@ export const ITEMS: Item[] = [
 ]
 
 export const itemById = (id: string) => ITEMS.find((item) => item.id === id)
+
+/** Número de dos dígitos del objeto según su orden en el catálogo ("01", "02"…); "" si no existe. */
+export function itemNumber(id: string, items: readonly Item[] = ITEMS): string {
+  const index = items.findIndex((item) => item.id === id)
+  return index < 0 ? '' : String(index + 1).padStart(2, '0')
+}
+
+/** Total de objetos con el mismo formato, para el contador "03 / 07". */
+export const itemTotal = (items: readonly Item[] = ITEMS) => String(items.length).padStart(2, '0')
+
+/** Etiqueta de categoría del panel: "SETUP · 03". */
+export function itemCategory(item: Item, items: readonly Item[] = ITEMS): string {
+  const group = GROUPS.find((g) => g.id === item.group)
+  return `${group?.title ?? ''} · ${itemNumber(item.id, items)}`
+}
+
+/** El índice: grupos en orden, cada uno con sus objetos; los grupos sin objetos no aparecen. */
+export function groupedItems(items: readonly Item[] = ITEMS) {
+  return GROUPS.map((group) => ({ ...group, items: items.filter((item) => item.group === group.id) })).filter(
+    (group) => group.items.length > 0,
+  )
+}

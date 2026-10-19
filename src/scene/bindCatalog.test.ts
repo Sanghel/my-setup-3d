@@ -7,6 +7,7 @@ const item = (id: string, node: string): Item => ({
   id,
   node,
   name: id,
+  group: 'setup',
   description: id,
   view: { azimuth: 0, polar: 90, azimuthRange: [-45, 45] },
 })

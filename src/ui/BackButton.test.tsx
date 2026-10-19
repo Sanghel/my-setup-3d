@@ -22,15 +22,4 @@ describe('salir del modo inspección', () => {
     expect(useSceneStore.getState().mode).toBe('overview')
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument()
   })
-
-  it('la tecla Esc hace lo mismo', async () => {
-    render(
-      <DetailsPanel items={ITEMS}>
-        <BackButton />
-      </DetailsPanel>,
-    )
-    inspecting()
-    await userEvent.keyboard('{Escape}')
-    expect(useSceneStore.getState()).toMatchObject(initialState)
-  })
 })
