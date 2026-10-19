@@ -2,7 +2,8 @@ import { useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MathUtils, type Mesh, type MeshStandardMaterial, type Object3D } from 'three'
 import { useSceneStore } from '../state/sceneStore'
-import { environmentTarget } from './environmentTarget'
+import { ambienceUniforms } from './ambience'
+import { environmentTargets } from './environmentTarget'
 
 /** Brillo de lo que NO se inspecciona (0–1) y qué tan rápido se llega (mayor = más rápido). */
 const DIMMED = 0.25
@@ -16,7 +17,7 @@ interface DimState {
 }
 
 /**
- * Relleno del environment (NightEnvironment) sobre TODOS los materiales: además de los reflejos,
+ * Relleno del environment (AmbienceEnvironments) sobre TODOS los materiales: además de los reflejos,
  * aporta una luz difusa suave y pareja que hace legibles las camisetas y tapa el ruido fino del
  * lightmap. Se asigna como envMap PROPIO de cada material (no como scene.environment), porque con
  * scene.environment three.js ignora envMapIntensity y el atenuado de la inspección no lo podría bajar.
@@ -51,13 +52,14 @@ export function useDimming(scene: Object3D) {
 
   useFrame((_, delta) => {
     const { mode, selectedId } = useSceneStore.getState()
-    const environment = environmentTarget.environment
+    // El environment del ambiente más cercano: cambia a mitad de la transición Tarde ⇄ Noche
+    const environment = environmentTargets[ambienceUniforms.uAmbience.value < 0.5 ? 'tarde' : 'noche'].environment
     scene.traverse((object) => {
       const mesh = object as Mesh
       const dim = mesh.userData.dim as DimState | undefined
       if (!mesh.isMesh || !dim) return
       const material = mesh.material as MeshStandardMaterial
-      // El environment se genera en el primer cuadro: se asigna apenas existe
+      // El environment se genera en el primer cuadro: se asigna apenas existe (y al cambiar de ambiente)
       if (dim.env > 0 && environment && material.envMap !== environment) {
         material.envMap = environment
         material.envMapIntensity = dim.env * dim.factor

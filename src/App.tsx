@@ -8,7 +8,7 @@ import { AmbienceDriver } from './scene/AmbienceDriver'
 import { CameraRig } from './scene/CameraRig'
 import { Effects } from './scene/Effects'
 import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
-import { NightEnvironment } from './scene/NightEnvironment'
+import { AmbienceEnvironments } from './scene/AmbienceEnvironments'
 import { Room } from './scene/Room'
 import { useSceneStore } from './state/sceneStore'
 import { LoadError } from './ui/LoadError'
@@ -44,7 +44,7 @@ export default function App() {
       >
         <color attach="background" args={[overviewCamera.background]} />
         {/* Sin luces en tiempo real: toda la luz difusa está horneada en el lightmap */}
-        <NightEnvironment />
+        <AmbienceEnvironments />
         <AmbienceDriver />
         <Effects />
         <TooltipProbe />
