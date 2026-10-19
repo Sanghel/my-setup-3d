@@ -5,6 +5,7 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { MeshoptDecoder } from 'meshoptimizer'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { Document } from '@gltf-transform/core'
+import { ITEMS } from '../../src/data/items.ts'
 
 /*
  * Contrato entre Blender y la web: room.glb (generado por `npm run assets` y commiteado)
@@ -93,5 +94,9 @@ describe('room.glb', () => {
   it('no exporta las mallas de luz led_* (solo iluminan al hornear)', () => {
     const leds = doc.getRoot().listNodes().filter((n) => n.getName().startsWith('led_'))
     expect(leds).toEqual([])
+  })
+
+  it.each(ITEMS)('el nodo $node del catálogo existe en el .glb', ({ node }) => {
+    expect(doc.getRoot().listNodes().some((n) => n.getName() === node)).toBe(true)
   })
 })
