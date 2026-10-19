@@ -14,7 +14,7 @@ def parse_args() -> argparse.Namespace:
     """Blender pasa sus propios argumentos; los del script van después de `--`."""
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", default="public/models/room.raw.glb")
+    parser.add_argument("--out", default="blender/out/room.raw.glb")
     parser.add_argument("--blend", default="blender/out/room.blend")
     parser.add_argument("--preview", action="store_true", help="renderizar blender/out/preview.png")
     parser.add_argument("--focus", help="con --preview: encuadrar solo este objeto (p. ej. item_desk)")
