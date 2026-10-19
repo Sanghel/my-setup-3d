@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ITEMS, itemCategory, itemNumber, itemTotal, type Item, type ItemPhoto, type PhotoCredit } from '../data/items'
+import { ITEMS, itemCategory, itemNumber, itemTotal, type BuyLink, type Item, type ItemPhoto, type PhotoCredit } from '../data/items'
 import { useSceneStore } from '../state/sceneStore'
 import { BackButton } from './BackButton'
 
@@ -59,6 +59,7 @@ export function DetailsDrawer({ items = ITEMS }: { items?: readonly Item[] }) {
             {item.name}
           </h2>
           <p className="drawer__description">{item.description}</p>
+          {item.buy && item.buy.length > 0 && <BuyLinks links={item.buy} />}
           {item.details && item.details.length > 0 && (
             <dl className="drawer__specs">
               {item.details.map((detail) => (
@@ -101,5 +102,26 @@ function PhotoCredits({ photos }: { photos: ItemPhoto[] }) {
         </span>
       ))}
     </p>
+  )
+}
+
+/** "Ver en Amazon" (o "Ver mouse en Amazon" si el objeto tiene varios productos): pestaña nueva, sin afiliado. */
+function BuyLinks({ links }: { links: BuyLink[] }) {
+  return (
+    <div className="drawer__buy">
+      {links.map((link) => (
+        <a
+          key={link.url}
+          className="drawer__buy-link"
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Ver ${link.product} en ${link.store} (se abre en una pestaña nueva)`}
+        >
+          {links.length > 1 && link.short ? `Ver ${link.short} en ${link.store}` : `Ver en ${link.store}`}
+          <span aria-hidden="true"> ↗</span>
+        </a>
+      ))}
+    </div>
   )
 }

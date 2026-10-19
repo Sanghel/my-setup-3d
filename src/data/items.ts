@@ -45,6 +45,17 @@ export interface ItemPhoto {
   credit?: PhotoCredit
 }
 
+/**
+ * Enlace de compra (match-mock-content D7): normal, sin afiliado, confirmado por el usuario.
+ * `short` nombra el producto en el botón cuando el objeto tiene más de uno ("Ver mouse en Amazon").
+ */
+export interface BuyLink {
+  product: string
+  short?: string
+  store: string
+  url: string
+}
+
 export interface Item {
   id: string
   node: string
@@ -62,6 +73,8 @@ export interface Item {
    * (npm run products:photos); los personalizados quedan sin fotos hasta que el usuario tome las suyas.
    */
   photos?: ItemPhoto[]
+  /** Dónde comprarlo. Sin enlace confirmado, no hay botón. */
+  buy?: BuyLink[]
 }
 
 const CATALOG: Item[] = [
@@ -95,6 +108,7 @@ const CATALOG: Item[] = [
       { label: 'Curvatura', value: '1500R' },
       { label: 'Medidas', value: '80 × 35 cm' },
     ],
+    buy: [{ product: 'Xiaomi G34WQi', store: 'Amazon', url: 'https://www.amazon.com/dp/B0D1HQK5G5' }],
     view: { azimuth: -15, polar: 72, azimuthRange: [-60, 40] },
   },
   {
@@ -122,9 +136,15 @@ const CATALOG: Item[] = [
       'Logitech MX Mechanical Mini: mecánico low-profile, compacto y con retroiluminación, junto al mouse sobre el desk mat "Engineers".',
     details: [
       { label: 'Teclado', value: 'Logitech MX Mechanical Mini' },
+      { label: 'Switches', value: 'Lineales (rojos)' },
+      { label: 'Mouse', value: 'Logitech MX Master 3S' },
       { label: 'Formato', value: 'Compacto, 6 filas' },
       { label: 'Medidas', value: '31 × 13 cm' },
       { label: 'Desk mat', value: 'Engineers, negro' },
+    ],
+    buy: [
+      { product: 'Logitech MX Mechanical Mini (Linear)', short: 'teclado', store: 'Amazon', url: 'https://www.amazon.com/dp/B09LJWXD6M' },
+      { product: 'Logitech MX Master 3S', short: 'mouse', store: 'Amazon', url: 'https://www.amazon.com/dp/B09HM94VDS' },
     ],
     view: { azimuth: -10, polar: 40, azimuthRange: [-60, 40] },
   },
@@ -137,6 +157,13 @@ const CATALOG: Item[] = [
     details: [
       { label: 'Material', value: 'Malla negra' },
       { label: 'Extras', value: 'Cabecero y apoyabrazos ajustables' },
+    ],
+    buy: [
+      {
+        product: 'Silla ergonómica Signature (modelo de referencia)',
+        store: 'Mublex',
+        url: 'https://www.mublex.com/sillas/sillas-de-escritorio-y-oficina/sillas-ergonomicas/sillas-con-ergonomia-avanzada/silla-ergonomica-signature-con-soporte-lumbar-ajustable',
+      },
     ],
     view: { azimuth: -35, polar: 70, azimuthRange: [-90, 20] },
   },
@@ -197,6 +224,10 @@ const CATALOG: Item[] = [
       { label: 'Incluye', value: 'Parlante JBL Clip 4 · control DualSense · mini balón' },
       { label: 'Medidas', value: '28 × 62 cm (aprox.)' },
     ],
+    buy: [
+      { product: 'JBL Clip 4 naranja', short: 'JBL', store: 'Amazon', url: 'https://www.amazon.com/dp/B08PJDYNPL' },
+      { product: 'DualSense Cosmic Red', short: 'DualSense', store: 'Amazon', url: 'https://www.amazon.com/dp/B094WN6SY2' },
+    ],
     view: { azimuth: -90, polar: 82, azimuthRange: [-130, -50] },
   },
   {
@@ -210,6 +241,7 @@ const CATALOG: Item[] = [
       { label: 'Serie', value: 'Naruto Shippuden' },
       { label: 'Ubicación', value: 'Frente al monitor' },
     ],
+    buy: [{ product: 'Funko Pop! Madara Uchiha (Six Paths) #1196', store: 'Amazon', url: 'https://www.amazon.com/dp/B09V9P3WHM' }],
     view: { azimuth: -20, polar: 72, azimuthRange: [-70, 30] },
   },
 ]

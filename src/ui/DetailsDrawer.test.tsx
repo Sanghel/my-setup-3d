@@ -82,6 +82,38 @@ describe('DetailsDrawer', () => {
     }
   })
 
+  it('ultrawide: "Ver en Amazon" abre el G34WQi en pestaña nueva, sin afiliado y con nombre accesible', () => {
+    render(<DetailsDrawer />)
+    select('ultrawide')
+    const link = within(panel()).getByRole('link', { name: /Xiaomi G34WQi en Amazon/ })
+    expect(link).toHaveTextContent('Ver en Amazon')
+    expect(link).toHaveAccessibleName('Ver Xiaomi G34WQi en Amazon (se abre en una pestaña nueva)')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(link.getAttribute('href')).toMatch(/^https:\/\/www\.amazon\.com\/dp\/[A-Z0-9]{10}$/)
+  })
+
+  it('silla: el botón dice "Ver en Mublex"', () => {
+    render(<DetailsDrawer />)
+    select('chair')
+    expect(within(panel()).getByRole('link', { name: /en Mublex/ })).toHaveTextContent('Ver en Mublex')
+  })
+
+  it('objetos con dos productos: un botón por producto', () => {
+    render(<DetailsDrawer />)
+    select('keyboard')
+    const buy = () => [...panel().querySelectorAll('.drawer__buy-link')].map((a) => a.textContent)
+    expect(buy()).toEqual(['Ver teclado en Amazon ↗', 'Ver mouse en Amazon ↗'])
+    select('pegboard')
+    expect(buy()).toEqual(['Ver JBL en Amazon ↗', 'Ver DualSense en Amazon ↗'])
+  })
+
+  it('sin enlace confirmado (monitor vertical): sin botón de compra', () => {
+    render(<DetailsDrawer />)
+    select('vertical-monitor')
+    expect(panel().querySelector('.drawer__buy')).toBeNull()
+  })
+
   it('objeto personalizado (Scholes 18): sin galería ni crédito', () => {
     render(<DetailsDrawer />)
     select('jersey-scholes')

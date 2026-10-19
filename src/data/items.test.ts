@@ -56,4 +56,15 @@ describe('numeración y grupos (índice del mock)', () => {
     expect(withPhotos).toEqual(['ultrawide', 'keyboard', 'chair', 'pegboard', 'funko'])
     for (const item of ITEMS) for (const photo of item.photos ?? []) expect(photo.credit?.url).toMatch(/^https:\/\//)
   })
+
+  it('enlaces de compra: solo los confirmados, limpios (sin parámetros ni afiliado)', () => {
+    const withBuy = ITEMS.filter((item) => item.buy?.length).map((item) => item.id)
+    expect(withBuy).toEqual(['ultrawide', 'keyboard', 'chair', 'pegboard', 'funko'])
+    for (const link of ITEMS.flatMap((item) => item.buy ?? [])) {
+      const url = new URL(link.url)
+      expect(url.protocol).toBe('https:')
+      expect(url.search).toBe('')
+      if (link.store === 'Amazon') expect(url.href).toMatch(/^https:\/\/www\.amazon\.com\/dp\/[A-Z0-9]{10}$/)
+    }
+  })
 })
