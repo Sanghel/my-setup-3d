@@ -1,16 +1,16 @@
 {
-  "_note": "Pose de la vista general del diorama (three.js, metros, Y arriba): lejos, arriba y en diagonal, con lente estrecha para un look casi isométrico (design D13). La leen App.tsx y el preview de Blender (también el color de fondo).",
+  "_note": "Pose de la vista general (three.js, metros, Y arriba). Desde el rediseño (redesign-showroom-style D6) es la del mock de Claude Design: azimut -39°, polar 67°, FOV 30, distancia 8 m y objetivo en el centro de la profundidad del cuarto (más profundo que el del mock), para que entre el plinto completo. La leen App.tsx y el preview de Blender.",
   "position": [
-    -3.6,
-    6.55,
-    6.5
+    -3.77,
+    4.0,
+    7.17
   ],
   "target": [
-    0.9,
-    0.95,
-    1.1
+    0.85,
+    0.85,
+    1.45
   ],
-  "fov": 28,
+  "fov": 30,
   "background": "#1b1d24",
   "limits": {
     "_note": "Grados y metros. Azimut 0 = cámara en +z del objetivo; negativo = hacia -x. El cuadrante abierto del diorama (frente a las dos paredes) es azimut -90..0.",
@@ -19,12 +19,12 @@
       -10
     ],
     "polarDeg": [
-      25,
-      75
+      35,
+      80
     ],
     "distance": [
-      4,
-      14
+      3.5,
+      12
     ]
   }
 }

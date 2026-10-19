@@ -31,6 +31,10 @@ describe('polvo', () => {
     expect(dustOpacity(1)).toBe(0)
   })
 
+  it('se desvanece al inspeccionar (la cámara queda encima de las partículas)', () => {
+    expect(dustOpacity(0, 0)).toBe(0)
+  })
+
   it('nace dentro del haz, igual en cada visita', () => {
     const a = seedDust(50, box)
     expect(a).toEqual(seedDust(50, box))

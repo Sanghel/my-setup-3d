@@ -80,20 +80,33 @@ export function inspectionPose(
 export const MOBILE_SHEET = 0.46
 export const isNarrowScreen = (width: number) => width <= 640
 
+/** Pantallas anchas: con el panel lateral abierto, la imagen se corre a la izquierda (mock: 16 % del ancho). */
+export const WIDE_SCREEN = 820
+export const PANEL_SHIFT = 0.16
+
 /**
- * Encuadre de inspección cuando la parte de abajo de la pantalla está tapada por un panel: el objeto
- * debe caber y centrarse en la parte visible. Devuelve el FOV y el aspecto de esa zona, y cuánto
- * subir el objeto en pantalla (focal offset de camera-controls, en metros a la distancia dada).
+ * Cómo se reparte la pantalla al inspeccionar (redesign D6). El panel tapa una parte: a la derecha en
+ * pantallas anchas, abajo en celular (hoja inferior). Devuelve:
+ * - `offset`: cuánto correr la imagen con camera.setViewOffset, en píxeles (x a la izquierda, y hacia
+ *   arriba), para que el objeto quede en el centro de la zona libre; y
+ * - `fovDeg` / `aspect` de esa zona libre, para que inspectionPose encuadre el objeto ahí.
+ * Correr la imagen (view offset) no mueve el punto de órbita: la cámara sigue girando alrededor del objeto.
  */
-export function visibleArea(fovDeg: number, aspect: number, covered: number) {
-  const visible = 1 - covered
-  const fov = MathUtils.radToDeg(2 * Math.atan(Math.tan(deg(fovDeg) / 2) * visible))
-  return {
-    fovDeg: fov,
-    aspect: aspect / visible,
-    /** Focal offset vertical a una distancia `d` (en camera-controls, positivo = el objeto sube en pantalla). */
-    offsetAt: (d: number) => (covered / 2) * 2 * d * Math.tan(deg(fovDeg) / 2),
+export function inspectionLayout(fovDeg: number, width: number, height: number) {
+  const aspect = width / height
+  if (isNarrowScreen(width)) {
+    const visible = 1 - MOBILE_SHEET
+    return {
+      offset: { x: 0, y: (MOBILE_SHEET / 2) * height },
+      fovDeg: MathUtils.radToDeg(2 * Math.atan(Math.tan(deg(fovDeg) / 2) * visible)),
+      aspect: aspect / visible,
+    }
   }
+  if (width > WIDE_SCREEN) {
+    // El objeto queda centrado en 0,34 del ancho: la zona libre útil es 2 × 0,34 = 68 % del ancho
+    return { offset: { x: PANEL_SHIFT * width, y: 0 }, fovDeg, aspect: aspect * (1 - 2 * PANEL_SHIFT) }
+  }
+  return { offset: { x: 0, y: 0 }, fovDeg, aspect }
 }
 
 /** Límites de órbita al inspeccionar: el rango de azimut del objeto y un polar amplio. */

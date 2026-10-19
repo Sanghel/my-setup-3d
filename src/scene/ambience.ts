@@ -21,6 +21,12 @@ export const ambienceUniforms = {
   windowTarde: { value: null as Texture | null },
 }
 
+/**
+ * Entrada animada (redesign D6): `elapsed` < 0 mientras el cuarto carga (pantalla negra); CameraRig la
+ * pone en 0 al empezar el vuelo de entrada y AmbienceDriver la avanza y sube la exposición.
+ */
+export const intro = { elapsed: -1 }
+
 /** Valor de `uAmbience` para cada ambiente. */
 export const AMBIENCE_VALUE: Record<Ambience, number> = { tarde: 0, noche: 1 }
 
