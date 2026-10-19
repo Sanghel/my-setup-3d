@@ -129,5 +129,26 @@
   },
   "bake": {
     "exposure": 1.0
+  },
+  "mockFinish": {
+    "_note": "Grosores del mock de Claude Design (match-mock-content D9). Difieren de los reales a propósito: patas reales 2 cm (desk.legThickness), tablero real 1,5 cm (desk.top).",
+    "deskLeg": 4.5,
+    "deskLegBevel": 1.0,
+    "deskStretcher": 3.5,
+    "deskTop": 3.0,
+    "deskTopBevel": 1.0,
+    "deskLegInset": 10,
+    "monitorBezel": 1.0,
+    "monitorChin": 2.5,
+    "ultrawideNeck": [
+      6,
+      3.5
+    ],
+    "verticalBezel": 1.0,
+    "armPole": 4.0,
+    "armSegment": [
+      5,
+      4.5
+    ]
   }
 }

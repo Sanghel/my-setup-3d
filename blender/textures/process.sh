@@ -31,7 +31,7 @@ tint() {
 #   piso   hsl(26 28% 30%) del mock, algo más claro porque el horneado lo oscurece  (antes 117,101,88)
 #   zócalo #3a2a20                                                                 (antes 95,72,52)
 #   pared  #f0e6da crema                                                           (antes 215,214,210)
-tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/floor_diff.jpg" 70 112 82 60
+tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/floor_diff.jpg" 70 98 73 55   # hsl(26 28% 30%) exacto del mock (match-mock-content 3.5)
 tint "$SRC/laminate_floor_02_diff_2k.jpg" "$OUT/baseboard_diff.jpg" 60 58 42 32
 tint "$SRC/beige_wall_001_diff_2k.jpg" "$OUT/wall_diff.jpg" 25 240 230 218
 

@@ -3,7 +3,8 @@
     "Fotos del usuario → texturas (npm run textures:photos). Los originales viven en el vault (insumos/), NUNCA en el repo.",
     "corners: esquinas del objeto en la foto ya orientada (-auto-orient), normalizadas 0–1, en orden TL, TR, BR, BL.",
     "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen.",
-    "Pantallas (match-mock-content D4): fondos del mock de Claude Design (wallpapers del usuario, pantalla de bloqueo con degradados rosa/azul), en el vault docs/referencia-mock/tex_uw.jpg y tex_vert.jpg; recortados al centro a la proporción del panel (2,39 y 0,56) y escalados a 2048×858 / 1024×1832. `npm run textures:screens` (código del repo) ya no forma parte del pipeline."
+    "Pantallas (match-mock-content D4): fondos del mock de Claude Design (wallpapers del usuario, pantalla de bloqueo con degradados rosa/azul), en el vault docs/referencia-mock/tex_uw.jpg y tex_vert.jpg; recortados al centro a la proporción del panel (2,39 y 0,56) y escalados a 2048×858 / 1024×1832. `npm run textures:screens` (código del repo) ya no forma parte del pipeline.",
+    "Cuadros y desk mat (match-mock-content D9, 3.4): jersey_2008.jpg, jersey_scholes.jpg y poster.jpg salen de las texturas del mock (recortes de fotos del usuario; vault docs/referencia-mock/tex_moscu|tex_scholes|tex_ot.jpg), recortadas al centro a la proporción del interior de cada marco real (cover). desk_mat.jpg es el diseño procedural del mock (fondo #141416, 'E N G I N E E R S' y líneas de código tenues). La foto de tienda de Scholes deja de usarse."
   ],
   "photos": {
     "poster": {
@@ -151,5 +152,11 @@
       "fuzz": "6%",
       "_note": "Provisional desde una foto de producto (fondo blanco recortado) sobre el gris del fondo del marco (81×92 cm interior). Reemplazar con F3 propia."
     }
+  },
+  "replaced_by_mock": {
+    "jersey_2008": "tex_moscu",
+    "jersey_scholes": "tex_scholes (antes: cutout web casualfootballshirts)",
+    "poster": "tex_ot",
+    "desk_mat": "procedural del mock"
   }
 }

@@ -3,6 +3,8 @@ Coordenadas del cuarto en cm: x a lo largo de la pared del fondo, d hacia adentr
 
 from dataclasses import dataclass
 
+import bpy
+
 from . import materials
 from .geometry import bar, bevel, box, group, quad
 
@@ -35,26 +37,33 @@ def build_desk(m: dict) -> DeskFrame:
     top = desk["height"]
     frame = DeskFrame(x0, x1, d0, d1, top)
 
-    top_mat = materials.principled("desk_top", "#18181a", roughness=0.55)
-    metal = materials.principled("desk_metal", "#111214", roughness=0.35, metallic=0.7)
-    t = desk["legThickness"]
-    under = top - desk["top"]  # cara inferior del tablero
+    top_mat = materials.principled("desk_top", "#1a1a1d", roughness=0.5)
+    metal = materials.principled("desk_metal", "#141414", roughness=0.45, metallic=0.7)
+    # Grosores del mock (mockFinish), más robustos que los reales; la altura total no cambia
+    fin = m["mockFinish"]
+    t, inset = fin["deskLeg"], fin["deskLegInset"]
+    under = top - fin["deskTop"]  # cara inferior del tablero
 
-    parts = [bevel(box("desk_top", (x0, x1, d0, d1, under, top), top_mat), 0.3)]
+    parts = [bevel(box("desk_top", (x0, x1, d0, d1, under, top), top_mat), fin["deskTopBevel"], 3)]
 
     # Patas en X a cada lado (en el plano d–up), con un riel bajo el tablero
-    for i, x in enumerate((x0 + 6, x1 - 6)):
+    for i, x in enumerate((x0 + inset, x1 - inset)):
         parts += [
-            bar(f"desk_leg_{i}_a", (x, d0 + 4, 0), (x, d1 - 4, under - t), t, t, metal),
-            bar(f"desk_leg_{i}_b", (x, d1 - 4, 0), (x, d0 + 4, under - t), t, t, metal),
-            box(f"desk_rail_{i}", (x - t / 2, x + t / 2, d0 + 2, d1 - 2, under - t, under), metal),
+            bevel(bar(f"desk_leg_{i}_a", (x, d0 + 4, 0), (x, d1 - 4, under - t), t, t, metal), fin["deskLegBevel"], 2),
+            bevel(bar(f"desk_leg_{i}_b", (x, d1 - 4, 0), (x, d0 + 4, under - t), t, t, metal), fin["deskLegBevel"], 2),
+            bevel(box(f"desk_rail_{i}", (x - t / 2, x + t / 2, d0 + 2, d1 - 2, under - t, under), metal), fin["deskLegBevel"], 2),
         ]
-    # Larguero horizontal que une los cruces de las dos X (como en el escritorio real).
+    # Larguero horizontal que une los cruces de las dos X (como en el escritorio real y en el mock).
     # Las diagonales son simétricas, así que se cruzan en el centro del fondo y a media altura de la pata.
     cross_d = (d0 + d1) / 2
     cross_up = (under - t) / 2
+    s_t = fin["deskStretcher"]
     parts.append(
-        box("desk_stretcher", (x0 + 6, x1 - 6, cross_d - t / 2, cross_d + t / 2, cross_up - t / 2, cross_up + t / 2), metal)
+        bevel(
+            box("desk_stretcher", (x0 + inset, x1 - inset, cross_d - s_t / 2, cross_d + s_t / 2, cross_up - s_t / 2, cross_up + s_t / 2), metal),
+            fin["deskLegBevel"] * 0.8,
+            2,
+        )
     )
 
     # Desk mat: goma negra de 3 mm con la foto encima, centrado bajo el ultrawide, cerca del borde frontal
@@ -123,20 +132,30 @@ def build_ultrawide(m: dict, desk: DeskFrame):
     bottom = desk.top + lift
     plastic = materials.principled("ultrawide_plastic", "#1c1c1f", roughness=0.45)
     stand = materials.principled("ultrawide_stand", "#2a2b2f", roughness=0.35, metallic=0.6)
-    screen, housing = curved_panel(
-        "ultrawide", xc, gap, bottom, w, h, uw["radius"], 2.0,
+    fin = m["mockFinish"]
+    bez, chin = fin["monitorBezel"], fin["monitorChin"]
+    # Carcasa más grande que la pantalla (marco y "mentón" del mock); la pantalla va 1,5 mm por delante
+    frame_front, housing = curved_panel(
+        "ultrawide_frame", xc, gap, bottom - chin, w + 2 * bez, h + chin + bez, uw["radius"], 2.5, plastic, plastic,
+    )
+    frame_front.name = frame_front.data.name = "ultrawide_bezel"  # sin sufijo _screen: es plástico y recibe luz
+    screen, _unused = curved_panel(
+        "ultrawide", xc, gap + 0.15, bottom, w, h, uw["radius"], 0.1,
         materials.screen("ultrawide_screen", "screen_ultrawide.jpg", strength=SCREEN_STRENGTH), plastic,
     )
+    bpy.data.objects.remove(_unused)  # la carcasa delgada de la pantalla sobra: la pone el marco
     bw, bd = uw["base"]["width"], uw["base"]["depth"]
-    back = gap - 2.0
+    nw, nd = fin["ultrawideNeck"]
+    back = gap - 2.5
     parts = [
         screen,
-        bevel(housing, 0.3),
+        frame_front,  # el frente del marco: se ve alrededor de la pantalla
+        bevel(housing, 0.4),
         # Bulto trasero de la electrónica (donde va la luz ámbar en el grupo 7)
         bevel(box("ultrawide_back", (xc - 18, xc + 18, back - 4, back, bottom + 7, bottom + 27), plastic), 1.0, 3),
         # Cuello y base
-        bevel(box("ultrawide_neck", (xc - 2.5, xc + 2.5, back - 7, back - 4, desk.top, bottom + 20), stand), 0.4),
-        bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand), 0.3),
+        bevel(box("ultrawide_neck", (xc - nw / 2, xc + nw / 2, back - 4 - nd, back - 4, desk.top, bottom + 20), stand), 0.8, 3),
+        bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1.2), stand), 0.5, 3),
     ]
     group("item_ultrawide", parts, (xc, gap, desk.top))
     return {"xc": xc, "back": back - 4, "bottom": bottom}
@@ -162,11 +181,13 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         """Punto a `along` cm sobre el ancho y `out` cm hacia el frente del centro del panel."""
         return (cx + s[0] * along + n[0] * out, cd + s[1] * along + n[1] * out, up)
 
-    panel = bevel(bar("vertical_panel", at(0, -1, bottom), at(0, -1, top), w, 2.0, plastic, side=(s[0], s[1], 0)), 0.4)
+    fin = m["mockFinish"]
+    vb = fin["verticalBezel"]
+    panel = bevel(bar("vertical_panel", at(0, -1.1, bottom), at(0, -1.1, top), w, 2.2, plastic, side=(s[0], s[1], 0)), 0.6, 3)
     screen = quad(
         "vertical_screen",
-        [at(-w / 2 + 0.6, 0.02, bottom + 0.6), at(w / 2 - 0.6, 0.02, bottom + 0.6),
-         at(w / 2 - 0.6, 0.02, top - 0.6), at(-w / 2 + 0.6, 0.02, top - 0.6)],
+        [at(-w / 2 + vb, 0.02, bottom + vb), at(w / 2 - vb, 0.02, bottom + vb),
+         at(w / 2 - vb, 0.02, top - vb), at(-w / 2 + vb, 0.02, top - vb)],
         materials.screen("vertical_screen", "screen_vertical.jpg", strength=SCREEN_STRENGTH),
     )
     vesa = at(0, -3.5, (bottom + top) / 2)
@@ -180,9 +201,10 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         # y se veía como una línea negra sobre el fondo claro)
         bar("vertical_vesa", at(0, -3.5, vesa[2] - 5), at(0, -3.5, vesa[2] + 5), 10, 3, metal, side=(s[0], s[1], 0)),
         bevel(box("arm_clamp", (px - 4, px + 4, pd - 4, pd + 4, desk.top, desk.top + 2.5), metal), 0.4),
-        bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), 3.5, 3.5, metal),
-        bar("arm_lower", (px, pd, vesa[2] - 4), elbow, 4, 3, metal, side=(0, 0, 1)),
-        bar("arm_upper", elbow, vesa, 4, 3, metal, side=(0, 0, 1)),
+        # Brazo con los grosores del mock (piezas redondeadas, bien visibles)
+        bevel(bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), fin["armPole"], fin["armPole"], metal), 0.8, 3),
+        bevel(bar("arm_lower", (px, pd, vesa[2] - 4), elbow, *fin["armSegment"], metal, side=(0, 0, 1)), 1.0, 3),
+        bevel(bar("arm_upper", elbow, vesa, *fin["armSegment"], metal, side=(0, 0, 1)), 1.0, 3),
     ]
     group("item_vertical_monitor", parts, (cx, cd, desk.top))
 
@@ -201,7 +223,7 @@ KEYBOARD_MARGINS = {"side": 0.15, "back": 1.13, "front": 0.25}  # cm, medidos en
 
 
 def build_keyboard(m: dict, desk: DeskFrame):
-    from .geometry import bevel, boxes
+    from .geometry import boxes
 
     kb = m["keyboard"]
     W, D = kb["width"], kb["depth"]
@@ -213,9 +235,14 @@ def build_keyboard(m: dict, desk: DeskFrame):
     pitch_d = (D - back - front) / len(KEY_ROWS)
     gap = 0.12  # separación entre teclas (cm)
 
-    # Una sola foto (tu teclado desde arriba) para carcasa y teclas: letras, íconos y desgaste reales
-    photo = materials.photo("keyboard_photo", "keyboard_top.jpg", roughness=0.55)
-    uv = (x0, x0 + W, d0, d0 + D)
+    # Acabado del mock (match-mock-content D9): cuerpo gris metálico, teclas oscuras con un leve brillo azul
+    # y una placa azul emisiva bajo las teclas, que asoma por las separaciones (retroiluminación)
+    body_mat = materials.principled("keyboard_body", "#2c2d31", roughness=0.4, metallic=0.5)
+    key_mat = materials.principled("keyboard_keys", "#1f2026", roughness=0.6)
+    key_bsdf = key_mat.node_tree.nodes["Principled BSDF"]
+    key_bsdf.inputs["Emission Color"].default_value = materials.hex_color("#2a46a8")
+    key_bsdf.inputs["Emission Strength"].default_value = 0.12  # brillo tenue: el azul fuerte es el de la placa
+    glow = materials.emission("keyboard_backlight", "#4d7dff", 2.0)
 
     caps = []
     for row_i, row in enumerate(KEY_ROWS):
@@ -227,10 +254,26 @@ def build_keyboard(m: dict, desk: DeskFrame):
             x += size
 
     parts = [
-        bevel(boxes("keyboard_body", [(x0, x0 + W, d0, d0 + D, desk.top, base_top)], photo, uv_top=uv), 0.3),
-        bevel(boxes("keyboard_keys", caps, photo, uv_top=uv), 0.12, segments=1),
+        bevel(box("keyboard_body", (x0, x0 + W, d0, d0 + D, desk.top, base_top), body_mat), 0.4, 3),
+        # Sufijo _screen: emite su propia luz y no recibe luz horneada (como las pantallas)
+        box("keyboard_backlight_screen", (x0 + side, x0 + W - side, d0 + back, d0 + D - front, base_top, base_top + 0.08), glow),
+        bevel(boxes("keyboard_keys", caps, key_mat), 0.15, segments=2),
+        build_mouse(x0 + W + 12, d0 + D / 2, desk.top),
     ]
     group("item_keyboard", parts, (x0 + W / 2, d0 + D / 2, desk.top))
+
+
+def build_mouse(x: float, d: float, on: float) -> bpy.types.Object:
+    """Mouse negro del mock: una esfera achatada y alargada (6,7 × 3,5 × 10,5 cm)."""
+    from .geometry import to_blender
+
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, radius=0.035, location=to_blender(x, d, on + 1.2))
+    mouse = bpy.context.active_object
+    mouse.name = mouse.data.name = "keyboard_mouse"
+    mouse.scale = (0.95, 1.5, 0.5)  # ejes de Blender: x ancho, y largo (d), z alto
+    bpy.ops.object.transform_apply(scale=True)
+    mouse.data.materials.append(materials.principled("mouse_black", "#26272b", roughness=0.45))
+    return mouse
 
 
 def _wall_point(m: dict, wall: str):
