@@ -1,4 +1,5 @@
 import { ITEMS } from '../data/items'
+import { BackButton } from './BackButton'
 import { DetailsPanel } from './DetailsPanel'
 import './ui.css'
 
@@ -6,7 +7,9 @@ import './ui.css'
 export function Overlay() {
   return (
     <div className="overlay">
-      <DetailsPanel items={ITEMS} />
+      <DetailsPanel items={ITEMS}>
+        <BackButton />
+      </DetailsPanel>
     </div>
   )
 }
