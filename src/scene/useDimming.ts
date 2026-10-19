@@ -16,10 +16,13 @@ interface DimState {
 
 /**
  * El environment map (NightEnvironment) es solo para REFLEJOS. En three.js, scene.environment
- * también ilumina en difuso a todos los materiales: en las superficies mates eso se sumaba a la luz
- * horneada (doble iluminación). Solo lo que refleja (vidrio, pantallas, metal pulido) lo conserva.
+ * también ilumina en difuso a todos los materiales, y en los de color claro eso se sumaba a la luz
+ * horneada (doble iluminación). Lo conservan solo los metales y los materiales oscuros sin textura
+ * (vidrio, pantallas): en ellos la parte difusa no aporta nada y lo que se ve son los reflejos.
+ * (Ojo: la rugosidad no sirve como criterio; el poster es brillante pero de color claro.)
  */
-const reflective = (material: MeshStandardMaterial) => material.roughness < 0.5 || material.metalness > 0.3
+const reflective = (material: MeshStandardMaterial) =>
+  material.metalness > 0.3 || (!material.map && material.color.getHSL({ h: 0, s: 0, l: 0 }).l < 0.08)
 
 /**
  * En inspección, el resto del cuarto se atenúa para que el objeto destaque (design D10).
