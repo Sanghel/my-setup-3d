@@ -37,4 +37,6 @@ execFileSync('magick', [
   '-fill', '#3a2420', '-draw', buildings.join(' '),
   '-quality', '92', out,
 ])
-console.log(`[sky] ${out} (${W}×${H})`)
+// La web lo mezcla con la ciudad de noche en la ventana (ambience.ts)
+execFileSync('magick', [out, '-quality', '88', 'public/models/window-tarde.webp'])
+console.log(`[sky] ${out} (${W}×${H}) + public/models/window-tarde.webp`)

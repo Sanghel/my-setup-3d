@@ -4,6 +4,7 @@ import { AgXToneMapping } from 'three'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
 import './dev/exposeStore'
 import overviewCamera from './scene/overviewCamera.json'
+import { AmbienceDriver } from './scene/AmbienceDriver'
 import { CameraRig } from './scene/CameraRig'
 import { Effects } from './scene/Effects'
 import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
@@ -44,6 +45,7 @@ export default function App() {
         <color attach="background" args={[overviewCamera.background]} />
         {/* Sin luces en tiempo real: toda la luz difusa está horneada en el lightmap */}
         <NightEnvironment />
+        <AmbienceDriver />
         <Effects />
         <TooltipProbe />
         {/* Suspense: mientras el .glb se descarga no se dibuja nada; el porcentaje lo muestra <Loader> */}

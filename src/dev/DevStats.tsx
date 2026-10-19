@@ -30,6 +30,7 @@ export function DevStatsProbe() {
   const frame = useRef(0)
   // Prioridad 0: corre ANTES del render del composer (prioridad 1), así gl.info tiene el cuadro anterior completo
   useFrame(({ gl }) => {
+    window.__gl = gl // para inspeccionar el renderer desde la consola (programas, memoria)
     gl.info.autoReset = false
     // Refrescar el texto cada ~30 cuadros basta
     if (label && ++frame.current % 30 === 0) {

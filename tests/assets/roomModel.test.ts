@@ -13,7 +13,6 @@ import { ITEMS } from '../../src/data/items.ts'
  */
 
 const GLB = 'public/models/room.glb'
-const LIGHTMAP = 'public/models/lightmap.webp'
 const LIGHTMAP_META = 'public/models/lightmap.json'
 // Un lightmap por ambiente (redesign-showroom-style D1/D2), horneados sobre la misma UV2
 const AMBIENCES = ['tarde', 'noche'] as const
@@ -54,7 +53,7 @@ beforeAll(async () => {
 describe('room.glb', () => {
   it('el modelo y sus lightmaps pesan juntos como máximo 15 MB', () => {
     const lightmaps = AMBIENCES.reduce((sum, name) => sum + statSync(ambienceLightmap(name)).size, 0)
-    expect(statSync(GLB).size + statSync(LIGHTMAP).size + lightmaps).toBeLessThanOrEqual(MAX_BYTES)
+    expect(statSync(GLB).size + lightmaps).toBeLessThanOrEqual(MAX_BYTES)
   })
 
   it.each(AMBIENCES)('tiene el lightmap de %s con su intensidad y exposición', (name) => {
@@ -64,11 +63,8 @@ describe('room.glb', () => {
     expect(statSync(ambienceLightmap(name)).size).toBeGreaterThan(0)
   })
 
-  it('tiene el lightmap horneado con su factor de intensidad', () => {
-    const meta = JSON.parse(readFileSync(LIGHTMAP_META, 'utf8'))
-    expect(meta.uv).toBe('TEXCOORD_1')
-    expect(meta.intensity).toBeGreaterThan(0)
-    expect(statSync(LIGHTMAP).size).toBeGreaterThan(0)
+  it('la metadata del lightmap declara la UV del lightmap', () => {
+    expect(JSON.parse(readFileSync(LIGHTMAP_META, 'utf8')).uv).toBe('TEXCOORD_1')
   })
 
   it.each(ROOM_NODES)('tiene el nodo %s con geometría', (name) => {

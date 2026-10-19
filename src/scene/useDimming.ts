@@ -30,7 +30,14 @@ export function useDimming(scene: Object3D) {
     scene.traverse((object) => {
       const mesh = object as Mesh
       if (!mesh.isMesh) return
-      if (mesh.userData.itemId) mesh.material = (mesh.material as MeshStandardMaterial).clone()
+      if (mesh.userData.itemId) {
+        const original = mesh.material as MeshStandardMaterial
+        const copy = original.clone()
+        // clone() no copia el parche del shader (mezcla de ambientes): se pasa a mano
+        copy.onBeforeCompile = original.onBeforeCompile
+        copy.customProgramCacheKey = original.customProgramCacheKey
+        mesh.material = copy
+      }
       const material = mesh.material as MeshStandardMaterial
       const env = ENV_INTENSITY
       mesh.userData.dim = {

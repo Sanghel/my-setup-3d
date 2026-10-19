@@ -2,15 +2,16 @@ import { useLayoutEffect } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
 import { useGLTF, useTexture } from '@react-three/drei'
 import { SRGBColorSpace, type Mesh, type MeshStandardMaterial, type Texture } from 'three'
-import lightmap from '../../public/models/lightmap.json'
 import { ITEMS } from '../data/items'
+import { ambienceUniforms, patchAmbienceLightmap, patchWindowView } from './ambience'
 import { useSceneStore } from '../state/sceneStore'
 import { bindCatalog, itemIdOf } from './bindCatalog'
 import { useCatalogRegistry } from './catalogRegistry'
 import { useDimming } from './useDimming'
 
 export const ROOM_URL = '/models/room.glb'
-export const LIGHTMAP_URL = '/models/lightmap.webp'
+const LIGHTMAP_URLS = ['/models/lightmap-noche.webp', '/models/lightmap-tarde.webp']
+const WINDOW_TARDE_URL = '/models/window-tarde.webp'
 
 // useGLTF(url, useDraco, useMeshopt): el .glb usa meshopt (decodificador incluido en three-stdlib).
 // Draco desactivado: no lo usamos y drei lo descargaría desde un CDN externo.
@@ -21,26 +22,27 @@ const USE_MESHOPT = true
 const DRAG_THRESHOLD_PX = 6
 
 /**
- * El cuarto exportado desde Blender con su luz horneada (design D5).
- * lightMapIntensity = k, el factor con el que se escaló el lightmap al guardarlo en 8 bits.
- * Junto con el relleno del environment (useDimming) da el aspecto elegido. La versión "físicamente
- * exacta" (k × π, sin relleno) se probó: coincide mejor con Blender, pero amplifica el ruido del
- * horneado y deja las camisetas ilegibles (nota 09).
+ * El cuarto exportado desde Blender con su luz horneada en dos ambientes, Tarde y Noche
+ * (redesign-showroom-style D1). Cada lightmap se escala por su k (el factor con el que se guardó en
+ * 8 bits) y se mezclan en el shader (ambience.ts). Junto con el relleno del environment (useDimming)
+ * da el aspecto elegido; la versión "físicamente exacta" (k × π, sin relleno) se descartó (nota 09).
  */
 export function Room() {
   const { scene } = useGLTF(ROOM_URL, USE_DRACO, USE_MESHOPT)
-  const lightMap = useTexture(LIGHTMAP_URL, configureLightMap)
+  const [noche, tarde] = useTexture(LIGHTMAP_URLS, (textures) => textures.forEach(configureLightMap))
+  const windowTarde = useTexture(WINDOW_TARDE_URL, configureWindow)
 
   useLayoutEffect(() => {
+    ambienceUniforms.lightMapTarde.value = tarde
+    ambienceUniforms.windowTarde.value = windowTarde
     scene.traverse((object) => {
       const mesh = object as Mesh
-      if (!mesh.isMesh || !mesh.geometry.getAttribute('uv1')) return
+      if (!mesh.isMesh) return
       const material = mesh.material as MeshStandardMaterial
-      material.lightMap = lightMap
-      material.lightMapIntensity = lightmap.intensity
-      material.needsUpdate = true
+      if (mesh.geometry.getAttribute('uv1')) patchAmbienceLightmap(material, noche)
+      else if (material.name === 'window_view') patchWindowView(material)
     })
-  }, [scene, lightMap])
+  }, [scene, noche, tarde, windowTarde])
 
   // Une el catálogo con la escena: las piezas de cada objeto quedan marcadas con su itemId
   const setRoots = useCatalogRegistry((s) => s.setRoots)
@@ -86,6 +88,12 @@ function configureLightMap(texture: Texture) {
   texture.channel = 1 // TEXCOORD_1 = UVMap_light
 }
 
+function configureWindow(texture: Texture) {
+  texture.colorSpace = SRGBColorSpace
+  texture.flipY = false // se lee con la UV del plano del .glb, como su textura de noche
+}
+
 // Empieza a descargar apenas se importa el módulo, sin esperar al primer render
 useGLTF.preload(ROOM_URL, USE_DRACO, USE_MESHOPT)
-useTexture.preload(LIGHTMAP_URL)
+useTexture.preload(LIGHTMAP_URLS)
+useTexture.preload(WINDOW_TARDE_URL)
