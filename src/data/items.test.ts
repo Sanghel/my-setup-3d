@@ -59,7 +59,7 @@ describe('numeración y grupos (índice del mock)', () => {
 
   it('enlaces de compra: solo los confirmados, limpios (sin parámetros ni afiliado)', () => {
     const withBuy = ITEMS.filter((item) => item.buy?.length).map((item) => item.id)
-    expect(withBuy).toEqual(['ultrawide', 'keyboard', 'chair', 'pegboard', 'funko'])
+    expect(withBuy).toEqual(['ultrawide', 'vertical-monitor', 'keyboard', 'chair', 'pegboard', 'funko'])
     for (const link of ITEMS.flatMap((item) => item.buy ?? [])) {
       const url = new URL(link.url)
       expect(url.protocol).toBe('https:')

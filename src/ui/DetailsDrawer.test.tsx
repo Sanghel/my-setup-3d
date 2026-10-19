@@ -108,9 +108,9 @@ describe('DetailsDrawer', () => {
     expect(buy()).toEqual(['Ver JBL en Amazon ↗', 'Ver DualSense en Amazon ↗'])
   })
 
-  it('sin enlace confirmado (monitor vertical): sin botón de compra', () => {
+  it('sin enlace confirmado (camiseta Scholes): sin botón de compra', () => {
     render(<DetailsDrawer />)
-    select('vertical-monitor')
+    select('jersey-scholes')
     expect(panel().querySelector('.drawer__buy')).toBeNull()
   })
 
