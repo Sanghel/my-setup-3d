@@ -3,8 +3,10 @@ import { CameraControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { AgXToneMapping } from 'three'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
+import './dev/exposeStore'
 import overviewCamera from './scene/overviewCamera.json'
 import { Effects } from './scene/Effects'
+import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
 import { NightEnvironment } from './scene/NightEnvironment'
 import { Room } from './scene/Room'
 
@@ -24,6 +26,7 @@ export default function App() {
         {/* Sin luces en tiempo real: toda la luz difusa está horneada en el lightmap */}
         <NightEnvironment />
         <Effects />
+        <TooltipProbe />
         {/* Suspense: mientras el .glb se descarga no se dibuja nada (el loader real llega en 11.4) */}
         <Suspense fallback={null}>
           <Room />
@@ -40,6 +43,7 @@ export default function App() {
           }}
         />
       </Canvas>
+      <HoverTooltip />
       {import.meta.env.DEV && <DevStatsLabel />}
     </>
   )
