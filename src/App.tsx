@@ -10,6 +10,7 @@ import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
 import { NightEnvironment } from './scene/NightEnvironment'
 import { Room } from './scene/Room'
 import { useSceneStore } from './state/sceneStore'
+import { LoadError } from './ui/LoadError'
 import { Overlay } from './ui/Overlay'
 
 /** Desplazamiento máximo (px) para que un click en el vacío cuente como click y no como arrastre. */
@@ -28,7 +29,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <LoadError>
       <Canvas
         onPointerDown={onPointerDown}
         onPointerMissed={onPointerMissed}
@@ -45,7 +46,7 @@ export default function App() {
         <NightEnvironment />
         <Effects />
         <TooltipProbe />
-        {/* Suspense: mientras el .glb se descarga no se dibuja nada (el loader real llega en 11.4) */}
+        {/* Suspense: mientras el .glb se descarga no se dibuja nada; el porcentaje lo muestra <Loader> */}
         <Suspense fallback={null}>
           <Room />
         </Suspense>
@@ -55,6 +56,6 @@ export default function App() {
       <HoverTooltip />
       <Overlay />
       {import.meta.env.DEV && <DevStatsLabel />}
-    </>
+    </LoadError>
   )
 }
