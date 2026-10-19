@@ -2,18 +2,16 @@ import { useEffect, useRef } from 'react'
 import { CameraControls } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import CameraControlsImpl from 'camera-controls'
-import { Box3, Sphere, Vector3, type PerspectiveCamera } from 'three'
+import { Box3, MathUtils, Sphere, Vector3, type PerspectiveCamera } from 'three'
 import { itemById } from '../data/items'
 import { useSceneStore } from '../state/sceneStore'
 import {
   applyInspectionLimits,
   applyOverviewLimits,
   inspectionPose,
-  isNarrowScreen,
-  MOBILE_SHEET,
+  inspectionLayout,
   overviewPosition,
   OVERVIEW_TARGET,
-  visibleArea,
 } from './cameraPoses'
 import { useCatalogRegistry } from './catalogRegistry'
 import { flightPose, FLY_IN_SECONDS, FLY_OUT_SECONDS, type Flight, type Vec3 } from './cameraTween'
@@ -72,6 +70,18 @@ export function CameraRig() {
     return () => controls.removeEventListener('controlstart', interrupt)
   }, [])
 
+  // Desplazamiento de la imagen (px), animado: se acerca al objetivo con damp, como en el mock
+  const viewOffset = useRef({ x: 0, y: 0 })
+  useFrame(({ size: { width, height } }, delta) => {
+    const inspecting = useSceneStore.getState().mode === 'inspecting'
+    const goal = inspecting ? inspectionLayout(camera.fov, width, height).offset : { x: 0, y: 0 }
+    const current = viewOffset.current
+    current.x = MathUtils.damp(current.x, goal.x, 4.2, delta)
+    current.y = MathUtils.damp(current.y, goal.y, 4.2, delta)
+    if (Math.abs(current.x) > 0.5 || Math.abs(current.y) > 0.5) camera.setViewOffset(width, height, current.x, current.y, width, height)
+    else if (camera.view?.enabled) camera.clearViewOffset()
+  })
+
   useFrame((_, delta) => {
     const controls = ref.current
     const active = flight.current
@@ -112,16 +122,12 @@ export function CameraRig() {
     const root = selectedId ? roots.get(selectedId) : undefined
     if (mode === 'inspecting' && item && root) {
       const sphere = new Box3().setFromObject(root).getBoundingSphere(new Sphere())
-      // En móvil el panel de detalles tapa la parte de abajo: encuadrar en la parte visible
-      const covered = isNarrowScreen(size.width) ? MOBILE_SHEET : 0
-      const area = visibleArea(camera.fov, size.width / size.height, covered)
-      const pose = inspectionPose(sphere.center.toArray(), sphere.radius, item.view, area.fovDeg, area.aspect)
-      const distance = Math.hypot(...pose.position.map((p, i) => p - pose.target[i]))
-      void controls.setFocalOffset(0, area.offsetAt(distance), 0, animate)
+      // El panel tapa una parte de la pantalla: encuadrar en la zona libre (el view offset corre la imagen)
+      const layout = inspectionLayout(camera.fov, size.width, size.height)
+      const pose = inspectionPose(sphere.center.toArray(), sphere.radius, item.view, layout.fovDeg, layout.aspect)
       flyTo(controls, pose, FLY_IN_SECONDS, () => applyInspectionLimits(controls, pose, item.view.azimuthRange), animate)
     } else {
       const aspect = size.width / size.height
-      void controls.setFocalOffset(0, 0, 0, animate)
       const to = { position: overviewPosition(aspect), target: OVERVIEW_TARGET }
       flyTo(controls, to, FLY_OUT_SECONDS, () => applyOverviewLimits(controls, aspect), animate)
     }

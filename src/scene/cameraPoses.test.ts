@@ -4,8 +4,8 @@ import {
   OVERVIEW_POSITION,
   OVERVIEW_REFERENCE_ASPECT,
   OVERVIEW_TARGET,
+  inspectionLayout,
   overviewPosition,
-  visibleArea,
 } from './cameraPoses'
 
 const dist = (a: number[], b: number[]) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])
@@ -60,21 +60,26 @@ describe('vista general según el aspecto', () => {
   })
 })
 
-describe('visibleArea (panel inferior en móvil)', () => {
-  it('sin panel no cambia nada', () => {
-    const area = visibleArea(28, 0.5, 0)
-    expect(area.fovDeg).toBeCloseTo(28, 6)
-    expect(area.aspect).toBeCloseTo(0.5, 6)
-    expect(area.offsetAt(3)).toBeCloseTo(0, 6)
+describe('inspectionLayout (dónde queda el objeto con el panel abierto)', () => {
+  const halfHeight = (fov: number) => Math.tan(((fov / 2) * Math.PI) / 180)
+
+  it('pantalla ancha: la imagen se corre 16 % a la izquierda y el encuadre usa el 68 % del ancho', () => {
+    const layout = inspectionLayout(30, 1500, 800)
+    expect(layout.offset).toEqual({ x: 240, y: 0 })
+    expect(layout.fovDeg).toBe(30)
+    expect(layout.aspect).toBeCloseTo((1500 / 800) * 0.68, 6)
   })
 
-  it('con media pantalla tapada: FOV y alto visibles a la mitad, y el objeto sube un cuarto de pantalla', () => {
-    const area = visibleArea(28, 0.5, 0.5)
-    const halfHeight = (fov: number) => Math.tan(((fov / 2) * Math.PI) / 180)
-    expect(halfHeight(area.fovDeg)).toBeCloseTo(halfHeight(28) / 2, 6)
-    expect(area.aspect).toBeCloseTo(1, 6)
-    const screenHeight = 2 * 3 * halfHeight(28) // alto de la pantalla en metros a 3 m
-    expect(area.offsetAt(3)).toBeCloseTo(screenHeight / 4, 6)
+  it('celular: la imagen sube media hoja y el encuadre usa la parte de arriba', () => {
+    const layout = inspectionLayout(30, 390, 844)
+    expect(layout.offset.x).toBe(0)
+    expect(layout.offset.y).toBeCloseTo((0.46 / 2) * 844, 6)
+    expect(halfHeight(layout.fovDeg)).toBeCloseTo(halfHeight(30) * 0.54, 6)
+    expect(layout.aspect).toBeCloseTo(390 / 844 / 0.54, 6)
+  })
+
+  it('tablet (641–820 px): sin desplazamiento', () => {
+    expect(inspectionLayout(30, 800, 1000)).toEqual({ offset: { x: 0, y: 0 }, fovDeg: 30, aspect: 0.8 })
   })
 })
 
