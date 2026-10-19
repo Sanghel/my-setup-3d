@@ -20,7 +20,8 @@
     "textures:photos": "node scripts/process-photos.mjs",
     "textures:screens": "node scripts/render-screens.mjs",
     "assets:final": "npm run assets:build -- --bake --final && npm run assets:optimize && npm run assets:lightmap",
-    "assets:lightmap": "node scripts/encode-lightmap.mjs"
+    "assets:lightmap": "node scripts/encode-lightmap.mjs",
+    "textures:sky": "node scripts/render-sky.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

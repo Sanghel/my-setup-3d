@@ -19,6 +19,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--preview", action="store_true", help="renderizar blender/out/preview.png")
     parser.add_argument("--focus", help="con --preview: encuadrar solo este objeto (p. ej. item_desk)")
     parser.add_argument("--bake", action="store_true", help="hornear el lightmap (rápido, para iterar)")
+    parser.add_argument("--ambience", choices=["tarde", "noche"], default="noche",
+                        help="con --preview: ambiente de luz del render")
     parser.add_argument("--final", action="store_true", help="con --bake: calidad final (más muestras y resolución)")
     return parser.parse_args(argv)
 

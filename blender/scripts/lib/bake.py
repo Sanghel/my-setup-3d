@@ -59,11 +59,10 @@ def add_light_uvs(objects, margin: float = 0.004) -> None:
         uvs["UVMap"].active_render = True
 
 
-def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
+def bake_lightmap(objects, size: int, samples: int, out_png) -> float:
     """Hornea la iluminación difusa (directa + indirecta, sin el color del material) de todas las
-    mallas a un único atlas, usando UVMap_light. Devuelve el factor de escala usado al codificar."""
-    import json
-
+    mallas a un único atlas, usando UVMap_light, con las luces del ambiente activo.
+    Devuelve el factor de escala k usado al codificar (la web lo usa como lightMapIntensity)."""
     import numpy as np
 
     from .preview import setup_gpu
@@ -78,7 +77,7 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     bake.margin = 6
     bake.margin_type = "EXTEND"
 
-    image = bpy.data.images.new("lightmap_hdr", size, size, float_buffer=True, alpha=False)
+    image = bpy.data.images.new(f"lightmap_hdr_{out_png.stem}", size, size, float_buffer=True, alpha=False)
 
     # Cycles hornea en la imagen del nodo ACTIVO de cada material, sobre la UV activa de cada malla
     added = []
@@ -110,7 +109,7 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     k = float(np.percentile(lit, 97)) if lit.size else 1.0
     linear = np.clip(hdr / k, 0.0, 1.0)
     srgb = np.where(linear <= 0.0031308, linear * 12.92, 1.055 * np.power(linear, 1 / 2.4) - 0.055)
-    ldr = bpy.data.images.new("lightmap", size, size, alpha=False)
+    ldr = bpy.data.images.new(out_png.stem, size, size, alpha=False)
     ldr.colorspace_settings.name = "sRGB"
     rgba = np.concatenate([srgb, np.ones((size, size, 1), dtype=np.float32)], axis=2)
     ldr.pixels[:] = rgba.ravel()
@@ -118,6 +117,4 @@ def bake_lightmap(objects, size: int, samples: int, out_png, out_json) -> dict:
     ldr.file_format = "PNG"
     ldr.save()
 
-    meta = {"intensity": k, "size": size, "samples": samples, "encoding": "srgb", "uv": "TEXCOORD_1"}
-    out_json.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
-    return meta
+    return k

@@ -83,8 +83,9 @@ def add_preview_lights(m: dict) -> None:
     background.inputs["Strength"].default_value = 1.0
 
 
-def render_preview(m: dict, focus: str | None = None, samples: int = 64) -> str:
-    out = f"blender/out/preview-{focus}.png" if focus else "blender/out/preview.png"
+def render_preview(m: dict, focus: str | None = None, samples: int = 64, ambience: str = "noche") -> str:
+    name = f"preview-{focus}" if focus else "preview"
+    out = f"blender/out/{name}-{ambience}.png"
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
     setup_gpu()

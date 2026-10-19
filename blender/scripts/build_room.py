@@ -5,6 +5,7 @@ Uso (desde la raíz del repo):
     npm run assets:preview    → además renderiza blender/out/preview.png con Cycles
 """
 
+import json
 import sys
 from pathlib import Path
 
@@ -15,7 +16,7 @@ import bpy  # noqa: E402
 
 from lib.bake import add_light_uvs, apply_modifiers, bake_lightmap, is_bake_target  # noqa: E402
 from lib.common import ROOT, export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
-from lib.lights import build_night_lights  # noqa: E402
+from lib.lights import AMBIENCES, build_lights, set_ambience  # noqa: E402
 from lib.preview import WEB_BACKGROUND  # noqa: E402
 from lib.room import build_room  # noqa: E402
 from lib.setup import (  # noqa: E402
@@ -43,7 +44,7 @@ def main() -> None:
     build_frame(m, "jerseyScholes", "item_jersey_scholes", "jersey_scholes.jpg")
     poster = build_poster(m)
     build_window_view(m)
-    build_night_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
+    build_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
 
     targets = [obj for obj in bpy.data.objects if is_bake_target(obj) and not obj.get("cutter")]
     apply_modifiers(targets)
@@ -53,11 +54,21 @@ def main() -> None:
     add_light_uvs(targets)
 
     if args.bake:
+        # Un horneado por ambiente sobre la MISMA UV2 (redesign D1/D2): solo cambian luces y mundo
         size, samples = (2048, 1024) if args.final else (1024, 128)
         out = ROOT / "blender" / "out"
         out.mkdir(parents=True, exist_ok=True)
-        meta = bake_lightmap(targets, size, samples, out / "lightmap.png", out / "lightmap.json")
-        print(f"[build_room] lightmap {size}px · {samples} muestras · intensidad {meta['intensity']:.3f}")
+        meta = {"size": size, "samples": samples, "encoding": "srgb", "uv": "TEXCOORD_1", "ambiences": {}}
+        for name, cfg in AMBIENCES.items():
+            set_ambience(name)
+            k = bake_lightmap(targets, size, samples, out / f"lightmap-{name}.png")
+            meta["ambiences"][name] = {"intensity": k, "exposure": cfg["exposure"]}
+            print(f"[build_room] lightmap {name}: {size}px · {samples} muestras · intensidad {k:.3f}")
+        meta["intensity"] = meta["ambiences"]["noche"]["intensity"]  # compatibilidad: la web usa noche hasta el grupo 5
+        (out / "lightmap.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+
+    # El .glb sale con el exterior nocturno (la web lo cambia por ambiente desde el grupo 5)
+    set_ambience("noche")
 
     blend = save_blend(args.blend)
     glb = export_glb(args.out)
@@ -66,7 +77,8 @@ def main() -> None:
     if args.preview:
         from lib.preview import render_preview
 
-        print(f"[build_room] preview: {render_preview(m, args.focus)}")
+        set_ambience(args.ambience)
+        print(f"[build_room] preview ({args.ambience}): {render_preview(m, args.focus, ambience=args.ambience)}")
 
 
 main()
