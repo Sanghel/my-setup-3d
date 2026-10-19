@@ -16,14 +16,11 @@ interface DimState {
 }
 
 /**
- * El environment map (NightEnvironment) es solo para REFLEJOS: lo reciben, como envMap propio, los
- * metales y los materiales oscuros sin textura (vidrio, pantallas). En el resto (paredes, piso, fotos)
- * la luz es solo la horneada. Ojo: la rugosidad no sirve como criterio (el poster es brillante pero claro).
+ * Relleno del environment (NightEnvironment) sobre TODOS los materiales: además de los reflejos,
+ * aporta una luz difusa suave y pareja que hace legibles las camisetas y tapa el ruido fino del
+ * lightmap. Se asigna como envMap PROPIO de cada material (no como scene.environment), porque con
+ * scene.environment three.js ignora envMapIntensity y el atenuado de la inspección no lo podría bajar.
  */
-const reflective = (material: MeshStandardMaterial) =>
-  material.metalness > 0.3 || (!material.map && material.color.getHSL({ h: 0, s: 0, l: 0 }).l < 0.08)
-
-/** Intensidad de los reflejos del environment en los materiales que lo reciben. */
 const ENV_INTENSITY = 0.6
 
 export function useDimming(scene: Object3D) {
@@ -35,7 +32,7 @@ export function useDimming(scene: Object3D) {
       if (!mesh.isMesh) return
       if (mesh.userData.itemId) mesh.material = (mesh.material as MeshStandardMaterial).clone()
       const material = mesh.material as MeshStandardMaterial
-      const env = reflective(material) ? ENV_INTENSITY : 0
+      const env = ENV_INTENSITY
       mesh.userData.dim = {
         factor: 1,
         lightMap: material.lightMapIntensity,

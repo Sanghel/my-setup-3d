@@ -2,8 +2,8 @@ import { Environment, Lightformer } from '@react-three/drei'
 import { environmentTarget } from './environmentTarget'
 
 /**
- * Environment map nocturno generado en el navegador (sin descargar HDRIs): solo aporta REFLEJOS
- * en vidrio, pantallas y metal. La luz difusa ya viene horneada en el lightmap.
+ * Environment map nocturno generado en el navegador (sin descargar HDRIs): reflejos en vidrio,
+ * pantallas y metal, y un relleno difuso suave sobre la luz horneada.
  * Se genera sobre `environmentTarget`, no sobre la escena real (ver environmentTarget.ts).
  * Los "lightformers" imitan las fuentes reales: rojo (poster), ámbar (ultrawide), blanco (escritorio).
  */

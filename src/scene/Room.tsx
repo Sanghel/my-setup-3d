@@ -22,10 +22,10 @@ const DRAG_THRESHOLD_PX = 6
 
 /**
  * El cuarto exportado desde Blender con su luz horneada (design D5).
- * three.js usa el lightmap como irradiancia y el difuso de Lambert la divide por π; el horneado
- * DIFFUSE de Blender ya viene listo para multiplicar el color: por eso intensidad = k × π.
- * (Verificado contra el render de Blender. Una primera calibración "sin π" parecía correcta solo
- * porque scene.environment sumaba luz difusa a todo; ver environmentTarget.ts y la nota 09.)
+ * lightMapIntensity = k, el factor con el que se escaló el lightmap al guardarlo en 8 bits.
+ * Junto con el relleno del environment (useDimming) da el aspecto elegido. La versión "físicamente
+ * exacta" (k × π, sin relleno) se probó: coincide mejor con Blender, pero amplifica el ruido del
+ * horneado y deja las camisetas ilegibles (nota 09).
  */
 export function Room() {
   const { scene } = useGLTF(ROOM_URL, USE_DRACO, USE_MESHOPT)
@@ -37,7 +37,7 @@ export function Room() {
       if (!mesh.isMesh || !mesh.geometry.getAttribute('uv1')) return
       const material = mesh.material as MeshStandardMaterial
       material.lightMap = lightMap
-      material.lightMapIntensity = lightmap.intensity * Math.PI
+      material.lightMapIntensity = lightmap.intensity
       material.needsUpdate = true
     })
   }, [scene, lightMap])
