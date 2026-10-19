@@ -35,26 +35,33 @@ def build_desk(m: dict) -> DeskFrame:
     top = desk["height"]
     frame = DeskFrame(x0, x1, d0, d1, top)
 
-    top_mat = materials.principled("desk_top", "#18181a", roughness=0.55)
-    metal = materials.principled("desk_metal", "#111214", roughness=0.35, metallic=0.7)
-    t = desk["legThickness"]
-    under = top - desk["top"]  # cara inferior del tablero
+    top_mat = materials.principled("desk_top", "#1a1a1d", roughness=0.5)
+    metal = materials.principled("desk_metal", "#141414", roughness=0.45, metallic=0.7)
+    # Grosores del mock (mockFinish), más robustos que los reales; la altura total no cambia
+    fin = m["mockFinish"]
+    t, inset = fin["deskLeg"], fin["deskLegInset"]
+    under = top - fin["deskTop"]  # cara inferior del tablero
 
-    parts = [bevel(box("desk_top", (x0, x1, d0, d1, under, top), top_mat), 0.3)]
+    parts = [bevel(box("desk_top", (x0, x1, d0, d1, under, top), top_mat), fin["deskTopBevel"], 3)]
 
     # Patas en X a cada lado (en el plano d–up), con un riel bajo el tablero
-    for i, x in enumerate((x0 + 6, x1 - 6)):
+    for i, x in enumerate((x0 + inset, x1 - inset)):
         parts += [
-            bar(f"desk_leg_{i}_a", (x, d0 + 4, 0), (x, d1 - 4, under - t), t, t, metal),
-            bar(f"desk_leg_{i}_b", (x, d1 - 4, 0), (x, d0 + 4, under - t), t, t, metal),
-            box(f"desk_rail_{i}", (x - t / 2, x + t / 2, d0 + 2, d1 - 2, under - t, under), metal),
+            bevel(bar(f"desk_leg_{i}_a", (x, d0 + 4, 0), (x, d1 - 4, under - t), t, t, metal), fin["deskLegBevel"], 2),
+            bevel(bar(f"desk_leg_{i}_b", (x, d1 - 4, 0), (x, d0 + 4, under - t), t, t, metal), fin["deskLegBevel"], 2),
+            bevel(box(f"desk_rail_{i}", (x - t / 2, x + t / 2, d0 + 2, d1 - 2, under - t, under), metal), fin["deskLegBevel"], 2),
         ]
-    # Larguero horizontal que une los cruces de las dos X (como en el escritorio real).
+    # Larguero horizontal que une los cruces de las dos X (como en el escritorio real y en el mock).
     # Las diagonales son simétricas, así que se cruzan en el centro del fondo y a media altura de la pata.
     cross_d = (d0 + d1) / 2
     cross_up = (under - t) / 2
+    s_t = fin["deskStretcher"]
     parts.append(
-        box("desk_stretcher", (x0 + 6, x1 - 6, cross_d - t / 2, cross_d + t / 2, cross_up - t / 2, cross_up + t / 2), metal)
+        bevel(
+            box("desk_stretcher", (x0 + inset, x1 - inset, cross_d - s_t / 2, cross_d + s_t / 2, cross_up - s_t / 2, cross_up + s_t / 2), metal),
+            fin["deskLegBevel"] * 0.8,
+            2,
+        )
     )
 
     # Desk mat: goma negra de 3 mm con la foto encima, centrado bajo el ultrawide, cerca del borde frontal
