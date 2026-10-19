@@ -137,6 +137,18 @@
     "deskStretcher": 3.5,
     "deskTop": 3.0,
     "deskTopBevel": 1.0,
-    "deskLegInset": 10
+    "deskLegInset": 10,
+    "monitorBezel": 1.0,
+    "monitorChin": 2.5,
+    "ultrawideNeck": [
+      6,
+      3.5
+    ],
+    "verticalBezel": 1.0,
+    "armPole": 4.0,
+    "armSegment": [
+      5,
+      4.5
+    ]
   }
 }

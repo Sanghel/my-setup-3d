@@ -3,6 +3,8 @@ Coordenadas del cuarto en cm: x a lo largo de la pared del fondo, d hacia adentr
 
 from dataclasses import dataclass
 
+import bpy
+
 from . import materials
 from .geometry import bar, bevel, box, group, quad
 
@@ -130,20 +132,30 @@ def build_ultrawide(m: dict, desk: DeskFrame):
     bottom = desk.top + lift
     plastic = materials.principled("ultrawide_plastic", "#1c1c1f", roughness=0.45)
     stand = materials.principled("ultrawide_stand", "#2a2b2f", roughness=0.35, metallic=0.6)
-    screen, housing = curved_panel(
-        "ultrawide", xc, gap, bottom, w, h, uw["radius"], 2.0,
+    fin = m["mockFinish"]
+    bez, chin = fin["monitorBezel"], fin["monitorChin"]
+    # Carcasa más grande que la pantalla (marco y "mentón" del mock); la pantalla va 1,5 mm por delante
+    frame_front, housing = curved_panel(
+        "ultrawide_frame", xc, gap, bottom - chin, w + 2 * bez, h + chin + bez, uw["radius"], 2.5, plastic, plastic,
+    )
+    frame_front.name = frame_front.data.name = "ultrawide_bezel"  # sin sufijo _screen: es plástico y recibe luz
+    screen, _unused = curved_panel(
+        "ultrawide", xc, gap + 0.15, bottom, w, h, uw["radius"], 0.1,
         materials.screen("ultrawide_screen", "screen_ultrawide.jpg", strength=SCREEN_STRENGTH), plastic,
     )
+    bpy.data.objects.remove(_unused)  # la carcasa delgada de la pantalla sobra: la pone el marco
     bw, bd = uw["base"]["width"], uw["base"]["depth"]
-    back = gap - 2.0
+    nw, nd = fin["ultrawideNeck"]
+    back = gap - 2.5
     parts = [
         screen,
-        bevel(housing, 0.3),
+        frame_front,  # el frente del marco: se ve alrededor de la pantalla
+        bevel(housing, 0.4),
         # Bulto trasero de la electrónica (donde va la luz ámbar en el grupo 7)
         bevel(box("ultrawide_back", (xc - 18, xc + 18, back - 4, back, bottom + 7, bottom + 27), plastic), 1.0, 3),
         # Cuello y base
-        bevel(box("ultrawide_neck", (xc - 2.5, xc + 2.5, back - 7, back - 4, desk.top, bottom + 20), stand), 0.4),
-        bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1), stand), 0.3),
+        bevel(box("ultrawide_neck", (xc - nw / 2, xc + nw / 2, back - 4 - nd, back - 4, desk.top, bottom + 20), stand), 0.8, 3),
+        bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1.2), stand), 0.5, 3),
     ]
     group("item_ultrawide", parts, (xc, gap, desk.top))
     return {"xc": xc, "back": back - 4, "bottom": bottom}
@@ -169,11 +181,13 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         """Punto a `along` cm sobre el ancho y `out` cm hacia el frente del centro del panel."""
         return (cx + s[0] * along + n[0] * out, cd + s[1] * along + n[1] * out, up)
 
-    panel = bevel(bar("vertical_panel", at(0, -1, bottom), at(0, -1, top), w, 2.0, plastic, side=(s[0], s[1], 0)), 0.4)
+    fin = m["mockFinish"]
+    vb = fin["verticalBezel"]
+    panel = bevel(bar("vertical_panel", at(0, -1.1, bottom), at(0, -1.1, top), w, 2.2, plastic, side=(s[0], s[1], 0)), 0.6, 3)
     screen = quad(
         "vertical_screen",
-        [at(-w / 2 + 0.6, 0.02, bottom + 0.6), at(w / 2 - 0.6, 0.02, bottom + 0.6),
-         at(w / 2 - 0.6, 0.02, top - 0.6), at(-w / 2 + 0.6, 0.02, top - 0.6)],
+        [at(-w / 2 + vb, 0.02, bottom + vb), at(w / 2 - vb, 0.02, bottom + vb),
+         at(w / 2 - vb, 0.02, top - vb), at(-w / 2 + vb, 0.02, top - vb)],
         materials.screen("vertical_screen", "screen_vertical.jpg", strength=SCREEN_STRENGTH),
     )
     vesa = at(0, -3.5, (bottom + top) / 2)
@@ -187,9 +201,10 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
         # y se veía como una línea negra sobre el fondo claro)
         bar("vertical_vesa", at(0, -3.5, vesa[2] - 5), at(0, -3.5, vesa[2] + 5), 10, 3, metal, side=(s[0], s[1], 0)),
         bevel(box("arm_clamp", (px - 4, px + 4, pd - 4, pd + 4, desk.top, desk.top + 2.5), metal), 0.4),
-        bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), 3.5, 3.5, metal),
-        bar("arm_lower", (px, pd, vesa[2] - 4), elbow, 4, 3, metal, side=(0, 0, 1)),
-        bar("arm_upper", elbow, vesa, 4, 3, metal, side=(0, 0, 1)),
+        # Brazo con los grosores del mock (piezas redondeadas, bien visibles)
+        bevel(bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), fin["armPole"], fin["armPole"], metal), 0.8, 3),
+        bevel(bar("arm_lower", (px, pd, vesa[2] - 4), elbow, *fin["armSegment"], metal, side=(0, 0, 1)), 1.0, 3),
+        bevel(bar("arm_upper", elbow, vesa, *fin["armSegment"], metal, side=(0, 0, 1)), 1.0, 3),
     ]
     group("item_vertical_monitor", parts, (cx, cd, desk.top))
 
