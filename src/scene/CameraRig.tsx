@@ -14,7 +14,17 @@ import {
   OVERVIEW_TARGET,
 } from './cameraPoses'
 import { useCatalogRegistry } from './catalogRegistry'
-import { flightPose, FLY_IN_SECONDS, FLY_OUT_SECONDS, type Flight, type Vec3 } from './cameraTween'
+import { useReducedMotion } from '../ui/useReducedMotion'
+import { intro } from './ambience'
+import {
+  flightPose,
+  FLY_IN_SECONDS,
+  FLY_OUT_SECONDS,
+  INTRO_SECONDS,
+  introStart,
+  type Flight,
+  type Vec3,
+} from './cameraTween'
 
 /**
  * Cámara de la escena (design D7).
@@ -46,8 +56,9 @@ function currentPose(controls: CameraControlsImpl) {
 }
 export function CameraRig() {
   const ref = useRef<CameraControlsImpl>(null)
-  const firstRun = useRef(true)
   const flight = useRef<ActiveFlight | null>(null)
+  const introDone = useRef(false)
+  const reducedMotion = useReducedMotion()
   const mode = useSceneStore((s) => s.mode)
   const selectedId = useSceneStore((s) => s.selectedId)
   const roots = useCatalogRegistry((s) => s.roots)
@@ -115,8 +126,27 @@ export function CameraRig() {
   useEffect(() => {
     const controls = ref.current
     if (!controls) return
-    const animate = !firstRun.current
-    firstRun.current = false
+    const aspect = size.width / size.height
+    const overview = { position: overviewPosition(aspect), target: OVERVIEW_TARGET }
+
+    // Entrada (redesign D6): mientras el cuarto carga, la cámara espera lejos (y la imagen en negro);
+    // cuando el catálogo ya está unido a la escena, vuela 2,6 s a la vista general.
+    if (!introDone.current) {
+      if (roots.size === 0) {
+        void controls.setLookAt(...introStart(overview.position, overview.target), ...overview.target, false)
+        return
+      }
+      introDone.current = true
+      if (reducedMotion) {
+        intro.elapsed = Infinity // exposición normal de una vez
+        flyTo(controls, overview, 0, () => applyOverviewLimits(controls, aspect), false)
+      } else {
+        intro.elapsed = 0
+        flyTo(controls, overview, INTRO_SECONDS, () => applyOverviewLimits(controls, aspect), true)
+      }
+      return
+    }
+    const animate = !reducedMotion
 
     const item = selectedId ? itemById(selectedId) : undefined
     const root = selectedId ? roots.get(selectedId) : undefined
@@ -127,12 +157,10 @@ export function CameraRig() {
       const pose = inspectionPose(sphere.center.toArray(), sphere.radius, item.view, layout.fovDeg, layout.aspect)
       flyTo(controls, pose, FLY_IN_SECONDS, () => applyInspectionLimits(controls, pose, item.view.azimuthRange), animate)
     } else {
-      const aspect = size.width / size.height
-      const to = { position: overviewPosition(aspect), target: OVERVIEW_TARGET }
-      flyTo(controls, to, FLY_OUT_SECONDS, () => applyOverviewLimits(controls, aspect), animate)
+      flyTo(controls, overview, FLY_OUT_SECONDS, () => applyOverviewLimits(controls, aspect), animate)
     }
     // size: al girar el celular cambia el aspecto y el encuadre se recalcula
-  }, [mode, selectedId, roots, camera, size])
+  }, [mode, selectedId, roots, camera, size, reducedMotion])
 
   return <CameraControls ref={ref} makeDefault smoothTime={0.5} />
 }

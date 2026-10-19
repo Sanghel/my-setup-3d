@@ -32,3 +32,21 @@ export function flightPose(flight: Flight): { position: Vec3; target: Vec3; done
     done: flight.elapsed >= flight.seconds,
   }
 }
+
+/** Entrada del mock: la cámara parte un 45 % más lejos (misma dirección) y vuela 2,6 s a la vista general. */
+export const INTRO_SECONDS = 2.6
+export const INTRO_DISTANCE_FACTOR = 1.45
+
+/** Posición inicial de la entrada: la de la vista general, alejada desde el objetivo. */
+export function introStart(position: Vec3, target: Vec3, factor = INTRO_DISTANCE_FACTOR): Vec3 {
+  return position.map((p, i) => target[i] + (p - target[i]) * factor) as Vec3
+}
+
+/**
+ * Exposición durante la entrada (0 = negro, 1 = normal): espera 0,2 s y sube en 2,2 s con
+ * 1 − (1 − t)³, rápida al principio y suave al final (como el mock).
+ */
+export function introExposure(seconds: number): number {
+  const t = Math.min(1, Math.max(0, (seconds - 0.2) / 2.2))
+  return 1 - (1 - t) ** 3
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { easeInOutCubic, flightPose, type Flight } from './cameraTween'
+import { easeInOutCubic, flightPose, introExposure, introStart, type Flight } from './cameraTween'
 
 describe('easeInOutCubic', () => {
   it('empieza en 0, pasa por la mitad en 0,5 y termina en 1', () => {
@@ -38,5 +38,20 @@ describe('flightPose', () => {
 
   it('termina exactamente en el destino', () => {
     expect(flightPose(flight(1.3))).toEqual({ position: [10, 0, 0], target: [0, 2, 0], done: true })
+  })
+})
+
+describe('entrada animada', () => {
+  it('la exposición parte de negro, espera 0,2 s y llega a 1 a los 2,4 s', () => {
+    expect(introExposure(0)).toBe(0)
+    expect(introExposure(0.2)).toBe(0)
+    expect(introExposure(1.3)).toBeGreaterThan(0.8) // rápida al principio
+    expect(introExposure(2.4)).toBe(1)
+    expect(introExposure(10)).toBe(1)
+  })
+
+  it('la cámara parte en la misma dirección, 45 % más lejos', () => {
+    expect(introStart([2, 0, 0], [0, 0, 0])).toEqual([2.9, 0, 0])
+    expect(introStart([1, 1, 1], [1, 1, 1])).toEqual([1, 1, 1])
   })
 })
