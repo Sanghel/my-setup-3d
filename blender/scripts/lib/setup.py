@@ -299,3 +299,21 @@ def build_poster(m: dict):
     ]
     group("item_poster", parts, p((u0 + u1) / 2, 0, b0))
     return {"u0": u0, "u1": u1, "b0": b0, "b1": b1, "depth": depth}
+
+
+def build_window_view(m: dict):
+    """La ciudad de noche detrás de la ventana: un plano emisivo con la foto (F13, desenfocada).
+    En un diorama la pared está cortada y la cámara mira desde arriba: un plano detrás de la pared
+    asomaría por el borde. Por eso va DENTRO del hueco, junto al borde exterior y del tamaño exacto
+    del hueco: la propia pared lo enmarca."""
+    win = m["window"]
+    p = _wall_point(m, "side")
+    outer = -(win["depth"] - 0.5)  # `out` negativo = hacia afuera; casi en la cara exterior de la pared
+    u0, u1 = win["distance"], win["distance"] + win["width"]
+    z0, z1 = win["sill"], win["sill"] + win["height"]
+    view = quad(
+        "window_view_screen",  # sufijo _screen: no recibe luz horneada (emite la suya)
+        [p(u0, outer, z0), p(u1, outer, z0), p(u1, outer, z1), p(u0, outer, z1)],
+        materials.screen("window_view", "window_night.jpg", strength=0.35),
+    )
+    group("room_window_view", [view], p((u0 + u1) / 2, outer, z0))

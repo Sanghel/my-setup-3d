@@ -25,6 +25,7 @@ from lib.setup import (  # noqa: E402
     build_poster,
     build_ultrawide,
     build_vertical_monitor,
+    build_window_view,
 )
 
 
@@ -41,6 +42,7 @@ def main() -> None:
     build_frame(m, "jersey2008", "item_jersey_2008", "jersey_2008.jpg")
     build_frame(m, "jerseyScholes", "item_jersey_scholes", "jersey_scholes.jpg")
     poster = build_poster(m)
+    build_window_view(m)
     build_night_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
 
     targets = [obj for obj in bpy.data.objects if is_bake_target(obj)]
