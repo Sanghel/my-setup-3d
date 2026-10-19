@@ -38,6 +38,10 @@ const ITEM_NODES = [
   'item_jersey_2008',
   'item_jersey_scholes',
   'item_poster',
+  // Objetos nuevos del mock (match-mock-content)
+  'item_chair',
+  'item_pegboard',
+  'item_funko',
 ]
 
 let doc: Document
@@ -74,6 +78,16 @@ describe('room.glb', () => {
       .find((n) => n.getName() === name)
     expect(node, `falta el nodo ${name}: ¿cambió su nombre en blender/scripts?`).toBeDefined()
     expect(node?.getMesh()).not.toBeNull()
+  })
+
+  it('los adornos del mock existen y no son seleccionables (prop_*, no item_*)', () => {
+    const names = doc
+      .getRoot()
+      .listNodes()
+      .map((n) => n.getName())
+    for (const prop of ['prop_tumbler', 'prop_bowl', 'prop_power_bank', 'prop_phone']) {
+      expect(names, `falta el adorno ${prop}`).toContain(prop)
+    }
   })
 
   it.each(ITEM_NODES)('tiene el objeto %s con piezas', (name) => {

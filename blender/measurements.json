@@ -120,7 +120,7 @@
       "color": "#ff4a5a",
       "placement": "bajo el borde del tablero, 4 lados, apuntando hacia afuera",
       "_note": "Roja como el mock de Claude Design (match-mock-content D5); la tira real es blanca (#fff4e8). strength: potencia de la emisión en Blender (con la blanca era 40; el rojo saturado necesita menos para no teñir todo el piso).",
-      "strength": 15
+      "strength": 22
     },
     "ultrawideRear": {
       "color": "#ffb347",
@@ -150,5 +150,105 @@
       5,
       4.5
     ]
+  },
+  "chair": {
+    "_source": "mock",
+    "_note": "Silla de malla negra del mock (cm). Reemplazar por M35 cuando el usuario la mida.",
+    "x": 82,
+    "d": 140,
+    "yawDeg": 12,
+    "base": {
+      "legLength": 30,
+      "legRadiusCenter": 15,
+      "casterRadius": 2.2,
+      "casterRing": 29
+    },
+    "piston": {
+      "radius": 2.5,
+      "height": 36,
+      "bottom": 7
+    },
+    "seat": {
+      "width": 50,
+      "depth": 48,
+      "thickness": 7,
+      "height": 47
+    },
+    "back": {
+      "width": 47,
+      "height": 58,
+      "thickness": 4,
+      "center": 86,
+      "offset": 25,
+      "tiltDeg": 7
+    },
+    "head": {
+      "width": 30,
+      "height": 13,
+      "thickness": 4,
+      "center": 127,
+      "offset": 30,
+      "tiltDeg": 9
+    },
+    "arm": {
+      "x": 26,
+      "postHeight": 20,
+      "padLength": 24,
+      "padHeight": 71
+    }
+  },
+  "pegboard": {
+    "_source": "mock",
+    "_note": "Organizador en la pared de la ventana (cm). Reemplazar por M34 cuando el usuario lo mida.",
+    "wall": "side",
+    "centerU": 36,
+    "centerUp": 172,
+    "width": 28,
+    "height": 62,
+    "thickness": 1.2,
+    "holeSpacing": 2.4
+  },
+  "funko": {
+    "_source": "mock",
+    "_note": "Funko de Madara frente a la base del ultrawide (cm), relativo al centro del ultrawide.",
+    "offsetX": -2,
+    "d": 30,
+    "baseRadius": 3,
+    "height": 17
+  },
+  "deskProps": {
+    "_source": "mock",
+    "_note": "Adornos no seleccionables sobre el escritorio (cm, coordenadas del cuarto).",
+    "tumbler": {
+      "x": 40,
+      "d": 55,
+      "radius": 4.5,
+      "height": 25
+    },
+    "bowl": {
+      "x": 146,
+      "d": 30,
+      "radius": 7.2,
+      "height": 6.4
+    },
+    "powerBank": {
+      "x": 135,
+      "d": 13,
+      "size": [
+        4.5,
+        5,
+        10
+      ]
+    },
+    "phone": {
+      "x": 64,
+      "d": 64,
+      "size": [
+        7.5,
+        15.5,
+        0.9
+      ],
+      "yawDeg": 29
+    }
   }
 }

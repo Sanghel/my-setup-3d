@@ -32,7 +32,7 @@ NIGHT_EXPOSURE = AMBIENCES["noche"]["exposure"]
 SUN = {"color": "#ffb067", "strength": 4.0, "elevation_deg": 57, "toward_front": 0.18, "angle_deg": 1.5}
 TARDE_WORLD = {"ambient": "#ffe4c8", "strength": 0.35}
 # Noche del mock: además de los LEDs, una luz cálida general que ilumina parejo las paredes
-ROOM_FILL = {"color": "#ffcf9e", "energy": 15.0, "radius": 0.6, "up": 220}
+ROOM_FILL = {"color": "#ffcf9e", "energy": 10.0, "radius": 0.6, "up": 220}  # con 15 el piso de noche quedaba claro y amarillento; con 7, paredes apagadas
 
 _state: dict = {}
 
