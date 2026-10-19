@@ -135,3 +135,47 @@ def build_pegboard(m: dict) -> None:
         item_box("pegboard_cup_bottom", (-13, -29, 3.6), (6, 8, 6), black),
     ]
     group("item_pegboard", parts, at(0, -h / 2, 0))
+
+
+def build_funko(m: dict, ultrawide: dict, desk) -> None:
+    """Funko de Madara (modo Seis Caminos) frente a la base del ultrawide: base translúcida, piernas,
+    túnica clara, cabeza grande, cabello claro y un bastón, como en el mock."""
+    f = m["funko"]
+    x, d, on = ultrawide["xc"] + f["offsetX"], f["d"], desk.top
+    cream = materials.principled("funko_robe", "#f4efe8", roughness=0.55)
+    skin = materials.principled("funko_head", "#f0e4d6", roughness=0.5)
+    hair = materials.principled("funko_hair", "#f7f3ee", roughness=0.6)
+    dark = materials.principled("funko_dark", "#222222", roughness=0.5)
+    base = materials.principled("funko_base", "#ffd6a8", roughness=0.1)
+    parts = [
+        cylinder("funko_base", (x, d, on + 0.2), f["baseRadius"], 0.4, base),
+        cylinder("funko_leg_l", (x - 1.1, d, on + 1.7), 0.9, 3, dark, vertices=12),
+        cylinder("funko_leg_r", (x + 1.1, d, on + 1.7), 0.9, 3, dark, vertices=12),
+        cylinder("funko_robe", (x, d, on + 5.5), 2.0, 4.5, cream, top_radius=2.4 * 0.85),
+        rbox("funko_head_box", (x, d, on + 11), (6.2, 5.6, 5.8), skin, 1.6),
+        sphere("funko_hair", (x, d + 1.2, on + 13.2), 4.0, hair, scale=(1, 1.1, 0.9)),
+        cylinder("funko_staff", (x + 3, d - 1, on + 6), 0.25, 11, dark, vertices=8),
+    ]
+    group("item_funko", parts, (x, d, on))
+
+
+def build_desk_props(m: dict, desk) -> None:
+    """Adornos del mock sobre el escritorio: termo, bowl con palillo, power bank y teléfono. Son `prop_*`
+    (no `item_*`): se ven y se hornean, pero no son seleccionables."""
+    pr, on = m["deskProps"], desk.top
+    t, b, pb, ph = pr["tumbler"], pr["bowl"], pr["powerBank"], pr["phone"]
+    tumbler_mat = materials.principled("prop_tumbler", "#1b1b1e", roughness=0.35, metallic=0.3)
+    steel = materials.principled("prop_steel", "#b8b8b8", roughness=0.25, metallic=0.9)
+    cylinder("prop_tumbler", (t["x"], t["d"], on + t["height"] / 2), t["radius"] - 0.5, t["height"], tumbler_mat, top_radius=t["radius"])
+    cylinder("prop_tumbler_lid", (t["x"], t["d"], on + t["height"] + 0.5), t["radius"] + 0.2, 2, steel)
+    cylinder("prop_tumbler_straw", (t["x"] + 1, t["d"], on + t["height"] + 5), 0.3, 10, materials.principled("prop_straw", "#e8e8e8", roughness=0.2), vertices=8)
+    cylinder("prop_bowl", (b["x"], b["d"], on + b["height"] / 2), 3.0, b["height"], materials.principled("prop_bowl", "#efece6", roughness=0.35), top_radius=b["radius"])
+    stick = cylinder("prop_bowl_stick", (b["x"] - 1, b["d"], on + 9), 0.3, 14, materials.principled("prop_stick", "#b38b5d", roughness=0.6), vertices=8)
+    stick.rotation_euler = (0, math.radians(17), 0)
+    rbox("prop_power_bank", (pb["x"], pb["d"], on + pb["size"][2] / 2), tuple(pb["size"]), materials.principled("prop_black", "#18181b", roughness=0.55), 0.8)
+    phone = rbox("prop_phone", (ph["x"], ph["d"], on + ph["size"][2] / 2), tuple(ph["size"]), materials.principled("prop_phone", "#3a2b40", roughness=0.4), 0.4)
+    bpy.ops.object.select_all(action="DESELECT")
+    phone.select_set(True)
+    bpy.context.view_layer.objects.active = phone
+    bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="BOUNDS")
+    phone.rotation_euler = (0, 0, math.radians(ph["yawDeg"]))

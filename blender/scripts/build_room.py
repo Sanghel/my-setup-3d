@@ -18,7 +18,7 @@ from lib.bake import add_light_uvs, apply_modifiers, bake_lightmap, is_bake_targ
 from lib.common import ROOT, export_glb, load_measurements, parse_args, reset_scene, save_blend  # noqa: E402
 from lib.lights import AMBIENCES, build_lights, set_ambience  # noqa: E402
 from lib.preview import WEB_BACKGROUND  # noqa: E402
-from lib.props import build_chair, build_pegboard  # noqa: E402
+from lib.props import build_chair, build_desk_props, build_funko, build_pegboard  # noqa: E402
 from lib.room import build_room  # noqa: E402
 from lib.setup import (  # noqa: E402
     build_desk,
@@ -47,6 +47,8 @@ def main() -> None:
     build_window_view(m)
     build_chair(m)
     build_pegboard(m)
+    build_funko(m, ultrawide, desk)
+    build_desk_props(m, desk)
     build_lights(m, desk, ultrawide, poster, WEB_BACKGROUND)
 
     targets = [obj for obj in bpy.data.objects if is_bake_target(obj) and not obj.get("cutter")]
