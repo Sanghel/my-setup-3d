@@ -77,3 +77,21 @@ describe('visibleArea (panel inferior en móvil)', () => {
     expect(area.offsetAt(3)).toBeCloseTo(screenHeight / 4, 6)
   })
 })
+
+describe('vista general del mock (redesign D6)', () => {
+  const [dx, dy, dz] = OVERVIEW_POSITION.map((p, i) => p - OVERVIEW_TARGET[i])
+  const distance = Math.hypot(dx, dy, dz)
+  const degrees = (rad: number) => (rad * 180) / Math.PI
+
+  it('mira desde el ángulo del mock: azimut ≈ −39°, polar ≈ 67°', () => {
+    expect(degrees(Math.atan2(dx, dz))).toBeCloseTo(-38.9, 0)
+    expect(degrees(Math.acos(dy / distance))).toBeCloseTo(66.8, 0)
+  })
+
+  it('la pose inicial cae dentro de los límites de la vista general', () => {
+    expect(degrees(Math.acos(dy / distance))).toBeGreaterThanOrEqual(35)
+    expect(degrees(Math.acos(dy / distance))).toBeLessThanOrEqual(80)
+    expect(distance).toBeGreaterThanOrEqual(3.5)
+    expect(distance).toBeLessThanOrEqual(12)
+  })
+})
