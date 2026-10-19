@@ -15,6 +15,9 @@ import { ITEMS } from '../../src/data/items.ts'
 const GLB = 'public/models/room.glb'
 const LIGHTMAP = 'public/models/lightmap.webp'
 const LIGHTMAP_META = 'public/models/lightmap.json'
+// Un lightmap por ambiente (redesign-showroom-style D1/D2), horneados sobre la misma UV2
+const AMBIENCES = ['tarde', 'noche'] as const
+const ambienceLightmap = (name: string) => `public/models/lightmap-${name}.webp`
 const MAX_BYTES = 15 * 1024 * 1024 // spec room-scene: descarga inicial ≤ 15 MB
 
 const ROOM_NODES = [
@@ -49,8 +52,16 @@ beforeAll(async () => {
 })
 
 describe('room.glb', () => {
-  it('el modelo y su lightmap pesan juntos como máximo 15 MB', () => {
-    expect(statSync(GLB).size + statSync(LIGHTMAP).size).toBeLessThanOrEqual(MAX_BYTES)
+  it('el modelo y sus lightmaps pesan juntos como máximo 15 MB', () => {
+    const lightmaps = AMBIENCES.reduce((sum, name) => sum + statSync(ambienceLightmap(name)).size, 0)
+    expect(statSync(GLB).size + statSync(LIGHTMAP).size + lightmaps).toBeLessThanOrEqual(MAX_BYTES)
+  })
+
+  it.each(AMBIENCES)('tiene el lightmap de %s con su intensidad y exposición', (name) => {
+    const meta = JSON.parse(readFileSync(LIGHTMAP_META, 'utf8'))
+    expect(meta.ambiences[name].intensity).toBeGreaterThan(0)
+    expect(typeof meta.ambiences[name].exposure).toBe('number')
+    expect(statSync(ambienceLightmap(name)).size).toBeGreaterThan(0)
   })
 
   it('tiene el lightmap horneado con su factor de intensidad', () => {
