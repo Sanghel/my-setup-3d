@@ -9,9 +9,11 @@ import { bindCatalog, itemIdOf } from './bindCatalog'
 import { useCatalogRegistry } from './catalogRegistry'
 import { useDimming } from './useDimming'
 
-export const ROOM_URL = '/models/room.glb'
-const LIGHTMAP_URLS = ['/models/lightmap-noche.webp', '/models/lightmap-tarde.webp']
-const WINDOW_TARDE_URL = '/models/window-tarde.webp'
+/** `?v=` = huella del contenido de public/models (vite.config.ts): un deploy con otro modelo cambia la URL. */
+const model = (file: string) => `/models/${file}?v=${__MODELS_VERSION__}`
+const ROOM_URL = model('room.glb')
+const LIGHTMAP_URLS = [model('lightmap-noche.webp'), model('lightmap-tarde.webp')]
+const WINDOW_TARDE_URL = model('window-tarde.webp')
 
 // useGLTF(url, useDraco, useMeshopt): el .glb usa meshopt (decodificador incluido en three-stdlib).
 // Draco desactivado: no lo usamos y drei lo descargaría desde un CDN externo.
