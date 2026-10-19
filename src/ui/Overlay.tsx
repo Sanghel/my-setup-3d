@@ -4,6 +4,7 @@ import { BackButton } from './BackButton'
 import { DetailsPanel } from './DetailsPanel'
 import { ItemList } from './ItemList'
 import { Loader } from './Loader'
+import { TiltShift } from './TiltShift'
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
 import './ui.css'
 
@@ -15,6 +16,7 @@ export function Overlay() {
   useKeyboardShortcuts()
   return (
     <div className="overlay">
+      <TiltShift />
       <ItemList items={ITEMS} defaultOpen={!isNarrow()} closeOnSelect={isNarrow()} />
       <DetailsPanel items={ITEMS}>
         <BackButton />
