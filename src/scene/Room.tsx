@@ -7,6 +7,7 @@ import { ITEMS } from '../data/items'
 import { useSceneStore } from '../state/sceneStore'
 import { bindCatalog, itemIdOf } from './bindCatalog'
 import { useCatalogRegistry } from './catalogRegistry'
+import { useDimming } from './useDimming'
 
 export const ROOM_URL = '/models/room.glb'
 export const LIGHTMAP_URL = '/models/lightmap.webp'
@@ -21,9 +22,10 @@ const DRAG_THRESHOLD_PX = 6
 
 /**
  * El cuarto exportado desde Blender con su luz horneada (design D5).
- * lightMapIntensity = el factor con el que se escaló el lightmap al guardarlo en 8 bits.
- * Calibrado comparando con el render de Blender: con un × π extra (por el Lambert de three.js)
- * la web salía notablemente más clara que el render; sin él coinciden.
+ * lightMapIntensity = k, el factor con el que se escaló el lightmap al guardarlo en 8 bits.
+ * Junto con el relleno del environment (useDimming) da el aspecto elegido. La versión "físicamente
+ * exacta" (k × π, sin relleno) se probó: coincide mejor con Blender, pero amplifica el ruido del
+ * horneado y deja las camisetas ilegibles (nota 09).
  */
 export function Room() {
   const { scene } = useGLTF(ROOM_URL, USE_DRACO, USE_MESHOPT)
@@ -47,6 +49,12 @@ export function Room() {
     setRoots(roots)
     if (missing.length) console.warn('[Room] objetos del catálogo sin nodo en room.glb:', missing)
   }, [scene, setRoots])
+
+  // En inspección el resto del cuarto se atenúa (después de unir el catálogo: necesita los itemId)
+  useDimming(scene)
+  useLayoutEffect(() => {
+    if (import.meta.env.DEV) window.__room = scene // solo para inspeccionar desde la consola
+  }, [scene])
 
   // Raycasting: R3F lanza un rayo desde la cámara por el puntero y entrega la malla más cercana.
   // Con stopPropagation solo cuenta esa; si es una pared o el piso (sin itemId), no hay hover.

@@ -1,10 +1,10 @@
 import { Suspense } from 'react'
-import { CameraControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { AgXToneMapping } from 'three'
 import { DevStatsLabel, DevStatsProbe } from './dev/DevStats'
 import './dev/exposeStore'
 import overviewCamera from './scene/overviewCamera.json'
+import { CameraRig } from './scene/CameraRig'
 import { Effects } from './scene/Effects'
 import { HoverTooltip, TooltipProbe } from './scene/HoverTooltip'
 import { NightEnvironment } from './scene/NightEnvironment'
@@ -32,16 +32,7 @@ export default function App() {
           <Room />
         </Suspense>
         {import.meta.env.DEV && <DevStatsProbe />}
-        {/* makeDefault: otros componentes de drei pueden encontrar estos controles.
-            Límites temporales; los del cuarto llegan con el CameraRig (tarea 10.1) */}
-        <CameraControls
-          makeDefault
-          minDistance={0.4}
-          maxDistance={12}
-          ref={(controls) => {
-            void controls?.setTarget(...(overviewCamera.target as [number, number, number]))
-          }}
-        />
+        <CameraRig />
       </Canvas>
       <HoverTooltip />
       {import.meta.env.DEV && <DevStatsLabel />}
