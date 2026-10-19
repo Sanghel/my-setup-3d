@@ -22,7 +22,7 @@ from .geometry import box, to_blender
 # Exposición de la "cámara" en pasos, por ambiente. Viaja a la web en lightmap.json
 # (toneMappingExposure = 2 ** exposure), igual que la intensidad de cada lightmap.
 AMBIENCES = {
-    "tarde": {"exposure": 0.0, "led_scale": 0.12, "window_image": "window_tarde.jpg", "window_strength": 1.0},
+    "tarde": {"exposure": 0.5, "led_scale": 0.12, "window_image": "window_tarde.jpg", "window_strength": 1.0},
     "noche": {"exposure": 1.3, "led_scale": 1.0, "window_image": "window_night.jpg", "window_strength": 0.35},
 }
 NIGHT_EXPOSURE = AMBIENCES["noche"]["exposure"]

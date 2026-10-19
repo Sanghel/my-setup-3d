@@ -64,10 +64,9 @@ def main() -> None:
             k = bake_lightmap(targets, size, samples, out / f"lightmap-{name}.png")
             meta["ambiences"][name] = {"intensity": k, "exposure": cfg["exposure"]}
             print(f"[build_room] lightmap {name}: {size}px · {samples} muestras · intensidad {k:.3f}")
-        meta["intensity"] = meta["ambiences"]["noche"]["intensity"]  # compatibilidad: la web usa noche hasta el grupo 5
         (out / "lightmap.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
 
-    # El .glb sale con el exterior nocturno (la web lo cambia por ambiente desde el grupo 5)
+    # El .glb sale con el exterior nocturno; la web lo mezcla con el cielo de tarde (ambience.ts)
     set_ambience("noche")
 
     blend = save_blend(args.blend)

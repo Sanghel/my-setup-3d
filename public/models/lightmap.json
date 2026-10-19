@@ -6,12 +6,11 @@
   "ambiences": {
     "tarde": {
       "intensity": 1.387795329093933,
-      "exposure": 0.0
+      "exposure": 0.5
     },
     "noche": {
       "intensity": 1.1743667125701904,
       "exposure": 1.3
     }
-  },
-  "intensity": 1.1743667125701904
+  }
 }
