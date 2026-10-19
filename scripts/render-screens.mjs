@@ -1,6 +1,7 @@
+// (Fuera del pipeline desde match-mock-content: las pantallas usan los fondos del mock.)
 // Genera el contenido de las pantallas con textos REALES del repo (público): un editor estilo VS Code
 // en el ultrawide y una terminal en el monitor vertical. Edge/Chrome en modo headless las fotografía.
-// Uso: npm run textures:screens
+// Uso: npm run textures:screens:code
 import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'

@@ -172,7 +172,9 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
     parts = [
         panel,
         screen,
-        box("vertical_vesa", (vesa[0] - 5, vesa[0] + 5, vesa[1] - 1.5, vesa[1] + 1.5, vesa[2] - 5, vesa[2] + 5), metal),
+        # Placa VESA girada con el panel (como caja alineada a los ejes, una esquina atravesaba la pantalla
+        # y se veía como una línea negra sobre el fondo claro)
+        bar("vertical_vesa", at(0, -3.5, vesa[2] - 5), at(0, -3.5, vesa[2] + 5), 10, 3, metal, side=(s[0], s[1], 0)),
         bevel(box("arm_clamp", (px - 4, px + 4, pd - 4, pd + 4, desk.top, desk.top + 2.5), metal), 0.4),
         bar("arm_pole", (px, pd, desk.top), (px, pd, vesa[2] - 4), 3.5, 3.5, metal),
         bar("arm_lower", (px, pd, vesa[2] - 4), elbow, 4, 3, metal, side=(0, 0, 1)),

@@ -18,10 +18,10 @@
     "textures:fetch": "node scripts/fetch-textures.mjs",
     "textures": "npm run textures:fetch && bash blender/textures/process.sh",
     "textures:photos": "node scripts/process-photos.mjs",
-    "textures:screens": "node scripts/render-screens.mjs",
     "assets:final": "npm run assets:build -- --bake --final && npm run assets:optimize && npm run assets:lightmap",
     "assets:lightmap": "node scripts/encode-lightmap.mjs",
-    "textures:sky": "node scripts/render-sky.mjs"
+    "textures:sky": "node scripts/render-sky.mjs",
+    "textures:screens:code": "node scripts/render-screens.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
