@@ -14,15 +14,13 @@ Cada objeto tiene un punto numerado: al tocarlo, la cámara vuela hacia él, el 
 
 | Acción | Escritorio | Celular |
 |---|---|---|
-| Orbitar el cuarto | Arrastrar | Un dedo |
-| Zoom | Rueda | Pinza |
-| Inspeccionar un objeto | Click sobre él, sobre su punto o en el índice | Tap |
+| Inspeccionar un objeto (la cámara vuela hacia él) | Click sobre él, sobre su punto o en el índice | Tap |
 | Anterior / siguiente objeto | `←` `→` o los botones del panel | Botones del panel |
 | Volver | `Esc`, "Volver", "Vista general" o click en el fondo | "Volver" |
 | Tarde ⇄ Noche | `N` o el selector de abajo | Selector |
 | Ocultar los puntos | `H` o "Ocultar puntos" | "Ocultar puntos" |
 
-Todo se puede usar solo con teclado: `Tab` recorre el índice y `Enter` inspecciona. Con *reducir movimiento* activado en el sistema, la entrada es directa y el LED y el polvo quedan quietos.
+La cámara no se arrastra ni hace zoom a mano: solo se mueve al elegir un objeto y al volver. Todo se puede usar solo con teclado: `Tab` recorre el índice y `Enter` inspecciona. Con *reducir movimiento* activado en el sistema, la entrada es directa y el LED y el polvo quedan quietos.
 
 ## Correrlo en local
 
@@ -62,6 +60,7 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 | `npm run assets:final` | Igual, con el horneado de calidad final (2048 px, 1024 muestras, ~8 min) |
 | `npm run assets:preview` | Render de Blender para comparar con la web (`-- --ambience tarde\|noche`) |
 | `npm run textures:sky` | Genera el cielo de atardecer de la ventana (por código, sin fotos) |
+| `npm run textures:wallpapers` | Genera los fondos de las dos pantallas (ondas de colores, por código) |
 | `npm run textures` | Descarga y tiñe las texturas de Poly Haven |
 | `npm run textures:photos` | Corrige la perspectiva de las fotos (los originales no están en el repo) |
 | `npm run products:photos` | Convierte las fotos oficiales de producto a WebP sin metadatos (`blender/textures/products.json`; los originales no están en el repo) |
@@ -88,7 +87,9 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 | Recurso | Origen | Licencia |
 |---|---|---|
 | Piso laminado (`laminate_floor_02`, `laminate_floor_03`) y pared (`beige_wall_001`) | [Poly Haven](https://polyhaven.com) | CC0 |
-| Poster, camisetas 2008 y Scholes 18, fondos de las pantallas | Texturas del mock (fotos y fondos propios), procesadas | Del autor |
+| Poster y camiseta 2008 | Fotos propias, procesadas | Del autor |
+| Camiseta Scholes 18 | Textura del mock (foto propia) | Del autor |
+| Fondos de las pantallas | Generados por código (`scripts/render-wallpapers.mjs`) | — |
 | Desk mat y tablero del organizador | Generados por código | — |
 | Fotos de producto del panel | Oficiales de [Xiaomi](https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/), [Logitech](https://www.logitech.com), [JBL](https://global.jbl.com), [PlayStation](https://www.playstation.com), [Funko](https://funko.com) y [Mublex](https://www.mublex.com) (silla de referencia) | De sus fabricantes; se acreditan con enlace en cada panel |
 | Cielo de atardecer de la ventana | Generado por código (`scripts/render-sky.mjs`) | — |
