@@ -1,39 +1,131 @@
 {
   "_notes": "Fotos oficiales de producto (match-mock-content D6). Los originales se descargan a mano a blender/textures/products-src/ (ignorado en git) desde la página de cada fuente; `npm run products:photos` los convierte a WebP sin metadatos en public/products/<id>/ y escribe src/data/productPhotos.json. La primera foto de cada objeto es la principal (1200 px); el resto, miniaturas (600 px).",
   "credits": {
-    "xiaomi": { "label": "Xiaomi", "url": "https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/" },
-    "logitech-kb": { "label": "Logitech", "url": "https://www.logitech.com/en-ch/products/keyboards/mx-mechanical-mini.920-010779.html" },
-    "logitech-mouse": { "label": "Logitech", "url": "https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006557.html" },
-    "mublex": { "label": "Mublex", "url": "https://www.mublex.com/sillas/sillas-de-escritorio-y-oficina/sillas-ergonomicas/sillas-con-ergonomia-avanzada/silla-ergonomica-signature-con-soporte-lumbar-ajustable" },
-    "jbl": { "label": "JBL", "url": "https://global.jbl.com/all-portable-speakers/CLIP+4-.html" },
-    "playstation": { "label": "PlayStation", "url": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/cosmic-red/" },
-    "funko": { "label": "Funko", "url": "https://funko.com/pop-madara-uchiha-six-paths-glow/60333.html" }
+    "xiaomi": {
+      "label": "Xiaomi",
+      "url": "https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/"
+    },
+    "logitech-kb": {
+      "label": "Logitech",
+      "url": "https://www.logitech.com/en-ch/products/keyboards/mx-mechanical-mini.920-010779.html"
+    },
+    "logitech-mouse": {
+      "label": "Logitech",
+      "url": "https://www.logitech.com/en-us/products/mice/mx-master-3s.910-006557.html"
+    },
+    "mublex": {
+      "label": "Mublex",
+      "url": "https://www.mublex.com/sillas/sillas-de-escritorio-y-oficina/sillas-ergonomicas/sillas-con-ergonomia-avanzada/silla-ergonomica-signature-con-soporte-lumbar-ajustable"
+    },
+    "jbl": {
+      "label": "JBL",
+      "url": "https://global.jbl.com/all-portable-speakers/CLIP+4-.html"
+    },
+    "playstation": {
+      "label": "PlayStation",
+      "url": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/cosmic-red/"
+    },
+    "funko": {
+      "label": "Funko",
+      "url": "https://funko.com/pop-madara-uchiha-six-paths-glow/60333.html"
+    },
+    "gigabyte": {
+      "label": "Gigabyte",
+      "url": "https://www.gigabyte.com/Monitor/GS27FA"
+    }
   },
   "items": {
     "ultrawide": [
-      { "file": "uw-1.jpg", "credit": "xiaomi", "alt": "Monitor curvo Xiaomi G34WQi de frente" },
-      { "file": "uw-2.jpg", "credit": "xiaomi", "alt": "Xiaomi G34WQi en tres cuartos, con su pie" }
+      {
+        "file": "uw-1.jpg",
+        "credit": "xiaomi",
+        "alt": "Monitor curvo Xiaomi G34WQi de frente"
+      },
+      {
+        "file": "uw-2.jpg",
+        "credit": "xiaomi",
+        "alt": "Xiaomi G34WQi en tres cuartos, con su pie"
+      }
+    ],
+    "vertical-monitor": [
+      {
+        "file": "gs27fa-frente.jpg",
+        "credit": "gigabyte",
+        "alt": "Monitor Gigabyte GS27FA de frente"
+      }
     ],
     "keyboard": [
-      { "file": "kb-mx-mechanical-mini-keyboard-3qtr-graphite-uk.png", "credit": "logitech-kb", "alt": "Teclado Logitech MX Mechanical Mini grafito en tres cuartos" },
-      { "file": "kb-mx-mechanical-mini-mini-keyboard-top-view-graphite-uk.png", "credit": "logitech-kb", "alt": "MX Mechanical Mini visto desde arriba" },
-      { "file": "mouse-left-front-view.png", "credit": "logitech-mouse", "alt": "Mouse Logitech MX Master 3S grafito" },
-      { "file": "mouse-top-view.png", "credit": "logitech-mouse", "alt": "MX Master 3S visto desde arriba" }
+      {
+        "file": "kb-mx-mechanical-mini-keyboard-3qtr-graphite-uk.png",
+        "credit": "logitech-kb",
+        "alt": "Teclado Logitech MX Mechanical Mini grafito en tres cuartos"
+      },
+      {
+        "file": "kb-mx-mechanical-mini-mini-keyboard-top-view-graphite-uk.png",
+        "credit": "logitech-kb",
+        "alt": "MX Mechanical Mini visto desde arriba"
+      },
+      {
+        "file": "mouse-left-front-view.png",
+        "credit": "logitech-mouse",
+        "alt": "Mouse Logitech MX Master 3S grafito"
+      },
+      {
+        "file": "mouse-top-view.png",
+        "credit": "logitech-mouse",
+        "alt": "MX Master 3S visto desde arriba"
+      }
     ],
     "chair": [
-      { "file": "chair-2.webp", "credit": "mublex", "alt": "Silla ergonómica Signature de malla negra con cabecero (modelo de referencia)" },
-      { "file": "chair-1.webp", "credit": "mublex", "alt": "Silla Signature frente a un escritorio" },
-      { "file": "chair-3.webp", "credit": "mublex", "alt": "Silla Signature de perfil" }
+      {
+        "file": "chair-2.webp",
+        "credit": "mublex",
+        "alt": "Silla ergonómica Signature de malla negra con cabecero (modelo de referencia)"
+      },
+      {
+        "file": "chair-1.webp",
+        "credit": "mublex",
+        "alt": "Silla Signature frente a un escritorio"
+      },
+      {
+        "file": "chair-3.webp",
+        "credit": "mublex",
+        "alt": "Silla Signature de perfil"
+      }
     ],
     "pegboard": [
-      { "file": "jbl-hero.png", "credit": "jbl", "alt": "Parlante JBL Clip 4 naranja" },
-      { "file": "ps-01.jpg", "credit": "playstation", "alt": "Control DualSense Cosmic Red de frente" },
-      { "file": "ps-02.jpg", "credit": "playstation", "alt": "DualSense Cosmic Red en tres cuartos" }
+      {
+        "file": "jbl-hero.png",
+        "credit": "jbl",
+        "alt": "Parlante JBL Clip 4 naranja"
+      },
+      {
+        "file": "ps-01.jpg",
+        "credit": "playstation",
+        "alt": "Control DualSense Cosmic Red de frente"
+      },
+      {
+        "file": "ps-02.jpg",
+        "credit": "playstation",
+        "alt": "DualSense Cosmic Red en tres cuartos"
+      }
     ],
     "funko": [
-      { "file": "funko-1.png", "credit": "funko", "alt": "Funko Pop! Madara Uchiha (Six Paths) Glow" },
-      { "file": "funko-2.png", "credit": "funko", "alt": "Caja del Funko Pop! #1196 Madara Uchiha, exclusivo GameStop" },
-      { "file": "funko-3.png", "credit": "funko", "alt": "La figura brillando en la oscuridad" }
+      {
+        "file": "funko-1.png",
+        "credit": "funko",
+        "alt": "Funko Pop! Madara Uchiha (Six Paths) Glow"
+      },
+      {
+        "file": "funko-2.png",
+        "credit": "funko",
+        "alt": "Caja del Funko Pop! #1196 Madara Uchiha, exclusivo GameStop"
+      },
+      {
+        "file": "funko-3.png",
+        "credit": "funko",
+        "alt": "La figura brillando en la oscuridad"
+      }
     ]
   }
 }

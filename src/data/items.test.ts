@@ -53,7 +53,7 @@ describe('numeración y grupos (índice del mock)', () => {
 
   it('los productos llevan fotos oficiales con crédito; los personalizados y el vertical (modelo pendiente), ninguna', () => {
     const withPhotos = ITEMS.filter((item) => item.photos?.length).map((item) => item.id)
-    expect(withPhotos).toEqual(['ultrawide', 'keyboard', 'chair', 'pegboard', 'funko'])
+    expect(withPhotos).toEqual(['ultrawide', 'vertical-monitor', 'keyboard', 'chair', 'pegboard', 'funko'])
     for (const item of ITEMS) for (const photo of item.photos ?? []) expect(photo.credit?.url).toMatch(/^https:\/\//)
   })
 
