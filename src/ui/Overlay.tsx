@@ -1,5 +1,5 @@
 import { BottomBar } from './BottomBar'
-import { Brand, Hint } from './Brand'
+import { Brand, Signature } from './Brand'
 import { Hotspots } from './Hotspots'
 import { DetailsDrawer } from './DetailsDrawer'
 import { Index } from './Index'
@@ -22,7 +22,7 @@ export function Overlay() {
       <Index collapsible={isNarrow()} defaultOpen={!isNarrow()} />
       <DetailsDrawer />
       <BottomBar />
-      <Hint />
+      <Signature />
       <Loader />
     </div>
   )

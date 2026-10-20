@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { groupedItems, ITEMS, itemById, itemCategory, itemNumber, itemTotal } from './items'
 
 describe('catálogo de objetos', () => {
-  it('tiene los 10 objetos del mock', () => {
-    expect(ITEMS).toHaveLength(10)
+  it('tiene los 10 objetos del mock más las portátiles', () => {
+    expect(ITEMS).toHaveLength(11)
   })
 
   it('los ids y los nodos son únicos', () => {
@@ -28,16 +28,16 @@ describe('catálogo de objetos', () => {
 })
 
 describe('numeración y grupos (índice del mock)', () => {
-  it('numera del 01 al 10 en el orden del catálogo, con total "10"', () => {
-    expect(ITEMS.map((item) => itemNumber(item.id))).toEqual(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'])
+  it('numera del 01 al 11 en el orden del catálogo, con total "11"', () => {
+    expect(ITEMS.map((item) => itemNumber(item.id))).toEqual(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'])
     expect(itemNumber('no-existe')).toBe('')
-    expect(itemTotal()).toBe('10')
+    expect(itemTotal()).toBe('11')
   })
 
-  it('agrupa como el mock: SETUP (01–05), COLECCIÓN (06–08) y DETALLES (09–10)', () => {
+  it('agrupa en SETUP (01–06), COLECCIÓN (07–09) y DETALLES (10–11)', () => {
     const groups = groupedItems()
     expect(groups.map((g) => g.title)).toEqual(['SETUP', 'COLECCIÓN', 'DETALLES'])
-    expect(groups[0].items.map((i) => i.id)).toEqual(['desk', 'ultrawide', 'vertical-monitor', 'keyboard', 'chair'])
+    expect(groups[0].items.map((i) => i.id)).toEqual(['desk', 'ultrawide', 'vertical-monitor', 'keyboard', 'chair', 'laptops'])
     expect(groups[1].items.map((i) => i.id)).toEqual(['jersey-2008', 'jersey-scholes', 'poster'])
     expect(groups[2].items.map((i) => i.id)).toEqual(['pegboard', 'funko'])
   })
@@ -53,7 +53,7 @@ describe('numeración y grupos (índice del mock)', () => {
 
   it('los productos llevan fotos oficiales con crédito; los personalizados y el vertical (modelo pendiente), ninguna', () => {
     const withPhotos = ITEMS.filter((item) => item.photos?.length).map((item) => item.id)
-    expect(withPhotos).toEqual(['ultrawide', 'vertical-monitor', 'keyboard', 'chair', 'pegboard', 'funko'])
+    expect(withPhotos).toEqual(['ultrawide', 'vertical-monitor', 'keyboard', 'chair', 'laptops', 'pegboard', 'funko'])
     for (const item of ITEMS) for (const photo of item.photos ?? []) expect(photo.credit?.url).toMatch(/^https:\/\//)
   })
 

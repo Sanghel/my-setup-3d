@@ -87,6 +87,32 @@
       }
     }
   ],
+  "laptops": [
+    {
+      "src": "/products/laptops/1.webp",
+      "alt": "MacBook Pro 14\" M4 en negro espacial, de frente",
+      "credit": {
+        "label": "Apple",
+        "url": "https://www.apple.com/macbook-pro/"
+      }
+    },
+    {
+      "src": "/products/laptops/2.webp",
+      "alt": "ASUS TUF Gaming de frente (modelo de referencia de la TUF Gaming 15\")",
+      "credit": {
+        "label": "ASUS",
+        "url": "https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-gaming-a15-2024/"
+      }
+    },
+    {
+      "src": "/products/laptops/3.webp",
+      "alt": "Perfil de la MacBook Pro cerrada",
+      "credit": {
+        "label": "Apple",
+        "url": "https://www.apple.com/macbook-pro/"
+      }
+    }
+  ],
   "pegboard": [
     {
       "src": "/products/pegboard/1.webp",

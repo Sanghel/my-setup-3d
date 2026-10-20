@@ -1,6 +1,6 @@
 # my-setup-3d
 
-Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: diez objetos numerados como en el mock.
+Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores unidos, las dos portátiles en su dock, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: once objetos numerados.
 
 Cada objeto tiene un punto numerado: al tocarlo, la cámara vuela hacia él, el resto del cuarto se atenúa y un panel muestra su ficha. En los productos comerciales, la ficha suma las fotos oficiales del fabricante y un botón para verlo en la tienda. El diseño parte de un mock hecho en Claude Design.
 
@@ -91,10 +91,11 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 | Camiseta Scholes 18 | Textura del mock (foto propia) | Del autor |
 | Fondos de las pantallas | Generados por código (`scripts/render-wallpapers.mjs`) | — |
 | Desk mat y tablero del organizador | Generados por código | — |
-| Fotos de producto del panel | Oficiales de [Xiaomi](https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/), [Logitech](https://www.logitech.com), [JBL](https://global.jbl.com), [PlayStation](https://www.playstation.com), [Funko](https://funko.com) y [Mublex](https://www.mublex.com) (silla de referencia) | De sus fabricantes; se acreditan con enlace en cada panel |
+| Fotos de producto del panel | Oficiales de [Xiaomi](https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/), [Gigabyte](https://www.gigabyte.com/Monitor/GS27FA), [Apple](https://www.apple.com/macbook-pro/), [ASUS](https://www.asus.com) (TUF de referencia), [Logitech](https://www.logitech.com), [JBL](https://global.jbl.com), [PlayStation](https://www.playstation.com), [Funko](https://funko.com) y [Mublex](https://www.mublex.com) (silla de referencia) | De sus fabricantes; se acreditan con enlace en cada panel |
 | Cielo de atardecer de la ventana | Generado por código (`scripts/render-sky.mjs`) | — |
 | Tipografías Manrope y JetBrains Mono | [Google Fonts](https://fonts.google.com) | SIL Open Font License |
 | Diseño de la interfaz | Mock propio hecho en Claude Design | — |
+| Favicon | Diseño propio (mini diorama, `public/favicon.svg`) | — |
 
 Las marcas y escudos que aparecen en las camisetas, el poster y los productos pertenecen a sus dueños. Los botones "Ver en Amazon" / "Ver en Mublex" son enlaces normales, **sin afiliado**. Es un proyecto personal sin fines comerciales.
 

@@ -160,22 +160,66 @@ def build_funko(m: dict, ultrawide: dict, desk) -> None:
 
 
 def build_desk_props(m: dict, desk) -> None:
-    """Adornos del mock sobre el escritorio: termo, bowl con palillo, power bank y teléfono. Son `prop_*`
-    (no `item_*`): se ven y se hornean, pero no son seleccionables."""
+    """Adornos sobre el escritorio: termo, power bank y el iPhone 17 verde con la pantalla encendida. Son
+    `prop_*` (no `item_*`): se ven y se hornean, pero no son seleccionables. (El bowl del mock se quitó en
+    ajustes visuales 2: estorbaba delante de las portátiles.)"""
     pr, on = m["deskProps"], desk.top
-    t, b, pb, ph = pr["tumbler"], pr["bowl"], pr["powerBank"], pr["phone"]
+    t, pb, ph = pr["tumbler"], pr["powerBank"], pr["phone"]
     tumbler_mat = materials.principled("prop_tumbler", "#1b1b1e", roughness=0.35, metallic=0.3)
     steel = materials.principled("prop_steel", "#b8b8b8", roughness=0.25, metallic=0.9)
     cylinder("prop_tumbler", (t["x"], t["d"], on + t["height"] / 2), t["radius"] - 0.5, t["height"], tumbler_mat, top_radius=t["radius"])
     cylinder("prop_tumbler_lid", (t["x"], t["d"], on + t["height"] + 0.5), t["radius"] + 0.2, 2, steel)
     cylinder("prop_tumbler_straw", (t["x"] + 1, t["d"], on + t["height"] + 5), 0.3, 10, materials.principled("prop_straw", "#e8e8e8", roughness=0.2), vertices=8)
-    cylinder("prop_bowl", (b["x"], b["d"], on + b["height"] / 2), 3.0, b["height"], materials.principled("prop_bowl", "#efece6", roughness=0.35), top_radius=b["radius"])
-    stick = cylinder("prop_bowl_stick", (b["x"] - 1, b["d"], on + 9), 0.3, 14, materials.principled("prop_stick", "#b38b5d", roughness=0.6), vertices=8)
-    stick.rotation_euler = (0, math.radians(17), 0)
     rbox("prop_power_bank", (pb["x"], pb["d"], on + pb["size"][2] / 2), tuple(pb["size"]), materials.principled("prop_black", "#18181b", roughness=0.55), 0.8)
-    phone = rbox("prop_phone", (ph["x"], ph["d"], on + ph["size"][2] / 2), tuple(ph["size"]), materials.principled("prop_phone", "#3a2b40", roughness=0.4), 0.4)
+    # iPhone 17 verde boca arriba: marco de aluminio salvia, vidrio negro y la pantalla de bloqueo encendida
+    # (el mismo fondo de ondas de los monitores). Se arma alineado a los ejes, se une y se gira entero.
+    from .geometry import quad
+
+    w, l, h = ph["size"]
+    x, d = ph["x"], ph["d"]
+    phone = rbox("prop_phone", (x, d, on + h / 2), (w, l, h), materials.principled("prop_phone_frame", ph["frame"], roughness=0.3, metallic=0.7), 0.9)
+    glass = rbox("prop_phone_glass", (x, d, on + h - 0.03), (w - 0.3, l - 0.3, 0.08), materials.principled("prop_phone_glass", "#0b0b0d", roughness=0.08), 0.75)
+    lock = quad("prop_phone_screen", [(x - w / 2 + 0.45, d + l / 2 - 0.45, on + h + 0.02), (x + w / 2 - 0.45, d + l / 2 - 0.45, on + h + 0.02),
+                                      (x + w / 2 - 0.45, d - l / 2 + 0.45, on + h + 0.02), (x - w / 2 + 0.45, d - l / 2 + 0.45, on + h + 0.02)],
+                materials.screen("prop_phone_screen", "screen_vertical.jpg", strength=0.7))
     bpy.ops.object.select_all(action="DESELECT")
-    phone.select_set(True)
+    for obj in (glass, lock, phone):
+        obj.select_set(True)
     bpy.context.view_layer.objects.active = phone
+    bpy.ops.object.join()
     bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="BOUNDS")
     phone.rotation_euler = (0, 0, math.radians(ph["yawDeg"]))
+
+
+def build_laptops(m: dict, ultrawide: dict, desk) -> None:
+    """Portátiles en el dock vertical (ajustes visuales 2, foto IMG_0214): MacBook Pro 14" M4 adelante y
+    ASUS TUF Gaming 15" con stickers detrás, paradas sobre su lado largo, detrás del plano del ultrawide y
+    a la derecha de su cuello. Desde el frente se ven por debajo de la pantalla, como en la foto."""
+    lp = m["laptops"]
+    x, on = ultrawide["xc"] + lp["offsetX"], desk.top
+    dk, mac, asus = lp["dock"], lp["macbook"], lp["asus"]
+    dock_mat = materials.principled("dock_black", "#1a1a1c", roughness=0.4, metallic=0.6)
+    # Poco metálicas: quedan en la sombra del ultrawide y un metal oscuro sin reflejos se ve negro
+    mac_mat = materials.principled("laptop_macbook", mac["color"], roughness=0.38, metallic=0.2)
+    asus_mat = materials.principled("laptop_asus", asus["color"], roughness=0.55, metallic=0.1)
+    logo_mat = materials.principled("laptop_logo", "#c9ccd2", roughness=0.15, metallic=0.6)
+    base_d = dk["d0"] + dk["depth"] / 2
+    parts = [rbox("dock_base", (x, base_d, on + dk["height"] / 2), (dk["width"], dk["depth"], dk["height"]), dock_mat, 0.5)]
+    stand = on + dk["height"]
+    for name, spec, mat in (("laptop_asus", asus, asus_mat), ("laptop_macbook", mac, mac_mat)):
+        parts.append(rbox(name, (x, spec["d"], stand + spec["height"] / 2),
+                          (spec["width"], spec["thickness"], spec["height"]), mat, 0.6))
+        # Aletas del dock a cada lado de la portátil (sujetan su borde inferior)
+        for side in (-1, 1):
+            fd = spec["d"] + side * (spec["thickness"] / 2 + 0.4)
+            parts.append(rbox(f"dock_fin_{name}_{side}", (x, fd, stand + dk["finHeight"] / 2),
+                              (dk["width"] - 2, 0.6, dk["finHeight"]), dock_mat, 0.25))
+    # Marca circular en la tapa de la MacBook (brillo pulido, como el logo)
+    parts.append(cylinder("macbook_logo", (x, mac["d"] + mac["thickness"] / 2 + 0.05, stand + mac["height"] * 0.55), 1.6, 0.1, logo_mat, axis="d", vertices=24))
+    # Stickers de la ASUS en lo que no tapa la MacBook (genéricos hasta la foto F26)
+    front = asus["d"] + asus["thickness"] / 2 + 0.05
+    stickers = [("#e94f37", -16.0, 6), ("#3fa7d6", -15.6, 13), ("#f6c445", -16.2, 20), ("#59cd90", 15.9, 8),
+                ("#ffffff", 16.1, 15), ("#7b61ff", 15.8, 22), ("#ff7aa2", -6, 24.2), ("#f6c445", 7, 24.4)]
+    for i, (color, dx, up) in enumerate(stickers):
+        parts.append(rbox(f"asus_sticker_{i}", (x + dx, front, stand + up), (2.6, 0.1, 2.6), materials.principled(f"sticker_{i}", color, roughness=0.6), 0.04))
+    group("item_laptops", parts, (x, base_d, on))
