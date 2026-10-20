@@ -80,14 +80,19 @@ def pbr(name: str, base: str, normal: str | None = None, roughness: str | None =
     return mat
 
 
-def photo(name: str, filename: str, roughness: float = 0.7) -> bpy.types.Material:
-    """Material con una foto procesada (blender/textures/photos) como color base: cuadros, desk mat."""
+def photo(name: str, filename: str, roughness: float = 0.7, glow: float = 0.0) -> bpy.types.Material:
+    """Material con una foto procesada (blender/textures/photos) como color base: cuadros, desk mat.
+    `glow` > 0 suma la misma foto como emisión tenue: el cuadro se lee aunque su pared quede en
+    sombra (como una lámina retroiluminada); en la web se atenúa con el resto al inspeccionar."""
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     image = _image_node(mat, filename, True, -500, 200, folder=PHOTOS)
     mat.node_tree.links.new(image.outputs["Color"], bsdf.inputs["Base Color"])
     bsdf.inputs["Roughness"].default_value = roughness
+    if glow > 0:
+        mat.node_tree.links.new(image.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = glow
     return mat
 
 
