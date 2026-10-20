@@ -32,6 +32,14 @@
     "gigabyte": {
       "label": "Gigabyte",
       "url": "https://www.gigabyte.com/Monitor/GS27FA"
+    },
+    "apple": {
+      "label": "Apple",
+      "url": "https://www.apple.com/macbook-pro/"
+    },
+    "asus": {
+      "label": "ASUS",
+      "url": "https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-gaming-a15-2024/"
     }
   },
   "items": {
@@ -91,6 +99,23 @@
         "file": "chair-3.webp",
         "credit": "mublex",
         "alt": "Silla Signature de perfil"
+      }
+    ],
+    "laptops": [
+      {
+        "file": "mbp-1.jpg",
+        "credit": "apple",
+        "alt": "MacBook Pro 14\" M4 en negro espacial, de frente"
+      },
+      {
+        "file": "tuf-1.png",
+        "credit": "asus",
+        "alt": "ASUS TUF Gaming de frente (modelo de referencia de la TUF Gaming 15\")"
+      },
+      {
+        "file": "mbp-3.jpg",
+        "credit": "apple",
+        "alt": "Perfil de la MacBook Pro cerrada"
       }
     ],
     "pegboard": [

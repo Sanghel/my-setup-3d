@@ -170,6 +170,23 @@ const CATALOG: Item[] = [
     view: { azimuth: -35, polar: 70, azimuthRange: [-90, 20] },
   },
   {
+    id: 'laptops',
+    group: 'setup',
+    short: 'Portátiles',
+    node: 'item_laptops',
+    name: 'Portátiles en el dock',
+    description:
+      'MacBook Pro 14" M4 en negro espacial y ASUS TUF Gaming 15" llena de stickers, paradas en un dock vertical doble debajo del ultrawide.',
+    details: [
+      { label: 'Adelante', value: 'MacBook Pro 14" M4, negro espacial' },
+      { label: 'Atrás', value: 'ASUS TUF Gaming 15", con stickers' },
+      { label: 'Dock', value: 'Soporte vertical doble, negro' },
+    ],
+    view: { azimuth: 12, polar: 88, azimuthRange: [-40, 45] },
+    // Las portátiles quedan detrás del borde inferior del ultrawide (como en la foto): el punto va abajo, donde se ven
+    anchorOffset: [0.16, -0.1, 0.02],
+  },
+  {
     id: 'jersey-2008',
     group: 'coleccion',
     short: 'Moscú 2008',

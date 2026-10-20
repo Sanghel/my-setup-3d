@@ -16,11 +16,11 @@ describe('DetailsDrawer', () => {
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument()
   })
 
-  it('al enfocar el monitor vertical: "03 / 10", SETUP, nombre, descripción y ficha', () => {
+  it('al enfocar el monitor vertical: "03 / 11", SETUP, nombre, descripción y ficha', () => {
     render(<DetailsDrawer />)
     select('vertical-monitor')
     const item = ITEMS.find((i) => i.id === 'vertical-monitor')!
-    expect(within(panel()).getByText('03 / 10')).toBeInTheDocument()
+    expect(within(panel()).getByText('03 / 11')).toBeInTheDocument()
     expect(within(panel()).getByText('SETUP · 03')).toBeInTheDocument()
     expect(within(panel()).getByRole('heading', { name: item.name })).toBeInTheDocument()
     expect(within(panel()).getByText(item.description)).toBeInTheDocument()
@@ -126,7 +126,7 @@ describe('DetailsDrawer', () => {
     select('keyboard')
     await userEvent.click(within(panel()).getByRole('button', { name: /Siguiente/ }))
     expect(useSceneStore.getState().selectedId).toBe('chair')
-    expect(within(panel()).getByText('05 / 10')).toBeInTheDocument()
+    expect(within(panel()).getByText('05 / 11')).toBeInTheDocument()
     select('funko')
     await userEvent.click(within(panel()).getByRole('button', { name: /Siguiente/ }))
     expect(useSceneStore.getState().selectedId).toBe('desk')

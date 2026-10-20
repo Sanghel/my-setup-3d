@@ -11,7 +11,7 @@ describe('Hotspots', () => {
   it('un punto por objeto, anunciado con el nombre (no solo el número)', () => {
     render(<Hotspots />)
     for (const item of ITEMS) expect(screen.getByRole('button', { name: item.name })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Camiseta final de Moscú 2008' })).toHaveTextContent('06')
+    expect(screen.getByRole('button', { name: 'Camiseta final de Moscú 2008' })).toHaveTextContent('07')
   })
 
   it('click en un punto inspecciona su objeto', async () => {
