@@ -160,23 +160,33 @@ def build_funko(m: dict, ultrawide: dict, desk) -> None:
 
 
 def build_desk_props(m: dict, desk) -> None:
-    """Adornos del mock sobre el escritorio: termo, bowl con palillo, power bank y teléfono. Son `prop_*`
-    (no `item_*`): se ven y se hornean, pero no son seleccionables."""
+    """Adornos sobre el escritorio: termo, power bank y el iPhone 17 verde con la pantalla encendida. Son
+    `prop_*` (no `item_*`): se ven y se hornean, pero no son seleccionables. (El bowl del mock se quitó en
+    ajustes visuales 2: estorbaba delante de las portátiles.)"""
     pr, on = m["deskProps"], desk.top
-    t, b, pb, ph = pr["tumbler"], pr["bowl"], pr["powerBank"], pr["phone"]
+    t, pb, ph = pr["tumbler"], pr["powerBank"], pr["phone"]
     tumbler_mat = materials.principled("prop_tumbler", "#1b1b1e", roughness=0.35, metallic=0.3)
     steel = materials.principled("prop_steel", "#b8b8b8", roughness=0.25, metallic=0.9)
     cylinder("prop_tumbler", (t["x"], t["d"], on + t["height"] / 2), t["radius"] - 0.5, t["height"], tumbler_mat, top_radius=t["radius"])
     cylinder("prop_tumbler_lid", (t["x"], t["d"], on + t["height"] + 0.5), t["radius"] + 0.2, 2, steel)
     cylinder("prop_tumbler_straw", (t["x"] + 1, t["d"], on + t["height"] + 5), 0.3, 10, materials.principled("prop_straw", "#e8e8e8", roughness=0.2), vertices=8)
-    cylinder("prop_bowl", (b["x"], b["d"], on + b["height"] / 2), 3.0, b["height"], materials.principled("prop_bowl", "#efece6", roughness=0.35), top_radius=b["radius"])
-    stick = cylinder("prop_bowl_stick", (b["x"] - 1, b["d"], on + 9), 0.3, 14, materials.principled("prop_stick", "#b38b5d", roughness=0.6), vertices=8)
-    stick.rotation_euler = (0, math.radians(17), 0)
     rbox("prop_power_bank", (pb["x"], pb["d"], on + pb["size"][2] / 2), tuple(pb["size"]), materials.principled("prop_black", "#18181b", roughness=0.55), 0.8)
-    phone = rbox("prop_phone", (ph["x"], ph["d"], on + ph["size"][2] / 2), tuple(ph["size"]), materials.principled("prop_phone", "#3a2b40", roughness=0.4), 0.4)
+    # iPhone 17 verde boca arriba: marco de aluminio salvia, vidrio negro y la pantalla de bloqueo encendida
+    # (el mismo fondo de ondas de los monitores). Se arma alineado a los ejes, se une y se gira entero.
+    from .geometry import quad
+
+    w, l, h = ph["size"]
+    x, d = ph["x"], ph["d"]
+    phone = rbox("prop_phone", (x, d, on + h / 2), (w, l, h), materials.principled("prop_phone_frame", ph["frame"], roughness=0.3, metallic=0.7), 0.9)
+    glass = rbox("prop_phone_glass", (x, d, on + h - 0.03), (w - 0.3, l - 0.3, 0.08), materials.principled("prop_phone_glass", "#0b0b0d", roughness=0.08), 0.75)
+    lock = quad("prop_phone_screen", [(x - w / 2 + 0.45, d + l / 2 - 0.45, on + h + 0.02), (x + w / 2 - 0.45, d + l / 2 - 0.45, on + h + 0.02),
+                                      (x + w / 2 - 0.45, d - l / 2 + 0.45, on + h + 0.02), (x - w / 2 + 0.45, d - l / 2 + 0.45, on + h + 0.02)],
+                materials.screen("prop_phone_screen", "screen_vertical.jpg", strength=0.7))
     bpy.ops.object.select_all(action="DESELECT")
-    phone.select_set(True)
+    for obj in (glass, lock, phone):
+        obj.select_set(True)
     bpy.context.view_layer.objects.active = phone
+    bpy.ops.object.join()
     bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="BOUNDS")
     phone.rotation_euler = (0, 0, math.radians(ph["yawDeg"]))
 

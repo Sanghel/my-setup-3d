@@ -130,7 +130,7 @@ def build_ultrawide(m: dict, desk: DeskFrame):
     """Xiaomi G34WQi: 34" curvo 1500R sobre su base, con el wallpaper como pantalla emisiva."""
     uw = m["ultrawide"]
     w, h, lift, gap = uw["width"], uw["height"], uw["lift"], uw["wallGap"]
-    xc = desk.x1 - 10 - w / 2  # un poco a la derecha del centro, como en las fotos
+    xc = desk.x1 - uw["fromDeskRight"] - w / 2  # deja sitio a su derecha para las portátiles en el dock
     bottom = desk.top + lift
     plastic = materials.principled("ultrawide_plastic", "#1c1c1f", roughness=0.45)
     stand = materials.principled("ultrawide_stand", "#2a2b2f", roughness=0.35, metallic=0.6)

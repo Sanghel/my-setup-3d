@@ -86,7 +86,7 @@ const CATALOG: Item[] = [
     description:
       'Escritorio hecho a medida con patas en X y una tira LED blanca bajo el borde que ilumina el piso. Encima, el desk mat "Hello World / ENGINEERS".',
     details: [
-      { label: 'Tablero', value: '135 × 75 cm, 71,5 cm de alto' },
+      { label: 'Tablero', value: '150 × 75 cm, 71,5 cm de alto' },
       { label: 'Patas', value: 'Tubo de 2 cm en X, cruzadas a 33 cm' },
       { label: 'Desk mat', value: '77 × 29 cm' },
       { label: 'Luz', value: 'Tira LED blanca en los 4 lados, bajo el tablero' },
@@ -176,15 +176,15 @@ const CATALOG: Item[] = [
     node: 'item_laptops',
     name: 'Portátiles en el dock',
     description:
-      'MacBook Pro 14" M4 en negro espacial y ASUS TUF Gaming 15" llena de stickers, paradas en un dock vertical doble debajo del ultrawide.',
+      'MacBook Pro 14" M4 en negro espacial y ASUS TUF Gaming 15" llena de stickers, paradas en un dock vertical doble a la derecha del ultrawide.',
     details: [
       { label: 'Adelante', value: 'MacBook Pro 14" M4, negro espacial' },
       { label: 'Atrás', value: 'ASUS TUF Gaming 15", con stickers' },
       { label: 'Dock', value: 'Soporte vertical doble, negro' },
     ],
-    view: { azimuth: 12, polar: 88, azimuthRange: [-40, 45] },
-    // Las portátiles quedan detrás del borde inferior del ultrawide (como en la foto): el punto va abajo, donde se ven
-    anchorOffset: [0.16, -0.1, 0.02],
+    view: { azimuth: 22, polar: 80, azimuthRange: [-30, 55] },
+    // Asoman a la derecha del ultrawide: el punto va sobre la parte que se ve, no detrás de la pantalla
+    anchorOffset: [0.1, -0.04, 0.02],
   },
   {
     id: 'jersey-2008',

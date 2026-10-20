@@ -86,7 +86,7 @@ describe('room.glb', () => {
       .getRoot()
       .listNodes()
       .map((n) => n.getName())
-    for (const prop of ['prop_tumbler', 'prop_bowl', 'prop_power_bank', 'prop_phone']) {
+    for (const prop of ['prop_tumbler', 'prop_power_bank', 'prop_phone']) {
       expect(names, `falta el adorno ${prop}`).toContain(prop)
     }
   })
