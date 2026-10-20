@@ -42,6 +42,7 @@ const ITEM_NODES = [
   'item_chair',
   'item_pegboard',
   'item_funko',
+  'item_laptops',
 ]
 
 let doc: Document

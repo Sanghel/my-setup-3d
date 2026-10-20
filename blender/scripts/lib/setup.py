@@ -160,11 +160,17 @@ def build_ultrawide(m: dict, desk: DeskFrame):
         bevel(box("ultrawide_base", (xc - bw / 2, xc + bw / 2, back - 10, back - 10 + bd, desk.top, desk.top + 1.2), stand), 0.5, 3),
     ]
     group("item_ultrawide", parts, (xc, gap, desk.top))
-    return {"xc": xc, "back": back - 4, "bottom": bottom}
+    # Borde izquierdo del frente del marco: el arco adelanta los bordes R·(1 − cos θ) respecto al centro
+    import math
+
+    theta = ((w + 2 * bez) / 2) / uw["radius"]
+    left_edge = (xc - uw["radius"] * math.sin(theta), gap + uw["radius"] * (1 - math.cos(theta)))
+    return {"xc": xc, "back": back - 4, "bottom": bottom, "left_edge": left_edge, "neck": (nw, back - 4 - nd)}
 
 
-def build_vertical_monitor(m: dict, desk: DeskFrame):
-    """Gigabyte 25" en vertical, girado hacia el usuario, sostenido por un brazo Huanuo con abrazadera."""
+def build_vertical_monitor(m: dict, desk: DeskFrame, ultrawide: dict):
+    """Gigabyte GS27FA en vertical, girado hacia el usuario, sostenido por un brazo Huanuo con abrazadera.
+    Va pegado al ultrawide (ajustes visuales 2): su borde derecho toca el borde izquierdo del marco curvo."""
     import math
 
     from .geometry import quad
@@ -174,7 +180,11 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
     a = math.radians(vm["angleDeg"])
     n = (math.sin(a), math.cos(a))  # normal de la pantalla en el plano x–d (hacia el usuario, girada a la derecha)
     s = (math.cos(a), -math.sin(a))  # dirección del ancho del panel
-    cx, cd = desk.x0 + 27, 24  # centro del panel: a la izquierda del ultrawide, como en las fotos
+    # Centro del panel tal que el borde derecho del frente (along = w/2, out = 0) quede sobre el borde
+    # izquierdo del ultrawide, 0,6 cm hacia afuera para que las dos carcasas no se crucen
+    ex, ed = ultrawide["left_edge"]
+    ex, ed = ex - s[0] * 0.6, ed - s[1] * 0.6
+    cx, cd = ex - s[0] * w / 2, ed - s[1] * w / 2
     bottom, top = desk.top + lift, desk.top + lift + h
     plastic = materials.principled("vertical_plastic", "#1b1b1e", roughness=0.45)
     metal = materials.principled("arm_metal", "#141416", roughness=0.35, metallic=0.7)
@@ -194,7 +204,10 @@ def build_vertical_monitor(m: dict, desk: DeskFrame):
     )
     vesa = at(0, -3.5, (bottom + top) / 2)
     # Brazo: abrazadera sobre el tablero → poste → codo → placa VESA en la espalda del panel
-    px, pd = desk.x0 + arm["fromDeskLeft"], arm["fromBackWall"]
+    # El poste sigue al panel (ajustes visuales 2): detrás de la placa VESA, hacia la pared y a la izquierda;
+    # sin bajar del borde trasero del escritorio
+    px = vesa[0] - n[0] * 10 - 4
+    pd = max(desk.d0 + 4, vesa[1] - n[1] * 10)
     elbow = (px - 6, pd + 10, vesa[2] - 4)
     parts = [
         panel,

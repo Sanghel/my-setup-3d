@@ -56,12 +56,13 @@
     "width": 80,
     "height": 35,
     "radius": 150,
-    "lift": 16,
+    "lift": 24,
     "wallGap": 17,
     "base": {
       "width": 27.5,
       "depth": 21.5
-    }
+    },
+    "_note": "lift 16 → 24 en ajustes visuales 2: en la foto IMG_0214 el borde inferior del marco queda a la altura del borde superior de la MacBook parada en el dock (~22 cm sobre el tablero)."
   },
   "verticalMonitor": {
     "width": 36,
@@ -71,7 +72,8 @@
   },
   "monitorArm": {
     "fromDeskLeft": 22.5,
-    "fromBackWall": 14
+    "fromBackWall": 14,
+    "_note": "Desde ajustes visuales 2 el poste se ubica detrás del panel (setup.py), porque el vertical se movió para quedar pegado al ultrawide; fromDeskLeft/fromBackWall quedan como referencia de la medida real."
   },
   "keyboard": {
     "width": 31,
@@ -232,7 +234,7 @@
       "height": 6.4
     },
     "powerBank": {
-      "x": 135,
+      "x": 150,
       "d": 13,
       "size": [
         4.5,
@@ -249,6 +251,32 @@
         0.9
       ],
       "yawDeg": 29
+    }
+  },
+  "laptops": {
+    "_source": "MacBook: especificación oficial de Apple; ASUS: medidas típicas del TUF Gaming 15 (modelo exacto pendiente, F27); dock y ubicación estimados de la foto IMG_0214 (M40/M41 pendientes)",
+    "_note": "Dock vertical doble detrás del plano del ultrawide, a la derecha de su cuello (cm). offsetX es relativo al centro del ultrawide.",
+    "offsetX": 22,
+    "dock": {
+      "width": 14,
+      "depth": 6.5,
+      "height": 1.2,
+      "d0": 5.4,
+      "finHeight": 3.5
+    },
+    "macbook": {
+      "width": 31.26,
+      "height": 22.12,
+      "thickness": 1.55,
+      "d": 9.6,
+      "color": "#6a6d74"
+    },
+    "asus": {
+      "width": 35.4,
+      "height": 25.1,
+      "thickness": 2.3,
+      "d": 6.9,
+      "color": "#5c5f66"
     }
   }
 }

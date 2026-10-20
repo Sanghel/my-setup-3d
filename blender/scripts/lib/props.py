@@ -179,3 +179,37 @@ def build_desk_props(m: dict, desk) -> None:
     bpy.context.view_layer.objects.active = phone
     bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="BOUNDS")
     phone.rotation_euler = (0, 0, math.radians(ph["yawDeg"]))
+
+
+def build_laptops(m: dict, ultrawide: dict, desk) -> None:
+    """Portátiles en el dock vertical (ajustes visuales 2, foto IMG_0214): MacBook Pro 14" M4 adelante y
+    ASUS TUF Gaming 15" con stickers detrás, paradas sobre su lado largo, detrás del plano del ultrawide y
+    a la derecha de su cuello. Desde el frente se ven por debajo de la pantalla, como en la foto."""
+    lp = m["laptops"]
+    x, on = ultrawide["xc"] + lp["offsetX"], desk.top
+    dk, mac, asus = lp["dock"], lp["macbook"], lp["asus"]
+    dock_mat = materials.principled("dock_black", "#1a1a1c", roughness=0.4, metallic=0.6)
+    # Poco metálicas: quedan en la sombra del ultrawide y un metal oscuro sin reflejos se ve negro
+    mac_mat = materials.principled("laptop_macbook", mac["color"], roughness=0.38, metallic=0.2)
+    asus_mat = materials.principled("laptop_asus", asus["color"], roughness=0.55, metallic=0.1)
+    logo_mat = materials.principled("laptop_logo", "#c9ccd2", roughness=0.15, metallic=0.6)
+    base_d = dk["d0"] + dk["depth"] / 2
+    parts = [rbox("dock_base", (x, base_d, on + dk["height"] / 2), (dk["width"], dk["depth"], dk["height"]), dock_mat, 0.5)]
+    stand = on + dk["height"]
+    for name, spec, mat in (("laptop_asus", asus, asus_mat), ("laptop_macbook", mac, mac_mat)):
+        parts.append(rbox(name, (x, spec["d"], stand + spec["height"] / 2),
+                          (spec["width"], spec["thickness"], spec["height"]), mat, 0.6))
+        # Aletas del dock a cada lado de la portátil (sujetan su borde inferior)
+        for side in (-1, 1):
+            fd = spec["d"] + side * (spec["thickness"] / 2 + 0.4)
+            parts.append(rbox(f"dock_fin_{name}_{side}", (x, fd, stand + dk["finHeight"] / 2),
+                              (dk["width"] - 2, 0.6, dk["finHeight"]), dock_mat, 0.25))
+    # Marca circular en la tapa de la MacBook (brillo pulido, como el logo)
+    parts.append(cylinder("macbook_logo", (x, mac["d"] + mac["thickness"] / 2 + 0.05, stand + mac["height"] * 0.55), 1.6, 0.1, logo_mat, axis="d", vertices=24))
+    # Stickers de la ASUS en lo que no tapa la MacBook (genéricos hasta la foto F26)
+    front = asus["d"] + asus["thickness"] / 2 + 0.05
+    stickers = [("#e94f37", -16.0, 6), ("#3fa7d6", -15.6, 13), ("#f6c445", -16.2, 20), ("#59cd90", 15.9, 8),
+                ("#ffffff", 16.1, 15), ("#7b61ff", 15.8, 22), ("#ff7aa2", -6, 24.2), ("#f6c445", 7, 24.4)]
+    for i, (color, dx, up) in enumerate(stickers):
+        parts.append(rbox(f"asus_sticker_{i}", (x + dx, front, stand + up), (2.6, 0.1, 2.6), materials.principled(f"sticker_{i}", color, roughness=0.6), 0.04))
+    group("item_laptops", parts, (x, base_d, on))
