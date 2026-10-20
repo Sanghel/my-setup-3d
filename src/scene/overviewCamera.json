@@ -1,9 +1,9 @@
 {
-  "_note": "Pose de la vista general (three.js, metros, Y arriba). Desde el rediseño (redesign-showroom-style D6) es la del mock de Claude Design: azimut -39°, polar 67°, FOV 30, distancia 8 m y objetivo en el centro de la profundidad del cuarto (más profundo que el del mock), para que entre el plinto completo. La leen App.tsx y el preview de Blender.",
+  "_note": "Pose de la vista general (three.js, metros, Y arriba). Desde el rediseño (redesign-showroom-style D6) es la del mock de Claude Design: azimut -39°, polar 67°, FOV 30, distancia 8 m y objetivo en el centro de la profundidad del cuarto (más profundo que el del mock), para que entre el plinto completo. La leen App.tsx y el preview de Blender. Ajustes visuales 1: la cámara se acercó un 14 % por la misma línea de visión (pidió más zoom en la vista principal).",
   "position": [
-    -3.77,
-    4.0,
-    7.17
+    -3.123,
+    3.559,
+    6.369
   ],
   "target": [
     0.85,

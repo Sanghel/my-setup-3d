@@ -14,11 +14,11 @@ import { useSceneStore } from '../state/sceneStore'
  */
 export function Effects() {
   const hoveredId = useSceneStore((s) => s.hoveredId)
-  // Cursor del canvas: mano de "click" sobre un objeto seleccionable y mano de "arrastrar" sobre el
-  // resto, desde el primer momento (useCursor de drei solo ponía "grab" después de un primer hover)
+  // Cursor del canvas: mano de "click" sobre un objeto seleccionable; flecha normal en el resto
+  // (la cámara no se arrastra: solo se mueve al elegir un objeto)
   const get = useThree((s) => s.get)
   useEffect(() => {
-    get().gl.domElement.style.cursor = hoveredId !== null ? 'pointer' : 'grab'
+    get().gl.domElement.style.cursor = hoveredId !== null ? 'pointer' : 'default'
   }, [get, hoveredId])
 
   return (

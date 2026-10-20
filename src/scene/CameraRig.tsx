@@ -28,10 +28,9 @@ import {
 
 /**
  * Cámara de la escena (design D7).
- * - Vista general: orbita dentro de límites que mantienen las dos paredes al fondo. Sin "truck"
- *   (desplazar): el diorama siempre queda centrado.
- * - Inspección: vuela al objeto y orbita alrededor de su centro. "Rotar el objeto" = orbitar la
- *   cámara: los objetos no se mueven porque su luz está horneada.
+ * - Sin controles del usuario (ajustes visuales 1): no se arrastra, ni se hace zoom con la rueda o
+ *   la pinza. La cámara solo se mueve al elegir un objeto (y al volver), con los vuelos de abajo.
+ *   Los límites de cada pose siguen aplicándose por si se reactiva la órbita.
  * - Vuelos (redesign D6): interpolación propia con el easing cúbico del mock, no el resorte de
  *   camera-controls. Durante el vuelo los límites se aflojan (si no, camera-controls recortaría la
  *   trayectoria a mitad de camino) y los del destino se aplican al llegar. Si el usuario presiona el
@@ -68,8 +67,7 @@ export function CameraRig() {
   useEffect(() => {
     const controls = ref.current
     if (!controls) return
-    controls.mouseButtons.right = CameraControlsImpl.ACTION.NONE // sin desplazar con el botón derecho
-    controls.touches.two = CameraControlsImpl.ACTION.TOUCH_DOLLY // dos dedos solo hacen zoom
+    controls.enabled = false // sin órbita ni zoom del usuario: los vuelos (setLookAt) siguen funcionando
     if (import.meta.env.DEV) window.__controls = controls
     // El usuario toma el control a mitad de un vuelo: se corta y se aplican los límites del destino
     const interrupt = () => {
