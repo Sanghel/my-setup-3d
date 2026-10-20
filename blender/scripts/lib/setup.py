@@ -11,6 +11,8 @@ from .geometry import bar, bevel, box, group, quad
 # Emisión de las pantallas. Con los fondos claros del mock (match-mock-content D4), 1,6 —calibrado para el
 # código oscuro de antes— las quemaba a casi blanco con mucho bloom; 1,0 es el valor del mock.
 SCREEN_STRENGTH = 1.0
+# Emisión tenue de las fotos de los cuadros y el poster (ajustes visuales 1): legibles en la pared en sombra
+PHOTO_GLOW = 0.22
 
 
 @dataclass(frozen=True)
@@ -264,7 +266,8 @@ def build_keyboard(m: dict, desk: DeskFrame):
 
 
 def build_mouse(x: float, d: float, on: float) -> bpy.types.Object:
-    """Mouse negro del mock: una esfera achatada y alargada (6,7 × 3,5 × 10,5 cm)."""
+    """Mouse (MX Master 3S grafito): una esfera achatada y alargada (6,7 × 3,5 × 10,5 cm), gris medio para que
+    no se pierda sobre el desk mat negro (ajustes visuales 1)."""
     from .geometry import to_blender
 
     bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, radius=0.035, location=to_blender(x, d, on + 1.2))
@@ -272,7 +275,8 @@ def build_mouse(x: float, d: float, on: float) -> bpy.types.Object:
     mouse.name = mouse.data.name = "keyboard_mouse"
     mouse.scale = (0.95, 1.5, 0.5)  # ejes de Blender: x ancho, y largo (d), z alto
     bpy.ops.object.transform_apply(scale=True)
-    mouse.data.materials.append(materials.principled("mouse_black", "#26272b", roughness=0.45))
+    bpy.ops.object.shade_smooth()  # sin facetas: se ven de cerca al inspeccionar el teclado
+    mouse.data.materials.append(materials.principled("mouse_graphite", "#5a5d64", roughness=0.5))
     return mouse
 
 
@@ -321,7 +325,7 @@ def build_frame(m: dict, key: str, item: str, photo_file: str):
             f"{key}_photo",
             [p(u0 + border, out, b0 + border), p(u1 - border, out, b0 + border),
              p(u1 - border, out, b1 - border), p(u0 + border, out, b1 - border)],
-            materials.photo(f"{key}_photo", photo_file, roughness=0.8),
+            materials.photo(f"{key}_photo", photo_file, roughness=0.8, glow=PHOTO_GLOW),
         ),
         cube(f"{key}_glass", u0 + border, u1 - border, depth - 0.5, depth - 0.3, b0 + border, b1 - border,
              materials.glass(f"{key}_glass"), round_cm=0.05),
@@ -344,7 +348,7 @@ def build_poster(m: dict):
         bevel(box("poster_panel", (min(xa, xb), max(xa, xb), min(da, db), max(da, db), b0, b1), edge), 0.1),
         quad("poster_print",
              [p(u0, standoff + depth, b0), p(u1, standoff + depth, b0), p(u1, standoff + depth, b1), p(u0, standoff + depth, b1)],
-             materials.photo("poster_print", "poster.jpg", roughness=0.25)),
+             materials.photo("poster_print", "poster.jpg", roughness=0.25, glow=PHOTO_GLOW)),
     ]
     group("item_poster", parts, p((u0 + u1) / 2, 0, b0))
     return {"u0": u0, "u1": u1, "b0": b0, "b1": b1, "depth": depth}

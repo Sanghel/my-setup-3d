@@ -17,6 +17,16 @@
       }
     }
   ],
+  "vertical-monitor": [
+    {
+      "src": "/products/vertical-monitor/1.webp",
+      "alt": "Monitor Gigabyte GS27FA de frente",
+      "credit": {
+        "label": "Gigabyte",
+        "url": "https://www.gigabyte.com/Monitor/GS27FA"
+      }
+    }
+  ],
   "keyboard": [
     {
       "src": "/products/keyboard/1.webp",

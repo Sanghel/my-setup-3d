@@ -15,7 +15,7 @@ export function Hint() {
   const inspecting = useSceneStore((s) => s.mode === 'inspecting')
   return (
     <p className={`hint${inspecting ? ' hint--off' : ''}`} aria-hidden={inspecting}>
-      Arrastra para girar · toca un punto para ver el detalle
+      Toca un objeto o un punto para ver el detalle
     </p>
   )
 }

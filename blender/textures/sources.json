@@ -3,8 +3,8 @@
     "Fotos del usuario → texturas (npm run textures:photos). Los originales viven en el vault (insumos/), NUNCA en el repo.",
     "corners: esquinas del objeto en la foto ya orientada (-auto-orient), normalizadas 0–1, en orden TL, TR, BR, BL.",
     "desk_mat: el borde derecho quedó fuera de la foto (se pierde la última S de ENGINEERS); la esquina se ajusta al borde de la imagen.",
-    "Pantallas (match-mock-content D4): fondos del mock de Claude Design (wallpapers del usuario, pantalla de bloqueo con degradados rosa/azul), en el vault docs/referencia-mock/tex_uw.jpg y tex_vert.jpg; recortados al centro a la proporción del panel (2,39 y 0,56) y escalados a 2048×858 / 1024×1832. `npm run textures:screens` (código del repo) ya no forma parte del pipeline.",
-    "Cuadros y desk mat (match-mock-content D9, 3.4): jersey_2008.jpg, jersey_scholes.jpg y poster.jpg salen de las texturas del mock (recortes de fotos del usuario; vault docs/referencia-mock/tex_moscu|tex_scholes|tex_ot.jpg), recortadas al centro a la proporción del interior de cada marco real (cover). desk_mat.jpg es el diseño procedural del mock (fondo #141416, 'E N G I N E E R S' y líneas de código tenues). La foto de tienda de Scholes deja de usarse."
+    "Cuadros y desk mat (match-mock-content D9, 3.4): jersey_2008.jpg, jersey_scholes.jpg y poster.jpg salen de las texturas del mock (recortes de fotos del usuario; vault docs/referencia-mock/tex_moscu|tex_scholes|tex_ot.jpg), recortadas al centro a la proporción del interior de cada marco real (cover). desk_mat.jpg es el diseño procedural del mock (fondo #141416, 'E N G I N E E R S' y líneas de código tenues). La foto de tienda de Scholes deja de usarse.",
+    "Pantallas (ajustes visuales 1): screen_ultrawide.jpg y screen_vertical.jpg se generan por código (scripts/render-wallpapers.mjs), con las ondas rosa/azul/violeta del mock a 2560×1072 y 1024×1832."
   ],
   "photos": {
     "poster": {
@@ -30,37 +30,8 @@
       "size": [
         1024,
         1280
-      ]
-    },
-    "desk_mat": {
-      "file": "fotos/IMG_0204.heic",
-      "corners": [
-        [
-          0.036,
-          0.176
-        ],
-        [
-          0.999,
-          0.147
-        ],
-        [
-          0.999,
-          0.8
-        ],
-        [
-          0.006,
-          0.836
-        ]
       ],
-      "size": [
-        2048,
-        772
-      ],
-      "post": [
-        "-level",
-        "25%,100%"
-      ],
-      "_post": "La foto de día sale sobreexpuesta (promedio 98); el mat real es negro: niveles 25–100 % → promedio ~45, el texto blanco se mantiene."
+      "_note": "Ajustes visuales 1: vuelve a la foto original (más color y contraste que el recorte del mock)."
     },
     "jersey_2008": {
       "file": "fotos/IMG_3320.HEIC",
@@ -86,7 +57,44 @@
         1108,
         1200
       ],
-      "_note": "Interior del marco (60×65 cm). Provisional: tiene reflejos tenues (celular y una puerta); reemplazar con F1 sin reflejos."
+      "_note": "Ajustes visuales 1: vuelve a la foto original de frente (como Scholes). El post tapa el reflejo de la persona con el celular en el vidrio (abajo al centro) con una franja de tela de justo debajo del recuadro AIG, y sube brillo/saturación para igualarla a Scholes.",
+      "post": [
+        "(",
+        "+clone",
+        "-crop",
+        "340x55+380+780",
+        "+repage",
+        "-resize",
+        "340x345!",
+        "-blur",
+        "0x1.5",
+        "(",
+        "-size",
+        "340x345",
+        "xc:black",
+        "-fill",
+        "white",
+        "-draw",
+        "roundrectangle 26,6 314,345 30,30",
+        "-blur",
+        "0x10",
+        ")",
+        "-alpha",
+        "off",
+        "-compose",
+        "copy_opacity",
+        "-composite",
+        ")",
+        "-geometry",
+        "+380+835",
+        "-compose",
+        "over",
+        "-composite",
+        "-modulate",
+        "112,118",
+        "-level",
+        "4%,96%"
+      ]
     },
     "keyboard_top": {
       "file": "fotos/IMG_0215.heic",
@@ -138,7 +146,43 @@
       "_note": "Foto al anochecer (F13) llevada a noche y desenfocada para que no se reconozca la ubicación."
     }
   },
-  "cutouts": {
+  "cutouts": {},
+  "replaced_by_mock": {
+    "jersey_scholes": "tex_scholes",
+    "desk_mat": "procedural del mock",
+    "_antes": "jersey_2008 y poster también venían del mock; en ajustes visuales 1 volvieron a las fotos originales"
+  },
+  "_retired": {
+    "desk_mat": {
+      "file": "fotos/IMG_0204.heic",
+      "corners": [
+        [
+          0.036,
+          0.176
+        ],
+        [
+          0.999,
+          0.147
+        ],
+        [
+          0.999,
+          0.8
+        ],
+        [
+          0.006,
+          0.836
+        ]
+      ],
+      "size": [
+        2048,
+        772
+      ],
+      "post": [
+        "-level",
+        "25%,100%"
+      ],
+      "_post": "La foto de día sale sobreexpuesta (promedio 98); el mat real es negro: niveles 25–100 % → promedio ~45, el texto blanco se mantiene."
+    },
     "jersey_scholes": {
       "file": "web/scholes-1998-back-casualfootballshirts.jpg",
       "source": "https://casualfootballshirts.co.uk/products/1998-00-manchester-united-home-size-xl-l-fit-scholes-18",
@@ -151,12 +195,7 @@
       "offsetY": -20,
       "fuzz": "6%",
       "_note": "Provisional desde una foto de producto (fondo blanco recortado) sobre el gris del fondo del marco (81×92 cm interior). Reemplazar con F3 propia."
-    }
-  },
-  "replaced_by_mock": {
-    "jersey_2008": "tex_moscu",
-    "jersey_scholes": "tex_scholes (antes: cutout web casualfootballshirts)",
-    "poster": "tex_ot",
-    "desk_mat": "procedural del mock"
+    },
+    "_note": "Entradas que ya no genera el script: el desk mat es el procedural del mock y Scholes es la textura del mock (archivos versionados en blender/textures/photos). Las pantallas se generan con `npm run textures:wallpapers` (ajustes visuales 1): las fotos del mock eran de baja resolución, con el reloj de bloqueo y el borde del monitor."
   }
 }
