@@ -73,6 +73,11 @@ export interface Item {
    * (npm run products:photos); los personalizados quedan sin fotos hasta que el usuario tome las suyas.
    */
   photos?: ItemPhoto[]
+  /**
+   * Cabecera de la ficha cuando el objeto no tiene fotos (ajustes visuales 3, D3): una captura del
+   * propio objeto en la escena (public/headers/<id>.webp), sin crédito porque es del sitio.
+   */
+  cover?: ItemPhoto
   /** Dónde comprarlo. Sin enlace confirmado, no hay botón. */
   buy?: BuyLink[]
 }
@@ -80,6 +85,7 @@ export interface Item {
 const CATALOG: Item[] = [
   {
     id: 'desk',
+    cover: { src: '/headers/desk.webp', alt: 'El escritorio en la escena, con los monitores, el teclado y la tira LED' },
     group: 'setup',
     node: 'item_desk',
     name: 'Escritorio',
@@ -188,6 +194,7 @@ const CATALOG: Item[] = [
   },
   {
     id: 'jersey-2008',
+    cover: { src: '/headers/jersey-2008.webp', alt: 'La camiseta de la final de Moscú 2008 enmarcada en la pared' },
     group: 'coleccion',
     short: 'Moscú 2008',
     node: 'item_jersey_2008',
@@ -204,6 +211,7 @@ const CATALOG: Item[] = [
   },
   {
     id: 'jersey-scholes',
+    cover: { src: '/headers/jersey-scholes.webp', alt: 'La camiseta de Scholes 18 enmarcada en la pared de la ventana' },
     group: 'coleccion',
     short: 'Scholes 18',
     node: 'item_jersey_scholes',
@@ -220,6 +228,7 @@ const CATALOG: Item[] = [
   },
   {
     id: 'poster',
+    cover: { src: '/headers/poster.webp', alt: 'El poster de Old Trafford con su halo rojo' },
     group: 'coleccion',
     node: 'item_poster',
     name: 'Old Trafford',
@@ -282,10 +291,18 @@ export function itemNumber(id: string, items: readonly Item[] = ITEMS): string {
 /** Total de objetos con el mismo formato, para el contador "03 / 07". */
 export const itemTotal = (items: readonly Item[] = ITEMS) => String(items.length).padStart(2, '0')
 
-/** Etiqueta de categoría del panel: "SETUP · 03". */
+/** Etiqueta de categoría de la ficha con la posición: "SETUP · 03 DE 11". */
 export function itemCategory(item: Item, items: readonly Item[] = ITEMS): string {
   const group = GROUPS.find((g) => g.id === item.group)
-  return `${group?.title ?? ''} · ${itemNumber(item.id, items)}`
+  return `${group?.title ?? ''} · ${itemNumber(item.id, items)} DE ${itemTotal(items)}`
+}
+
+/** Objetos anterior y siguiente en el orden del catálogo, dando la vuelta (como step(±1)). */
+export function itemNeighbors(id: string, items: readonly Item[] = ITEMS): { prev: Item; next: Item } | null {
+  const index = items.findIndex((item) => item.id === id)
+  if (index < 0) return null
+  const at = (offset: number) => items[(index + offset + items.length) % items.length]
+  return { prev: at(-1), next: at(1) }
 }
 
 /** El índice: grupos en orden, cada uno con sus objetos; los grupos sin objetos no aparecen. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { groupedItems, ITEMS, itemById, itemCategory, itemNumber, itemTotal } from './items'
+import { groupedItems, ITEMS, itemById, itemCategory, itemNeighbors, itemNumber, itemTotal } from './items'
 
 describe('catálogo de objetos', () => {
   it('tiene los 10 objetos del mock más las portátiles', () => {
@@ -48,7 +48,10 @@ describe('numeración y grupos (índice del mock)', () => {
   })
 
   it('la categoría combina grupo y número', () => {
-    expect(itemCategory(itemById('vertical-monitor')!)).toBe('SETUP · 03')
+    expect(itemCategory(itemById('vertical-monitor')!)).toBe('SETUP · 03 DE 11')
+    expect(itemNeighbors('jersey-scholes')).toMatchObject({ prev: { id: 'jersey-2008' }, next: { id: 'poster' } })
+    expect(itemNeighbors('desk')!.prev.id).toBe('funko')
+    expect(itemNeighbors('funko')!.next.id).toBe('desk')
   })
 
   it('los productos llevan fotos oficiales con crédito; los personalizados y el vertical (modelo pendiente), ninguna', () => {
