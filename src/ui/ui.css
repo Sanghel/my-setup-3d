@@ -824,6 +824,104 @@
   letter-spacing: 0.01em;
 }
 
+/* Globo de chat del muñeco (ajustes visuales 3, D8), al estilo de los de Habbo: caja blanca con borde
+   oscuro, el nombre en negrita y una colita que apunta a la cabeza. <HotspotProbe> mueve el contenedor
+   a la cabeza; la caja se centra encima. Aparece con un pequeño salto cuando ya tiene posición. */
+.avatar-bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+
+.avatar-bubble[data-ready='true'] {
+  visibility: visible;
+}
+
+.avatar-bubble--hidden {
+  opacity: 0;
+}
+
+.avatar-bubble__box {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  translate: -50% 0;
+  margin: 0;
+  padding: 5px 9px;
+  border: 1px solid #1a1a1a;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.35);
+  color: #111;
+  font: 12px/1.3 Verdana, Tahoma, system-ui, sans-serif;
+  white-space: nowrap;
+  animation: avatar-bubble-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) 1.2s both;
+}
+
+/* Colita: un rombo con el mismo borde, medio escondido bajo la caja */
+.avatar-bubble__box::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 9px;
+  height: 9px;
+  translate: -50% 0;
+  rotate: 45deg;
+  border-right: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  background: #fff;
+}
+
+.avatar-bubble__name {
+  font-weight: 700;
+}
+
+.avatar-bubble__emojis {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.avatar-bubble__emoji {
+  display: inline-block;
+  animation: avatar-emoji-hop 2.4s ease-in-out infinite;
+}
+
+@keyframes avatar-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.8);
+  }
+}
+
+@keyframes avatar-emoji-hop {
+  0%,
+  70%,
+  100% {
+    transform: none;
+  }
+  80% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-bubble__box,
+  .avatar-bubble__emoji {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .avatar-bubble__box {
+    font-size: 10.5px;
+    padding: 4px 7px;
+  }
+}
+
 /* Puntos de interés (mock): número en un círculo claro con un anillo que pulsa */
 .hotspots {
   position: absolute;

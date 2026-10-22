@@ -1,3 +1,4 @@
+import { AvatarBubble } from './AvatarBubble'
 import { BottomBar } from './BottomBar'
 import { Brand, Signature } from './Brand'
 import { Hotspots } from './Hotspots'
@@ -14,6 +15,7 @@ export function Overlay() {
   return (
     <div className="overlay">
       <TiltShift />
+      <AvatarBubble />
       <Hotspots />
       <Brand />
       <Index />

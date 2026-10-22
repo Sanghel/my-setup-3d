@@ -1,7 +1,8 @@
 import { useLayoutEffect } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { useGLTF, useTexture } from '@react-three/drei'
-import { NearestFilter, SRGBColorSpace, type Mesh, type MeshStandardMaterial, type Texture } from 'three'
+import { MathUtils, NearestFilter, SRGBColorSpace, type Mesh, type MeshStandardMaterial, type Texture } from 'three'
 import { ITEMS } from '../data/items'
 import { ambienceUniforms, patchAmbienceLightmap, patchWindowView } from './ambience'
 import { useSceneStore } from '../state/sceneStore'
@@ -61,6 +62,17 @@ export function Room() {
     if (import.meta.env.DEV) window.__room = scene // solo para inspeccionar desde la consola
   }, [scene])
 
+  // El muñeco del autor se desvanece al inspeccionar (deja el objeto solo) y vuelve en la vista general
+  useFrame((_, delta) => {
+    const avatar = scene.getObjectByName(AVATAR_NODE) as Mesh | undefined
+    if (!avatar) return
+    const material = avatar.material as MeshStandardMaterial
+    const target = useSceneStore.getState().mode === 'inspecting' ? 0 : 1
+    if (Math.abs(material.opacity - target) < 0.001) return
+    material.opacity = MathUtils.damp(material.opacity, target, AVATAR_FADE_SPEED, delta)
+    avatar.visible = material.opacity > 0.01
+  })
+
   // Raycasting: R3F lanza un rayo desde la cámara por el puntero y entrega la malla más cercana.
   // Con stopPropagation solo cuenta esa; si es una pared o el piso (sin itemId), no hay hover.
   const onPointerMove = (event: ThreeEvent<PointerEvent>) => {
@@ -85,13 +97,16 @@ export function Room() {
   )
 }
 
-/** Material del muñeco del autor (ajustes visuales 3, D7), un plano con avatar.png. */
+/** Nodo y material del muñeco del autor (ajustes visuales 3, D7): un plano con su avatar de Habbo. */
+const AVATAR_NODE = 'prop_avatar'
 const AVATAR_MATERIAL = 'prop_avatar'
+/** Rapidez del desvanecido del muñeco al entrar y salir de la inspección (como el atenuado). */
+const AVATAR_FADE_SPEED = 6
 
 /**
- * El muñeco es pixel art: filtro nearest (sin suavizar los píxeles), recorte por alfa en vez de
- * transparencia mezclada (sin problemas de orden con el vidrio de los cuadros) y fuera del raycasting,
- * para que su rectángulo transparente no tape los clicks a la camiseta de Scholes que tiene detrás.
+ * El muñeco es pixel art: filtro nearest (sin suavizar los píxeles), recorte por alfa (el sprite de
+ * Habbo solo tiene píxeles llenos o vacíos) más opacidad para desvanecerlo al inspeccionar, y fuera del
+ * raycasting, para que su rectángulo transparente no tape los clicks a la camiseta de Scholes.
  */
 function configureAvatar(mesh: Mesh, material: MeshStandardMaterial) {
   for (const texture of [material.map, material.emissiveMap]) {
@@ -101,10 +116,11 @@ function configureAvatar(mesh: Mesh, material: MeshStandardMaterial) {
     texture.generateMipmaps = false
     texture.needsUpdate = true
   }
-  // El .glb lo exporta como transparente (alfa conectado): sin depthWrite, el piso y la pared lo tapaban
-  material.transparent = false
+  // El .glb lo exporta como transparente (alfa conectado), y three.js le quita depthWrite: sin él, el
+  // piso y la pared lo tapaban. alphaTest bajo: con 0.5, al desvanecerse desaparecería de golpe a mitad
+  material.transparent = true
   material.depthWrite = true
-  material.alphaTest = 0.5
+  material.alphaTest = 0.02
   material.needsUpdate = true
   mesh.raycast = () => {}
 }

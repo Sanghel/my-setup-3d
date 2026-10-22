@@ -1,6 +1,6 @@
 # my-setup-3d
 
-Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores unidos, las dos portátiles en su dock, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: once objetos numerados. Y, de pie bajo la camiseta de Scholes, el autor como muñeco pixelado al estilo Habbo.
+Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores unidos, las dos portátiles en su dock, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: once objetos numerados. Y, de pie bajo la camiseta de Scholes, el autor como su avatar de Habbo, que saluda con un globo de chat.
 
 Cada objeto tiene un punto numerado y un círculo en el riel de la izquierda: al tocarlo, la cámara vuela hacia él, el resto del cuarto se atenúa y una ficha editorial muestra su número, sus datos y el objeto anterior y el siguiente. En los productos comerciales, la ficha suma las fotos oficiales del fabricante y un botón para verlo en la tienda. El diseño parte de un mock hecho en Claude Design.
 
@@ -62,7 +62,7 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 | `npm run textures:sky` | Genera el cielo de atardecer de la ventana (por código, sin fotos) |
 | `npm run textures:wallpapers` | Genera los fondos de las dos pantallas (ondas de colores, por código) |
 | `npm run textures:scholes` | Quita de la camiseta de Scholes el reflejo de quien tomó la foto (separación de frecuencias) |
-| `npm run textures:avatar` | Dibuja el muñeco del autor desde la rejilla de píxeles de `blender/textures/avatar.json` |
+| `npm run textures:avatar` | Prepara el avatar de Habbo del autor (recorte y ampliación sin suavizar) |
 | `npm run textures` | Descarga y tiñe las texturas de Poly Haven |
 | `npm run textures:photos` | Corrige la perspectiva de las fotos (los originales no están en el repo) |
 | `npm run products:photos` | Convierte las fotos oficiales de producto a WebP sin metadatos (`blender/textures/products.json`; los originales no están en el repo) |
@@ -91,7 +91,7 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 | Piso laminado (`laminate_floor_02`, `laminate_floor_03`) y pared (`beige_wall_001`) | [Poly Haven](https://polyhaven.com) | CC0 |
 | Poster y camiseta 2008 | Fotos propias, procesadas | Del autor |
 | Camiseta Scholes 18 | Textura del mock (foto propia), sin el reflejo del fotógrafo (`scripts/clean-scholes.mjs`) | Del autor |
-| Muñeco del autor | Pixel art propio al estilo Habbo Hotel (`blender/textures/avatar.json`) | Del autor |
+| Muñeco del autor | Su avatar de [Habbo Hotel](https://www.habbo.com), generado con el avatar imager oficial | Arte de Habbo © Sulake; uso personal |
 | Cabeceras de las fichas sin fotos | Capturas de la propia escena (`public/headers/`) | — |
 | Fondos de las pantallas | Generados por código (`scripts/render-wallpapers.mjs`) | — |
 | Desk mat y tablero del organizador | Generados por código | — |
