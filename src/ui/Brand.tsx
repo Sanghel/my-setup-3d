@@ -46,8 +46,9 @@ function ThreeIcon() {
 
 /**
  * Firma de los proyectos del autor (abajo al centro, en lugar de la ayuda): "Crafted with ♥ and Claude ·
- * Three.js". three.js es la tecnología que dibuja toda la escena. Se oculta al inspeccionar, como la
- * ayuda que reemplazó (en celular el panel ocupa esa zona).
+ * Three.js — by Sanghel Gonzalez". three.js es la tecnología que dibuja toda la escena; el nombre del
+ * autor lleva a su portfolio, destacado de forma sutil (cursiva y acento). Se oculta al inspeccionar,
+ * como la ayuda que reemplazó (en celular el panel ocupa esa zona).
  */
 export function Signature() {
   const inspecting = useSceneStore((s) => s.mode === 'inspecting')
@@ -65,6 +66,21 @@ export function Signature() {
         <ThreeIcon />
         Three.js
       </a>
+      <span className="signature__by">
+        <span className="signature__dot" aria-hidden="true">
+          —
+        </span>
+        by{' '}
+        <a
+          className="signature__author"
+          href="https://sanghel.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          tabIndex={inspecting ? -1 : undefined}
+        >
+          Sanghel Gonzalez
+        </a>
+      </span>
     </p>
   )
 }

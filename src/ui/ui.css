@@ -697,6 +697,20 @@
   color: var(--ui-faint);
 }
 
+.signature__by {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* El autor: cursiva en el durazno de acento, para que destaque sin gritar */
+.signature a.signature__author {
+  color: var(--ui-accent);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
 /* Puntos de interés (mock): número en un círculo claro con un anillo que pulsa */
 .hotspots {
   position: absolute;
@@ -803,6 +817,20 @@
   .signature {
     bottom: calc(var(--ui-gap) + 64px + env(safe-area-inset-bottom));
     font-size: 11px;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 2px;
+    width: calc(100% - 2 * var(--ui-gap));
+  }
+
+  /* "— by Sanghel Gonzalez" baja a su propia línea: la firma completa no entra en 390 px */
+  .signature__by {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+
+  .signature__by .signature__dot {
+    display: none;
   }
 
   /* Puntos más chicos: el diorama ocupa poco y se pisarían. Se escala el botón y no .hotspot: en

@@ -6,10 +6,10 @@ import { Signature } from './Brand'
 describe('Signature', () => {
   beforeEach(() => useSceneStore.setState(initialState))
 
-  it('dice "Crafted with ♥ and Claude · Three.js", con el corazón anunciado como "love"', () => {
+  it('dice "Crafted with ♥ and Claude · Three.js — by Sanghel Gonzalez", con el corazón anunciado como "love"', () => {
     render(<Signature />)
     const signature = screen.getByText(/Crafted with/)
-    expect(signature).toHaveTextContent(/^Crafted with\s*and\s*Claude\s*·\s*Three\.js$/)
+    expect(signature).toHaveTextContent(/^Crafted with\s*and\s*Claude\s*·\s*Three\.js\s*—\s*by Sanghel Gonzalez$/)
     expect(screen.getByRole('img', { name: 'love' })).toBeInTheDocument()
   })
 
@@ -20,6 +20,15 @@ describe('Signature', () => {
     expect(claude).toHaveAttribute('href', 'https://claude.com')
     expect(three).toHaveAttribute('href', 'https://threejs.org')
     for (const link of [claude, three]) expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('"Sanghel Gonzalez" enlaza al portfolio en una pestaña nueva, destacado', () => {
+    render(<Signature />)
+    const author = screen.getByRole('link', { name: 'Sanghel Gonzalez' })
+    expect(author).toHaveAttribute('href', 'https://sanghel.dev')
+    expect(author).toHaveAttribute('target', '_blank')
+    expect(author).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(author).toHaveClass('signature__author')
   })
 
   it('se oculta al inspeccionar (y sus enlaces salen del orden de tabulación)', () => {
