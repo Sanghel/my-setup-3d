@@ -243,8 +243,7 @@
   background: var(--ui-hover);
 }
 
-.back-button:focus-visible,
-.index button:focus-visible {
+.back-button:focus-visible {
   outline: 2px solid var(--ui-accent);
   outline-offset: 2px;
 }
@@ -257,106 +256,129 @@
   color: var(--ui-faint);
 }
 
-/* Índice (mock): arriba a la izquierda, bajo el título */
+/* Índice como riel numerado (menú B de ajustes visuales 3): círculos con el número, agrupados por
+   categoría; el círculo se despliega en una pastilla con el nombre (hover, foco, hover desde la escena
+   o el objeto inspeccionado). El ancho anima de --rail-size a max-content con interpolate-size. */
 .index {
+  --rail-size: 40px;
   position: absolute;
-  top: 76px;
+  top: 84px;
   left: var(--ui-gap);
-  width: 224px;
-  max-height: calc(100% - 150px);
-  overflow: auto;
-  padding: 8px;
-  background: var(--ui-bg);
-  border-color: var(--ui-border);
-}
-
-.index__header {
+  max-height: calc(100% - 160px);
+  overflow: visible;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 8px 6px;
-}
-
-.index__title {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #d8c8ba;
-}
-
-.index__toggle {
-  padding: 0;
-  border: 0;
-  background: none;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.chip {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  padding: 3px 8px;
-  border: 1px solid rgb(255 235 215 / 0.16);
-  border-radius: 999px;
-  background: none;
-  color: #e5d6c9;
-  font: inherit;
-  font-size: 11px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.chip kbd {
-  font: 11px/1 var(--font-mono);
-  color: var(--ui-faint);
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  interpolate-size: allow-keywords;
 }
 
 .index__group {
-  margin: 0;
-  padding: 8px 8px 2px;
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.12em;
+  margin: 0 0 6px 4px;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.16em;
   color: var(--ui-faint);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
 }
 
 .index ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .index__item {
-  width: 100%;
+  pointer-events: auto;
+  height: var(--rail-size);
+  width: var(--rail-size);
   display: flex;
+  align-items: center;
   gap: 10px;
-  align-items: baseline;
-  padding: 5px 8px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
+  padding: 0;
+  border: 1px solid rgb(255 235 215 / 0.12);
+  border-radius: 999px;
+  background: var(--ui-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   color: #e5d6c9;
   font: inherit;
-  font-size: 13px;
-  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.2s,
+    color 0.2s;
 }
 
-.index__item:hover {
-  background: var(--ui-hover);
-}
-
-.index__item--hover,
-.index__item[aria-current='true'] {
-  background: var(--ui-active);
-  color: #fff;
+/* COLECCIÓN en rojo United */
+.index__section--coleccion .index__item {
+  border-color: rgb(200 16 46 / 0.55);
+  background: rgb(120 14 30 / 0.55);
 }
 
 .index__number {
-  font: 10.5px/1 var(--font-mono);
-  color: #a08f80;
+  flex: none;
+  width: calc(var(--rail-size) - 2px);
+  text-align: center;
+  font: 600 12px/1 var(--font-mono);
+}
+
+.index__name {
+  padding-right: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* Desplegado: pastilla clara con el número en un círculo coral, como un punto en hover */
+.index__item:hover,
+.index__item:focus-visible,
+.index__item--hover,
+.index__item[aria-current='true'] {
+  width: max-content;
+  border-color: transparent;
+  background: var(--ui-dot);
+  color: #1b1612;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+}
+
+.index__item:hover .index__name,
+.index__item:focus-visible .index__name,
+.index__item--hover .index__name,
+.index__item[aria-current='true'] .index__name {
+  opacity: 1;
+}
+
+.index__item:hover .index__number,
+.index__item:focus-visible .index__number,
+.index__item--hover .index__number,
+.index__item[aria-current='true'] .index__number {
+  width: calc(var(--rail-size) - 8px);
+  height: calc(var(--rail-size) - 8px);
+  margin-left: 3px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ui-dot-hover);
+  color: #fff;
+}
+
+.index__item:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .index__item,
+  .index__name {
+    transition: none;
+  }
 }
 
 /* Indicador de carga */
@@ -469,10 +491,16 @@
     padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
   }
 
+  /* Riel más compacto: 11 círculos y 3 etiquetas caben a lo alto de un teléfono */
   .index {
-    top: 64px;
-    width: min(224px, calc(100vw - 2 * var(--ui-gap)));
-    max-height: calc(54dvh - 64px);
+    --rail-size: 34px;
+    top: 70px;
+    left: 12px;
+    gap: 6px;
+  }
+
+  .index ul {
+    gap: 3px;
   }
 
   /* La hoja de detalle ocupa la parte de abajo: la barra se esconde mientras se inspecciona */
@@ -487,8 +515,6 @@
   }
 
   /* Botones de al menos 44 px de alto: tamaño mínimo cómodo para un dedo */
-  .index__item,
-  .index__toggle,
   .back-button,
   .pill,
   .segmented button,
@@ -541,6 +567,12 @@
   font-size: 13px;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.pill kbd {
+  margin-left: 6px;
+  font: 11px/1 var(--font-mono);
+  color: var(--ui-faint);
 }
 
 .pill:hover {

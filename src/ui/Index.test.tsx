@@ -4,36 +4,36 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { initialState, useSceneStore } from '../state/sceneStore'
 import { Index } from './Index'
 
-describe('Index', () => {
+const names = (region: HTMLElement) => within(region).getAllByRole('button').map((b) => b.getAttribute('aria-label'))
+
+describe('Index (riel numerado)', () => {
   beforeEach(() => useSceneStore.setState(initialState))
 
   it('agrupa en SETUP, COLECCIÓN y DETALLES, numerados 01–11 como los puntos', () => {
     render(<Index />)
-    const setup = screen.getByRole('region', { name: 'SETUP' })
-    const coleccion = screen.getByRole('region', { name: 'COLECCIÓN' })
-    expect(within(setup).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      '01Escritorio',
-      '02Ultrawide',
-      '03Vertical',
-      '04Teclado',
-      '05Silla',
-      '06Portátiles',
+    expect(names(screen.getByRole('region', { name: 'SETUP' }))).toEqual([
+      '01 Escritorio',
+      '02 Ultrawide',
+      '03 Vertical',
+      '04 Teclado',
+      '05 Silla',
+      '06 Portátiles',
     ])
-    expect(within(coleccion).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      '07Moscú 2008',
-      '08Scholes 18',
-      '09Old Trafford',
-    ])
-    const detalles = screen.getByRole('region', { name: 'DETALLES' })
-    expect(within(detalles).getAllByRole('button').map((b) => b.textContent)).toEqual(['10Organizador', '11Funko Madara'])
+    expect(names(screen.getByRole('region', { name: 'COLECCIÓN' }))).toEqual(['07 Moscú 2008', '08 Scholes 18', '09 Old Trafford'])
+    expect(names(screen.getByRole('region', { name: 'DETALLES' }))).toEqual(['10 Organizador', '11 Funko Madara'])
   })
 
-  it('solo con teclado: Tab hasta "Escritorio" y Enter lo inspecciona', async () => {
+  it('cada círculo muestra el número y guarda el nombre para la pastilla', () => {
+    render(<Index />)
+    const button = screen.getByRole('button', { name: '04 Teclado' })
+    expect(button).toHaveTextContent('04Teclado')
+  })
+
+  it('solo con teclado: Tab hasta "01" y Enter lo inspecciona', async () => {
     render(<Index />)
     const user = userEvent.setup()
-    await user.tab() // "Ocultar puntos"
-    await user.tab() // 01 Escritorio
-    expect(screen.getByRole('button', { name: /Escritorio/ })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: '01 Escritorio' })).toHaveFocus()
     await user.keyboard('{Enter}')
     expect(useSceneStore.getState()).toMatchObject({ mode: 'inspecting', selectedId: 'desk' })
   })
@@ -41,31 +41,23 @@ describe('Index', () => {
   it('durante la inspección permite saltar a otro objeto y marca el actual', async () => {
     render(<Index />)
     act(() => useSceneStore.getState().select('keyboard'))
-    await userEvent.click(screen.getByRole('button', { name: /Ultrawide/ }))
+    await userEvent.click(screen.getByRole('button', { name: '02 Ultrawide' }))
     expect(useSceneStore.getState().selectedId).toBe('ultrawide')
-    expect(screen.getByRole('button', { name: /Ultrawide/ })).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('button', { name: '02 Ultrawide' })).toHaveAttribute('aria-current', 'true')
   })
 
-  it('el hover se sincroniza con los puntos', async () => {
+  it('el hover y el foco se sincronizan con los puntos', async () => {
     render(<Index />)
-    await userEvent.hover(screen.getByRole('button', { name: /Teclado/ }))
+    await userEvent.hover(screen.getByRole('button', { name: '04 Teclado' }))
     expect(useSceneStore.getState().hoveredId).toBe('keyboard')
+    await userEvent.unhover(screen.getByRole('button', { name: '04 Teclado' }))
+    act(() => screen.getByRole('button', { name: '05 Silla' }).focus())
+    expect(useSceneStore.getState().hoveredId).toBe('chair')
   })
 
-  it('"Ocultar puntos" alterna y cambia su texto', async () => {
+  it('el hover desde la escena despliega el círculo del objeto', () => {
     render(<Index />)
-    await userEvent.click(screen.getByRole('button', { name: /Ocultar puntos/ }))
-    expect(useSceneStore.getState().hotspotsVisible).toBe(false)
-    expect(screen.getByRole('button', { name: /Mostrar puntos/ })).toBeInTheDocument()
-  })
-
-  it('en celular empieza plegado y se pliega al elegir con un tap', async () => {
-    render(<Index collapsible defaultOpen={false} />)
-    const toggle = screen.getByRole('button', { name: /ÍNDICE/ })
-    expect(toggle).toHaveAttribute('aria-expanded', 'false')
-    await userEvent.click(toggle)
-    await userEvent.click(screen.getByRole('button', { name: /Old Trafford/ }))
-    expect(useSceneStore.getState().selectedId).toBe('poster')
-    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    act(() => useSceneStore.getState().hover('poster'))
+    expect(screen.getByRole('button', { name: '09 Old Trafford' })).toHaveClass('index__item--hover')
   })
 })
