@@ -1,15 +1,15 @@
 {
-  "size": 1024,
-  "samples": 128,
+  "size": 2048,
+  "samples": 1024,
   "encoding": "srgb",
   "uv": "TEXCOORD_1",
   "ambiences": {
     "tarde": {
-      "intensity": 1.374027967453003,
+      "intensity": 1.3707404136657715,
       "exposure": 0.5
     },
     "noche": {
-      "intensity": 0.7865444421768188,
+      "intensity": 0.7739374041557312,
       "exposure": 1.3
     }
   }
