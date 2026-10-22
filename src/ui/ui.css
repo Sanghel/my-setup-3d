@@ -556,16 +556,33 @@
     min-height: 44px;
   }
 
-  /* Riel más compacto: 11 círculos y 3 etiquetas caben a lo alto de un teléfono */
+  /* Riel compacto en fila bajo el título: en vertical el cuarto llena el ancho y una columna taparía
+     el poster y los monitores. Desliza de lado si no entra; la pastilla se abre igual. */
   .index {
-    --rail-size: 34px;
-    top: 70px;
-    left: 12px;
-    gap: 6px;
+    --rail-size: 36px;
+    top: 74px;
+    left: 0;
+    right: 0;
+    max-height: none;
+    flex-direction: row;
+    gap: 10px;
+    padding: 4px var(--ui-gap) 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    pointer-events: auto;
+  }
+
+  .index__section {
+    flex: none;
+  }
+
+  .index__group {
+    margin-bottom: 4px;
   }
 
   .index ul {
-    gap: 3px;
+    flex-direction: row;
+    gap: 4px;
   }
 
   /* La hoja de detalle ocupa la parte de abajo: la barra se esconde mientras se inspecciona */

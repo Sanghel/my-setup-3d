@@ -5,6 +5,7 @@ import {
   OVERVIEW_REFERENCE_ASPECT,
   OVERVIEW_TARGET,
   inspectionLayout,
+  OVERVIEW_NARROW_EXPONENT,
   overviewPosition,
 } from './cameraPoses'
 
@@ -51,10 +52,13 @@ describe('vista general según el aspecto', () => {
     expect(overviewPosition(OVERVIEW_REFERENCE_ASPECT)).toEqual(OVERVIEW_POSITION)
   })
 
-  it('en un celular vertical se aleja en proporción al aspecto, en la misma dirección', () => {
+  it('en un celular vertical se aleja menos que lo que haría falta para ver el plinto entero, en la misma dirección', () => {
     const aspect = 390 / 844
     const position = overviewPosition(aspect)
-    expect(dist(position, OVERVIEW_TARGET)).toBeCloseTo(base * (OVERVIEW_REFERENCE_ASPECT / aspect), 5)
+    const fitWidth = OVERVIEW_REFERENCE_ASPECT / aspect
+    expect(dist(position, OVERVIEW_TARGET)).toBeCloseTo(base * fitWidth ** OVERVIEW_NARROW_EXPONENT, 5)
+    expect(dist(position, OVERVIEW_TARGET)).toBeLessThan(base * fitWidth * 0.7)
+    expect(dist(position, OVERVIEW_TARGET)).toBeGreaterThan(base)
     const dir = (p: number[]) => p.map((v, i) => (v - OVERVIEW_TARGET[i]) / dist(p, OVERVIEW_TARGET))
     dir(position).forEach((v, i) => expect(v).toBeCloseTo(dir(OVERVIEW_POSITION)[i], 6))
   })
