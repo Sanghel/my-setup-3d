@@ -277,5 +277,14 @@
       "d": 6.9,
       "color": "#5c5f66"
     }
+  },
+  "avatar": {
+    "_source": "ajustes visuales 3",
+    "_note": "Muñeco del autor (plano con avatar.png). x/d: dónde apoya los pies (cm del cuarto): a la derecha de la silla y bajo la camiseta de Scholes, como marcó el usuario en una captura. yawDeg: giro del ancho del plano; 39° lo deja de frente a la cámara de la vista general (azimut -39°). height: 110 cm, más o menos el alto de la silla (los muñecos de Habbo son chicos al lado de los muebles). glow: emisión tenue para que se lea en la sombra.",
+    "x": 132,
+    "d": 200,
+    "height": 110,
+    "yawDeg": 39,
+    "glow": 0.2
   }
 }

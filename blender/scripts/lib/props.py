@@ -223,3 +223,28 @@ def build_laptops(m: dict, ultrawide: dict, desk) -> None:
     for i, (color, dx, up) in enumerate(stickers):
         parts.append(rbox(f"asus_sticker_{i}", (x + dx, front, stand + up), (2.6, 0.1, 2.6), materials.principled(f"sticker_{i}", color, roughness=0.6), 0.04))
     group("item_laptops", parts, (x, base_d, on))
+
+
+def build_avatar(m: dict) -> None:
+    """El autor como muñeco pixelado al estilo Habbo (ajustes visuales 3, D7): un plano vertical con
+    avatar.png (alfa) de pie en el piso, entre la silla y la pared de Scholes, girado hacia la cámara
+    de la vista general. Es un adorno (`prop_avatar`): se hornea con el cuarto (tarde/noche y su sombra
+    en el piso salen del lightmap) pero no es seleccionable. En la web se dibuja con alphaTest y filtro
+    nearest para que los píxeles queden nítidos (Room.tsx)."""
+    from .geometry import quad
+
+    av = m["avatar"]
+    image = bpy.data.images.load(str(materials.PHOTOS / "avatar.png"), check_existing=True)
+    width = av["height"] * image.size[0] / image.size[1]
+    yaw = math.radians(av["yawDeg"])
+    # Eje a lo ancho del plano, en (x, d) del cuarto; la normal (hacia la cámara) queda a su izquierda
+    ux, ud = math.cos(yaw), math.sin(yaw)
+    x, d, hw = av["x"], av["d"], width / 2
+    corners = [(x - ux * hw, d - ud * hw, 0.05), (x + ux * hw, d + ud * hw, 0.05),
+               (x + ux * hw, d + ud * hw, av["height"]), (x - ux * hw, d - ud * hw, av["height"])]
+    mat = materials.photo("prop_avatar", "avatar.png", roughness=0.9, glow=av.get("glow", 0.0))
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    tex = next(n for n in nodes if n.type == "TEX_IMAGE")
+    tex.interpolation = "Closest"  # píxeles nítidos también en el horneado y en el preview
+    links.new(tex.outputs["Alpha"], nodes["Principled BSDF"].inputs["Alpha"])
+    quad("prop_avatar", corners, mat)

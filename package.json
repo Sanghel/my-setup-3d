@@ -24,7 +24,8 @@
     "textures:screens:code": "node scripts/render-screens.mjs",
     "products:photos": "node scripts/products-photos.mjs",
     "textures:wallpapers": "node scripts/render-wallpapers.mjs",
-    "textures:scholes": "node scripts/clean-scholes.mjs"
+    "textures:scholes": "node scripts/clean-scholes.mjs",
+    "textures:avatar": "node scripts/render-avatar.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
