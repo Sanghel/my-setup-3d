@@ -1,14 +1,14 @@
 import { act, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { initialState, useSceneStore } from '../state/sceneStore'
-import { AVATAR_GREETING, AvatarBubble } from './AvatarBubble'
+import { AvatarBubble } from './AvatarBubble'
 
 describe('AvatarBubble', () => {
   beforeEach(() => useSceneStore.setState(initialState))
 
   it('en la vista general el muñeco saluda: "Sanghel: ¡Bienvenidos a mi setup!"', () => {
     render(<AvatarBubble />)
-    expect(screen.getByText(/Bienvenidos a mi setup/)).toHaveTextContent(`Sanghel: ${AVATAR_GREETING}`)
+    expect(screen.getByText(/Bienvenidos a mi setup/)).toHaveTextContent('Sanghel: ¡Bienvenidos a mi setup!')
   })
 
   it('al inspeccionar se oculta junto con el muñeco', () => {

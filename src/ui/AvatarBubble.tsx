@@ -2,8 +2,8 @@ import { useSceneStore } from '../state/sceneStore'
 import { avatarBubble } from './hotspotElements'
 
 /** Lo que dice el muñeco: el saludo y unos emojis que saltan uno tras otro. */
-export const AVATAR_GREETING = '¡Bienvenidos a mi setup!'
-export const AVATAR_EMOJIS = ['👋', '⚽', '💻', '🔥']
+const AVATAR_GREETING = '¡Bienvenidos a mi setup!'
+const AVATAR_EMOJIS = ['👋', '⚽', '💻', '🔥']
 
 /**
  * Globo de chat al estilo Habbo sobre el muñeco del autor (ajustes visuales 3, D8). La posición la
