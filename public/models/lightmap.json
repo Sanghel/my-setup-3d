@@ -5,11 +5,11 @@
   "uv": "TEXCOORD_1",
   "ambiences": {
     "tarde": {
-      "intensity": 1.3740836381912231,
+      "intensity": 1.3616517782211304,
       "exposure": 0.5
     },
     "noche": {
-      "intensity": 0.7879565358161926,
+      "intensity": 0.7736217975616455,
       "exposure": 1.3
     }
   }

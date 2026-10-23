@@ -11,12 +11,19 @@ export const OVERVIEW_TARGET = overviewCamera.target as [number, number, number]
 export const OVERVIEW_REFERENCE_ASPECT = 1.3
 
 /**
- * Cuánto alejar la cámara para que el diorama quepa a lo ancho. El FOV de three.js es vertical: en una
- * pantalla más angosta que la de referencia (un celular en vertical) se pierde ancho, así que la
- * distancia crece en la misma proporción en que se achica el aspecto. Nunca acerca.
+ * Qué tanto se aleja la cámara al angostarse la pantalla (ajustes visuales 3, D5): 1 haría que el
+ * plinto entrara completo a lo ancho, pero en un celular en vertical el cuarto quedaba chico y lejano;
+ * con un exponente menor la cámara se aleja menos y los extremos del plinto se salen por los lados.
+ */
+export const OVERVIEW_NARROW_EXPONENT = 0.62
+
+/**
+ * Cuánto alejar la cámara en pantallas más angostas que la de referencia. El FOV de three.js es
+ * vertical: al achicarse el aspecto se pierde ancho, y la distancia crece con (referencia / aspecto)
+ * elevado a OVERVIEW_NARROW_EXPONENT. Nunca acerca.
  */
 export function overviewDistanceScale(aspect: number) {
-  return Math.max(1, OVERVIEW_REFERENCE_ASPECT / aspect)
+  return Math.max(1, (OVERVIEW_REFERENCE_ASPECT / aspect) ** OVERVIEW_NARROW_EXPONENT)
 }
 
 /** Posición de la vista general para un aspecto dado: misma dirección, más lejos si hace falta. */

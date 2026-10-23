@@ -1,8 +1,8 @@
 # my-setup-3d
 
-Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores unidos, las dos portátiles en su dock, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: once objetos numerados.
+Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores unidos, las dos portátiles en su dock, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: once objetos numerados. Y, de pie bajo la camiseta de Scholes, el autor como su avatar de Habbo, que saluda con un globo de chat.
 
-Cada objeto tiene un punto numerado: al tocarlo, la cámara vuela hacia él, el resto del cuarto se atenúa y un panel muestra su ficha. En los productos comerciales, la ficha suma las fotos oficiales del fabricante y un botón para verlo en la tienda. El diseño parte de un mock hecho en Claude Design.
+Cada objeto tiene un punto numerado y un círculo en el riel de la izquierda: al tocarlo, la cámara vuela hacia él, el resto del cuarto se atenúa y una ficha editorial muestra su número, sus datos y el objeto anterior y el siguiente. En los productos comerciales, la ficha suma las fotos oficiales del fabricante y un botón para verlo en la tienda. El diseño parte de un mock hecho en Claude Design.
 
 ![Panel de un objeto con fotos oficiales y enlaces de compra](docs/screenshot-panel.jpg)
 
@@ -14,13 +14,13 @@ Cada objeto tiene un punto numerado: al tocarlo, la cámara vuela hacia él, el 
 
 | Acción | Escritorio | Celular |
 |---|---|---|
-| Inspeccionar un objeto (la cámara vuela hacia él) | Click sobre él, sobre su punto o en el índice | Tap |
-| Anterior / siguiente objeto | `←` `→` o los botones del panel | Botones del panel |
-| Volver | `Esc`, "Volver", "Vista general" o click en el fondo | "Volver" |
+| Inspeccionar un objeto (la cámara vuela hacia él) | Click sobre él, sobre su punto o en el riel numerado | Tap (el riel va en una fila arriba) |
+| Anterior / siguiente objeto | `←` `→` o los vecinos al pie de la ficha | Vecinos al pie de la ficha |
+| Volver | `Esc`, "Volver" o click en el fondo | "Volver" |
 | Tarde ⇄ Noche | `N` o el selector de abajo | Selector |
-| Ocultar los puntos | `H` o "Ocultar puntos" | "Ocultar puntos" |
+| Ocultar los puntos | `H` o "Ocultar puntos" (abajo) | "Ocultar puntos" |
 
-La cámara no se arrastra ni hace zoom a mano: solo se mueve al elegir un objeto y al volver. Todo se puede usar solo con teclado: `Tab` recorre el índice y `Enter` inspecciona. Con *reducir movimiento* activado en el sistema, la entrada es directa y el LED y el polvo quedan quietos.
+La cámara no se arrastra ni hace zoom a mano: solo se mueve al elegir un objeto y al volver. Todo se puede usar solo con teclado: `Tab` recorre el riel (cada círculo se despliega con su nombre) y `Enter` inspecciona. En celular la vista general encuadra el cuarto de cerca, aunque los bordes de la base queden fuera. Con *reducir movimiento* activado en el sistema, la entrada es directa y el LED y el polvo quedan quietos.
 
 ## Correrlo en local
 
@@ -61,6 +61,8 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 | `npm run assets:preview` | Render de Blender para comparar con la web (`-- --ambience tarde\|noche`) |
 | `npm run textures:sky` | Genera el cielo de atardecer de la ventana (por código, sin fotos) |
 | `npm run textures:wallpapers` | Genera los fondos de las dos pantallas (ondas de colores, por código) |
+| `npm run textures:scholes` | Quita de la camiseta de Scholes el reflejo de quien tomó la foto (separación de frecuencias) |
+| `npm run textures:avatar` | Prepara el avatar de Habbo del autor (recorte y ampliación sin suavizar) |
 | `npm run textures` | Descarga y tiñe las texturas de Poly Haven |
 | `npm run textures:photos` | Corrige la perspectiva de las fotos (los originales no están en el repo) |
 | `npm run products:photos` | Convierte las fotos oficiales de producto a WebP sin metadatos (`blender/textures/products.json`; los originales no están en el repo) |
@@ -88,7 +90,9 @@ bloom, AgX, cámara con easing, puntos de interés e interfaz
 |---|---|---|
 | Piso laminado (`laminate_floor_02`, `laminate_floor_03`) y pared (`beige_wall_001`) | [Poly Haven](https://polyhaven.com) | CC0 |
 | Poster y camiseta 2008 | Fotos propias, procesadas | Del autor |
-| Camiseta Scholes 18 | Textura del mock (foto propia) | Del autor |
+| Camiseta Scholes 18 | Textura del mock (foto propia), sin el reflejo del fotógrafo (`scripts/clean-scholes.mjs`) | Del autor |
+| Muñeco del autor | Su avatar de [Habbo Hotel](https://www.habbo.com), generado con el avatar imager oficial | Arte de Habbo © Sulake; uso personal |
+| Cabeceras de las fichas sin fotos | Capturas de la propia escena (`public/headers/`) | — |
 | Fondos de las pantallas | Generados por código (`scripts/render-wallpapers.mjs`) | — |
 | Desk mat y tablero del organizador | Generados por código | — |
 | Fotos de producto del panel | Oficiales de [Xiaomi](https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/), [Gigabyte](https://www.gigabyte.com/Monitor/GS27FA), [Apple](https://www.apple.com/macbook-pro/), [ASUS](https://www.asus.com) (TUF de referencia), [Logitech](https://www.logitech.com), [JBL](https://global.jbl.com), [PlayStation](https://www.playstation.com), [Funko](https://funko.com) y [Mublex](https://www.mublex.com) (silla de referencia) | De sus fabricantes; se acreditan con enlace en cada panel |

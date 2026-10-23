@@ -35,13 +35,14 @@
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
 }
 
-/* Panel de detalle (mock): a la derecha, de alto completo; se desliza desde fuera de la pantalla */
+/* Panel de detalle como ficha editorial (panel 1 de ajustes visuales 3): a la derecha, de alto
+   completo; se desliza desde fuera de la pantalla. La ficha entera desplaza; el pie con los vecinos queda fijo. */
 .drawer {
   position: absolute;
   top: 16px;
   right: 16px;
   bottom: 16px;
-  width: 400px;
+  width: 420px;
   max-width: calc(100% - 32px);
   display: flex;
   flex-direction: column;
@@ -53,50 +54,91 @@
   box-shadow: -24px 0 60px rgb(0 0 0 / 0.35);
   transform: translateX(calc(100% + 24px));
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --hero-height: 230px;
 }
 
 .drawer--open {
   transform: none;
 }
 
-.drawer__top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
+.drawer__scroll {
+  flex: 1;
+  overflow: auto;
 }
 
-.drawer__counter {
-  font: 12px/1 var(--font-mono);
-  color: #a08f80;
+/* Cabecera: la foto (o la captura de la escena) con "Volver" encima y el número grande delineado,
+   montado sobre el borde con el cuerpo */
+.drawer__hero {
+  position: relative;
+  height: var(--hero-height);
+  margin-bottom: 18px;
+  background: rgb(255 235 215 / 0.04);
+}
+
+.drawer__hero--empty {
+  height: 64px;
+  margin-bottom: 30px;
+}
+
+/* Fotos de producto: el objeto entero (contain) sobre el blanco de la propia foto */
+.drawer__photo--main {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+/* Captura de la escena: llena la cabecera y se funde con el panel */
+.drawer__cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+
+.drawer__top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.drawer__top .back-button {
+  background: rgb(20 15 12 / 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.drawer__number {
+  position: absolute;
+  right: 18px;
+  bottom: -34px;
+  font: 800 88px/1 Manrope, system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  color: var(--ui-bg-solid);
+  -webkit-text-stroke: 1.5px var(--ui-accent);
+  paint-order: stroke fill;
+  pointer-events: none;
 }
 
 .drawer__body {
-  flex: 1;
-  overflow: auto;
-  padding: 0 16px 16px;
+  padding: 0 24px 20px;
 }
 
 .drawer__gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin-bottom: 8px;
+  margin: 0 0 10px;
 }
 
-/* Fotos de producto: el objeto entero (contain) sobre el fondo de la propia foto */
 .drawer__photo {
   width: 100%;
   height: 84px;
   object-fit: contain;
   background: #fff;
   border-radius: 10px;
-}
-
-.drawer__photo--main {
-  grid-column: 1 / -1;
-  height: 240px;
-  border-radius: 12px;
 }
 
 .drawer__buy {
@@ -110,19 +152,19 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 8px 14px;
-  border: 1px solid var(--ui-border-strong);
+  padding: 9px 16px;
+  border: 0;
   border-radius: 999px;
-  background: var(--ui-active);
-  color: var(--ui-text);
+  background: var(--ui-dot);
+  color: #1b1612;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: background 0.15s;
 }
 
 .drawer__buy-link:hover {
-  background: rgb(255 170 110 / 0.28);
+  background: #fff;
 }
 
 .drawer__buy-link:focus-visible {
@@ -131,7 +173,7 @@
 }
 
 .drawer__credit {
-  margin: 0 0 14px;
+  margin: 0;
   font-size: 12px;
   color: #8f8278;
 }
@@ -146,75 +188,103 @@
 }
 
 .drawer__category {
-  margin: 4px 0 6px;
-  font-size: 11px;
-  font-weight: 700;
+  margin: 0 0 8px;
+  font: 600 11px/1.2 var(--font-mono);
   letter-spacing: 0.14em;
   color: var(--ui-accent);
 }
 
 .drawer__title {
-  margin: 0 0 6px;
-  font-size: 24px;
+  margin: 0 0 10px;
+  font-size: 28px;
   font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   text-wrap: pretty;
 }
 
 .drawer__description {
-  margin: 0 0 14px;
+  margin: 0 0 18px;
   font-size: 14.5px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: #c9bbae;
   text-wrap: pretty;
 }
 
+/* Datos en tarjetas de dos columnas */
 .drawer__specs {
-  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 18px;
 }
 
 .drawer__spec {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 10px;
-  padding: 10px 0;
-  border-top: 1px solid var(--ui-border);
-  font-size: 13.5px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: rgb(255 235 215 / 0.05);
 }
 
 .drawer__spec dt {
-  color: #a08f80;
+  font: 600 10px/1.2 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ui-faint);
 }
 
 .drawer__spec dd {
-  margin: 0;
+  margin: 5px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
+/* Pie: el anterior y el siguiente con su número y su nombre */
 .drawer__nav {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   border-top: 1px solid var(--ui-border);
 }
 
-.drawer__nav button {
-  padding: 4px 0;
+.drawer__neighbor {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 24px;
   border: 0;
   background: none;
   color: #e5d6c9;
   font: inherit;
-  font-size: 13.5px;
+  text-align: left;
   cursor: pointer;
+  transition: background 0.15s;
 }
 
-.drawer__nav button:hover {
+.drawer__neighbor--next {
+  align-items: flex-end;
+  text-align: right;
+  border-left: 1px solid var(--ui-border);
+}
+
+.drawer__neighbor:hover {
+  background: var(--ui-hover);
   color: #fff;
+}
+
+.drawer__neighbor-number {
+  font: 600 10.5px/1 var(--font-mono);
+  color: var(--ui-faint);
+}
+
+.drawer__neighbor-name {
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .drawer button:focus-visible {
   outline: 2px solid var(--ui-accent);
-  outline-offset: 2px;
+  outline-offset: -2px;
   border-radius: 6px;
 }
 
@@ -243,8 +313,7 @@
   background: var(--ui-hover);
 }
 
-.back-button:focus-visible,
-.index button:focus-visible {
+.back-button:focus-visible {
   outline: 2px solid var(--ui-accent);
   outline-offset: 2px;
 }
@@ -257,106 +326,129 @@
   color: var(--ui-faint);
 }
 
-/* Índice (mock): arriba a la izquierda, bajo el título */
+/* Índice como riel numerado (menú B de ajustes visuales 3): círculos con el número, agrupados por
+   categoría; el círculo se despliega en una pastilla con el nombre (hover, foco, hover desde la escena
+   o el objeto inspeccionado). El ancho anima de --rail-size a max-content con interpolate-size. */
 .index {
+  --rail-size: 40px;
   position: absolute;
-  top: 76px;
+  top: 84px;
   left: var(--ui-gap);
-  width: 224px;
-  max-height: calc(100% - 150px);
-  overflow: auto;
-  padding: 8px;
-  background: var(--ui-bg);
-  border-color: var(--ui-border);
-}
-
-.index__header {
+  max-height: calc(100% - 160px);
+  overflow: visible;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 8px 6px;
-}
-
-.index__title {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #d8c8ba;
-}
-
-.index__toggle {
-  padding: 0;
-  border: 0;
-  background: none;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.chip {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-  padding: 3px 8px;
-  border: 1px solid rgb(255 235 215 / 0.16);
-  border-radius: 999px;
-  background: none;
-  color: #e5d6c9;
-  font: inherit;
-  font-size: 11px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.chip kbd {
-  font: 11px/1 var(--font-mono);
-  color: var(--ui-faint);
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  interpolate-size: allow-keywords;
 }
 
 .index__group {
-  margin: 0;
-  padding: 8px 8px 2px;
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.12em;
+  margin: 0 0 6px 4px;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.16em;
   color: var(--ui-faint);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
 }
 
 .index ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .index__item {
-  width: 100%;
+  pointer-events: auto;
+  height: var(--rail-size);
+  width: var(--rail-size);
   display: flex;
+  align-items: center;
   gap: 10px;
-  align-items: baseline;
-  padding: 5px 8px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
+  padding: 0;
+  border: 1px solid rgb(255 235 215 / 0.12);
+  border-radius: 999px;
+  background: var(--ui-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   color: #e5d6c9;
   font: inherit;
-  font-size: 13px;
-  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.2s,
+    color 0.2s;
 }
 
-.index__item:hover {
-  background: var(--ui-hover);
-}
-
-.index__item--hover,
-.index__item[aria-current='true'] {
-  background: var(--ui-active);
-  color: #fff;
+/* COLECCIÓN en rojo United */
+.index__section--coleccion .index__item {
+  border-color: rgb(200 16 46 / 0.55);
+  background: rgb(120 14 30 / 0.55);
 }
 
 .index__number {
-  font: 10.5px/1 var(--font-mono);
-  color: #a08f80;
+  flex: none;
+  width: calc(var(--rail-size) - 2px);
+  text-align: center;
+  font: 600 12px/1 var(--font-mono);
+}
+
+.index__name {
+  padding-right: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* Desplegado: pastilla clara con el número en un círculo coral, como un punto en hover */
+.index__item:hover,
+.index__item:focus-visible,
+.index__item--hover,
+.index__item[aria-current='true'] {
+  width: max-content;
+  border-color: transparent;
+  background: var(--ui-dot);
+  color: #1b1612;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+}
+
+.index__item:hover .index__name,
+.index__item:focus-visible .index__name,
+.index__item--hover .index__name,
+.index__item[aria-current='true'] .index__name {
+  opacity: 1;
+}
+
+.index__item:hover .index__number,
+.index__item:focus-visible .index__number,
+.index__item--hover .index__number,
+.index__item[aria-current='true'] .index__number {
+  width: calc(var(--rail-size) - 8px);
+  height: calc(var(--rail-size) - 8px);
+  margin-left: 3px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ui-dot-hover);
+  color: #fff;
+}
+
+.index__item:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .index__item,
+  .index__name {
+    transition: none;
+  }
 }
 
 /* Indicador de carga */
@@ -434,19 +526,24 @@
     transform: none;
   }
 
-  .drawer__top {
-    padding: 10px 14px;
+  /* Hoja inferior: cabecera más baja y la galería como tira de miniaturas */
+  .drawer {
+    --hero-height: 130px;
+  }
+
+  .drawer__number {
+    font-size: 64px;
+    bottom: -24px;
   }
 
   .drawer__body {
-    padding: 0 16px 8px;
+    padding: 0 16px 12px;
   }
 
   .drawer__title {
-    font-size: 20px;
+    font-size: 21px;
   }
 
-  /* Hoja inferior: la galería es una tira de miniaturas iguales para que el nombre siga a la vista */
   .drawer__gallery {
     grid-template-columns: none;
     grid-auto-flow: column;
@@ -454,25 +551,38 @@
     overflow-x: auto;
   }
 
-  .drawer__photo,
-  .drawer__photo--main {
-    grid-column: auto;
-    height: 84px;
-    border-radius: 10px;
-  }
-
-  .drawer__spec {
-    grid-template-columns: 6.5rem 1fr;
-  }
-
-  .drawer__nav {
+  .drawer__neighbor {
     padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+    min-height: 44px;
   }
 
+  /* Riel compacto en fila bajo el título: en vertical el cuarto llena el ancho y una columna taparía
+     el poster y los monitores. Desliza de lado si no entra; la pastilla se abre igual. */
   .index {
-    top: 64px;
-    width: min(224px, calc(100vw - 2 * var(--ui-gap)));
-    max-height: calc(54dvh - 64px);
+    --rail-size: 36px;
+    top: 74px;
+    left: 0;
+    right: 0;
+    max-height: none;
+    flex-direction: row;
+    gap: 10px;
+    padding: 4px var(--ui-gap) 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    pointer-events: auto;
+  }
+
+  .index__section {
+    flex: none;
+  }
+
+  .index__group {
+    margin-bottom: 4px;
+  }
+
+  .index ul {
+    flex-direction: row;
+    gap: 4px;
   }
 
   /* La hoja de detalle ocupa la parte de abajo: la barra se esconde mientras se inspecciona */
@@ -487,12 +597,9 @@
   }
 
   /* Botones de al menos 44 px de alto: tamaño mínimo cómodo para un dedo */
-  .index__item,
-  .index__toggle,
   .back-button,
   .pill,
-  .segmented button,
-  .drawer__nav button {
+  .segmented button {
     min-height: 44px;
   }
 }
@@ -541,6 +648,12 @@
   font-size: 13px;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.pill kbd {
+  margin-left: 6px;
+  font: 11px/1 var(--font-mono);
+  color: var(--ui-faint);
 }
 
 .pill:hover {
@@ -697,6 +810,118 @@
   color: var(--ui-faint);
 }
 
+.signature__by {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* El autor: cursiva en el durazno de acento, para que destaque sin gritar */
+.signature a.signature__author {
+  color: var(--ui-accent);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Globo de chat del muñeco (ajustes visuales 3, D8), al estilo de los de Habbo: caja blanca con borde
+   oscuro, el nombre en negrita y una colita que apunta a la cabeza. <HotspotProbe> mueve el contenedor
+   a la cabeza; la caja se centra encima. Aparece con un pequeño salto cuando ya tiene posición. */
+.avatar-bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+
+.avatar-bubble[data-ready='true'] {
+  visibility: visible;
+}
+
+.avatar-bubble--hidden {
+  opacity: 0;
+}
+
+.avatar-bubble__box {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  translate: -50% 0;
+  margin: 0;
+  padding: 5px 9px;
+  border: 1px solid #1a1a1a;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.35);
+  color: #111;
+  font: 12px/1.3 Verdana, Tahoma, system-ui, sans-serif;
+  white-space: nowrap;
+  animation: avatar-bubble-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) 1.2s both;
+}
+
+/* Colita: un rombo con el mismo borde, medio escondido bajo la caja */
+.avatar-bubble__box::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 9px;
+  height: 9px;
+  translate: -50% 0;
+  rotate: 45deg;
+  border-right: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  background: #fff;
+}
+
+.avatar-bubble__name {
+  font-weight: 700;
+}
+
+.avatar-bubble__emojis {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.avatar-bubble__emoji {
+  display: inline-block;
+  animation: avatar-emoji-hop 2.4s ease-in-out infinite;
+}
+
+@keyframes avatar-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.8);
+  }
+}
+
+@keyframes avatar-emoji-hop {
+  0%,
+  70%,
+  100% {
+    transform: none;
+  }
+  80% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-bubble__box,
+  .avatar-bubble__emoji {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .avatar-bubble__box {
+    font-size: 10.5px;
+    padding: 4px 7px;
+  }
+}
+
 /* Puntos de interés (mock): número en un círculo claro con un anillo que pulsa */
 .hotspots {
   position: absolute;
@@ -803,6 +1028,20 @@
   .signature {
     bottom: calc(var(--ui-gap) + 64px + env(safe-area-inset-bottom));
     font-size: 11px;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 2px;
+    width: calc(100% - 2 * var(--ui-gap));
+  }
+
+  /* "— by Sanghel Gonzalez" baja a su propia línea: la firma completa no entra en 390 px */
+  .signature__by {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+
+  .signature__by .signature__dot {
+    display: none;
   }
 
   /* Puntos más chicos: el diorama ocupa poco y se pisarían. Se escala el botón y no .hotspot: en

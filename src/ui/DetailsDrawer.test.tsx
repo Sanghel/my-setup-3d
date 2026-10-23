@@ -16,28 +16,29 @@ describe('DetailsDrawer', () => {
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument()
   })
 
-  it('al enfocar el monitor vertical: "03 / 11", SETUP, nombre, descripción y ficha', () => {
+  it('al enfocar el monitor vertical: el 03 grande, "SETUP · 03 DE 11", nombre, descripción y ficha en tarjetas', () => {
     render(<DetailsDrawer />)
     select('vertical-monitor')
     const item = ITEMS.find((i) => i.id === 'vertical-monitor')!
-    expect(within(panel()).getByText('03 / 11')).toBeInTheDocument()
-    expect(within(panel()).getByText('SETUP · 03')).toBeInTheDocument()
+    expect(panel().querySelector('.drawer__number')).toHaveTextContent('03')
+    expect(within(panel()).getByText('SETUP · 03 DE 11')).toBeInTheDocument()
     expect(within(panel()).getByRole('heading', { name: item.name })).toBeInTheDocument()
     expect(within(panel()).getByText(item.description)).toBeInTheDocument()
     for (const detail of item.details!) expect(within(panel()).getByText(detail.value)).toBeInTheDocument()
   })
 
   it('sin detalles ni fotos: sin secciones ni marcos vacíos', () => {
-    const plain: Item = { ...ITEMS[0], id: 'x', details: undefined, photos: undefined }
+    const plain: Item = { ...ITEMS[0], id: 'x', details: undefined, photos: undefined, cover: undefined }
     render(<DetailsDrawer items={[plain]} />)
     select('x')
     expect(within(panel()).queryByRole('term')).not.toBeInTheDocument()
     expect(within(panel()).queryByRole('img')).not.toBeInTheDocument()
   })
 
-  it('con fotos: la primera grande y todas con texto alternativo', () => {
+  it('con fotos: la primera en la cabecera, las demás como miniaturas, todas con texto alternativo', () => {
     const withPhotos: Item = {
       ...ITEMS[0],
+      cover: undefined,
       id: 'x',
       photos: [
         { src: '/a.jpg', alt: 'Frente' },
@@ -49,6 +50,7 @@ describe('DetailsDrawer', () => {
     const images = within(panel()).getAllByRole('img')
     expect(images.map((img) => img.getAttribute('alt'))).toEqual(['Frente', 'Detalle'])
     expect(images[0]).toHaveClass('drawer__photo--main')
+    expect(images[1]).toHaveClass('drawer__photo')
   })
 
   it('las fotos se cargan solo al abrir el panel (loading="lazy")', () => {
@@ -114,11 +116,25 @@ describe('DetailsDrawer', () => {
     expect(panel().querySelector('.drawer__buy')).toBeNull()
   })
 
-  it('objeto personalizado (Scholes 18): sin galería ni crédito', () => {
+  it('objeto personalizado (Scholes 18): la cabecera es su captura de la escena, sin galería ni crédito', () => {
     render(<DetailsDrawer />)
     select('jersey-scholes')
-    expect(within(panel()).queryByRole('img')).not.toBeInTheDocument()
+    const images = within(panel()).getAllByRole('img')
+    expect(images).toHaveLength(1)
+    expect(images[0]).toHaveClass('drawer__cover')
+    expect(images[0].getAttribute('src')).toBe('/headers/jersey-scholes.webp')
     expect(panel().querySelector('.drawer__credit')).toBeNull()
+  })
+
+  it('el pie nombra a los vecinos: "07 Moscú 2008" y "09 Old Trafford" para el 08', async () => {
+    render(<DetailsDrawer />)
+    select('jersey-scholes')
+    const prev = within(panel()).getByRole('button', { name: 'Anterior: Moscú 2008' })
+    const next = within(panel()).getByRole('button', { name: 'Siguiente: Old Trafford' })
+    expect(prev).toHaveTextContent('← 07Moscú 2008')
+    expect(next).toHaveTextContent('09 →Old Trafford')
+    await userEvent.click(prev)
+    expect(useSceneStore.getState().selectedId).toBe('jersey-2008')
   })
 
   it('Siguiente pasa al objeto 05 (la silla) y el contador se actualiza; desde el último vuelve al primero', async () => {
@@ -126,7 +142,7 @@ describe('DetailsDrawer', () => {
     select('keyboard')
     await userEvent.click(within(panel()).getByRole('button', { name: /Siguiente/ }))
     expect(useSceneStore.getState().selectedId).toBe('chair')
-    expect(within(panel()).getByText('05 / 11')).toBeInTheDocument()
+    expect(within(panel()).getByText('SETUP · 05 DE 11')).toBeInTheDocument()
     select('funko')
     await userEvent.click(within(panel()).getByRole('button', { name: /Siguiente/ }))
     expect(useSceneStore.getState().selectedId).toBe('desk')
