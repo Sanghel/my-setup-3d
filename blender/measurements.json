@@ -280,8 +280,8 @@
   },
   "avatar": {
     "_source": "ajustes visuales 3",
-    "_note": "Muñeco del autor: el avatar de Habbo que generó el usuario (blender/textures/avatar-habbo.webp). x/d: dónde apoya los pies (cm del cuarto): a la derecha de la silla y bajo la camiseta de Scholes, como marcó el usuario en una captura. yawDeg: giro del ancho del plano; 39° lo deja de frente a la cámara de la vista general (azimut -39°). height: 95 cm, más o menos la altura del respaldo de la silla, como un Habbo al lado de los muebles. glow: emisión tenue para que se lea en la sombra.",
-    "x": 132,
+    "_note": "Muñeco del autor: el avatar de Habbo que generó el usuario (blender/textures/avatar-habbo.webp). x/d: dónde apoya los pies (cm del cuarto): a la derecha de la silla y bajo la camiseta de Scholes, como marcó el usuario en una captura; x 116 (54 cm de la pared de Scholes) porque pidió despegarlo de la pared. yawDeg: giro del ancho del plano; 39° lo deja de frente a la cámara de la vista general (azimut -39°). height: 95 cm, más o menos la altura del respaldo de la silla, como un Habbo al lado de los muebles. glow: emisión tenue para que se lea en la sombra.",
+    "x": 116,
     "d": 200,
     "height": 95,
     "yawDeg": 39,
