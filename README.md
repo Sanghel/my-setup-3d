@@ -1,108 +1,195 @@
-# my-setup-3d
+<!-- markdownlint-disable-next-line MD041 -->
+<a id="top"></a>
 
-Recreación interactiva de mi habitación y mi setup en 3D, como un **diorama** en dos ambientes: **Tarde**, con el sol entrando por la ventana, y **Noche**, con los LEDs reales del cuarto. Dos paredes, el escritorio con sus dos monitores unidos, las dos portátiles en su dock, la silla, las camisetas enmarcadas, el poster de Old Trafford, el organizador de pared y el Funko de Madara: once objetos numerados. Y, de pie bajo la camiseta de Scholes, el autor como su avatar de Habbo, que saluda con un globo de chat.
+<div align="center">
 
-Cada objeto tiene un punto numerado y un círculo en el riel de la izquierda: al tocarlo, la cámara vuela hacia él, el resto del cuarto se atenúa y una ficha editorial muestra su número, sus datos y el objeto anterior y el siguiente. En los productos comerciales, la ficha suma las fotos oficiales del fabricante y un botón para verlo en la tienda. El diseño parte de un mock hecho en Claude Design.
+<img width="100%" alt="My Setup 3D banner: an isometric diorama of the room with the desk, the monitor wallpaper, a framed shirt, the sunset window and a breathing red LED" src="docs/assets/banner.svg" />
 
-![Panel de un objeto con fotos oficiales y enlaces de compra](docs/screenshot-panel.jpg)
+<h1>My Setup 3D</h1>
 
-| Tarde | Noche |
-|---|---|
-| ![Vista general de tarde](docs/screenshot.jpg) | ![Vista general de noche](docs/screenshot-noche.jpg) |
+<p><strong>My room and desk setup as an interactive 3D diorama — generated in Blender from real measurements.</strong></p>
 
-## Cómo usarlo
+<p>
+<a href="https://my-setup-3d.vercel.app"><img src="https://img.shields.io/badge/live-demo-FF4A5A?style=for-the-badge&labelColor=1B1612&logo=vercel&logoColor=white" alt="Live demo"></a>
+<a href="https://github.com/Sanghel/my-setup-3d/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Sanghel/my-setup-3d/ci.yml?branch=main&style=for-the-badge&labelColor=1B1612&color=FF4A5A&label=CI" alt="CI"></a>
+<img src="https://img.shields.io/badge/objects-11-F7A65A?style=for-the-badge&labelColor=1B1612" alt="11 objects">
+<img src="https://img.shields.io/badge/first%20visit-~3.4%20MB-F7A65A?style=for-the-badge&labelColor=1B1612" alt="~3.4 MB first visit">
+<img src="https://img.shields.io/badge/Blender-5.2-EFE3D3?style=for-the-badge&labelColor=1B1612&logo=blender&logoColor=white" alt="Blender 5.2">
+</p>
 
-| Acción | Escritorio | Celular |
+<p>
+<a href="https://my-setup-3d.vercel.app"><strong>Live demo</strong></a> &bull;
+<a href="#how-to-use-it"><strong>How to use it</strong></a> &bull;
+<a href="#how-the-room-is-built"><strong>How it's built</strong></a> &bull;
+<a href="#quick-start"><strong>Quick start</strong></a>
+</p>
+
+<br/>
+
+<p>
+A recreation of my room as a <strong>diorama</strong> in two moods: <strong>Afternoon</strong>, with sunlight coming
+through the window, and <strong>Night</strong>, lit by the room's real LEDs. Two walls, the desk with its two joined
+monitors, both laptops on their dock, the chair, the framed shirts, the Old Trafford poster, the wall organizer
+and the Madara Funko — eleven numbered objects. And standing under the Scholes shirt, me as my Habbo avatar,
+waving with a chat bubble.
+</p>
+
+<br/>
+
+<img width="100%" alt="An object's panel with official product photos and shop links" src="docs/screenshot-panel.jpg" />
+
+<table>
+<tr>
+<td width="50%" align="center"><img alt="Overview in the afternoon" src="docs/screenshot.jpg" /><br/><sub><strong>Afternoon</strong></sub></td>
+<td width="50%" align="center"><img alt="Overview at night" src="docs/screenshot-noche.jpg" /><br/><sub><strong>Night</strong></sub></td>
+</tr>
+</table>
+
+<sub><strong>BUILT WITH</strong></sub>
+
+<br/>
+
+<img src="https://skillicons.dev/icons?i=react,ts,threejs,vite,blender,py,vercel&theme=dark" alt="React, TypeScript, Three.js, Vite, Blender, Python, Vercel" />
+
+<br/><br/>
+
+</div>
+
+<div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
+
+## How to use it
+
+Every object has a numbered dot and a circle on the left rail: select it and the camera flies to it, the rest of
+the room dims, and an editorial card shows its number, its details, and the previous and next objects. For
+commercial products the card adds the manufacturer's official photos and a button to see it in the store.
+
+| Action | Desktop | Mobile |
 |---|---|---|
-| Inspeccionar un objeto (la cámara vuela hacia él) | Click sobre él, sobre su punto o en el riel numerado | Tap (el riel va en una fila arriba) |
-| Anterior / siguiente objeto | `←` `→` o los vecinos al pie de la ficha | Vecinos al pie de la ficha |
-| Volver | `Esc`, "Volver" o click en el fondo | "Volver" |
-| Tarde ⇄ Noche | `N` o el selector de abajo | Selector |
-| Ocultar los puntos | `H` o "Ocultar puntos" (abajo) | "Ocultar puntos" |
+| Inspect an object (camera flies to it) | Click it, its dot or the numbered rail | Tap (the rail sits in a row on top) |
+| Previous / next object | `←` `→` or the neighbors at the bottom of the card | Neighbors at the bottom of the card |
+| Go back | `Esc`, "Volver" or click the background | "Volver" |
+| Afternoon ⇄ Night (*Tarde* ⇄ *Noche*) | `N` or the switch at the bottom | Switch |
+| Hide the dots | `H` or "Ocultar puntos" | "Ocultar puntos" |
 
-La cámara no se arrastra ni hace zoom a mano: solo se mueve al elegir un objeto y al volver. Todo se puede usar solo con teclado: `Tab` recorre el riel (cada círculo se despliega con su nombre) y `Enter` inspecciona. En celular la vista general encuadra el cuarto de cerca, aunque los bordes de la base queden fuera. Con *reducir movimiento* activado en el sistema, la entrada es directa y el LED y el polvo quedan quietos.
+The camera can't be dragged or zoomed by hand: it only moves when you pick an object and when you go back.
+Everything works from the keyboard — `Tab` walks the rail (each circle expands with its name) and `Enter`
+inspects. With *reduce motion* turned on, the intro is instant and the LED and dust stay still.
 
-## Correrlo en local
+> The interface is in Spanish; button labels are quoted as they appear on screen.
+
+<div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
+
+## How the room is built
+
+The room isn't modeled by hand: it's generated by **Python code driving Blender**, from real measurements
+(`blender/measurements.json`, in centimeters).
+
+```
+measurements.json + textures
+        │
+        ▼
+blender/scripts/build_room.py   (headless Blender: geometry, PBR materials, sun and LEDs)
+        │  bakes the light with Cycles twice (Afternoon and Night) onto the same UV2 + OIDN denoise
+        ▼
+blender/out/room.raw.glb        (~16 MB, intermediate, not versioned)
+        │  gltf-transform: meshopt + WebP
+        ▼
+public/models/room.glb (~3 MB) + lightmap-tarde.webp + lightmap-noche.webp (~170 KB each)
+        │
+        ▼
+React Three Fiber: both lightmaps blended in the shader (onBeforeCompile),
+bloom, AgX, eased camera, points of interest and UI
+```
+
+<details>
+<summary><strong>Asset scripts</strong></summary>
+
+| Script | What it does |
+|---|---|
+| `npm run assets` | Builds, bakes both moods (fast, 1024 px, ~1 min) and optimizes. Requires **Blender 5.2** on the `PATH` |
+| `npm run assets:final` | Same, with the final-quality bake (2048 px, 1024 samples, ~8 min) |
+| `npm run assets:preview` | Blender render to compare against the web (`-- --ambience tarde\|noche`) |
+| `npm run textures:sky` | Generates the sunset sky outside the window (procedural, no photos) |
+| `npm run textures:wallpapers` | Generates the wallpapers of both screens (procedural color waves) |
+| `npm run textures:scholes` | Removes the photographer's reflection from the Scholes shirt (frequency separation) |
+| `npm run textures:avatar` | Prepares my Habbo avatar (crop and nearest-neighbor upscale) |
+| `npm run textures` | Downloads and tints the Poly Haven textures |
+| `npm run textures:photos` | Corrects the perspective of the photos (originals aren't in the repo) |
+| `npm run products:photos` | Converts the official product photos to metadata-free WebP (`blender/textures/products.json`; originals aren't in the repo) |
+| `npm run textures:screens:code` | Screens showing real code from this repo (outside the pipeline: they now use the mock's wallpapers) |
+
+</details>
+
+<div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| App | ![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) |
+| 3D | ![Three.js](https://img.shields.io/badge/Three.js-000000?style=flat-square&logo=threedotjs&logoColor=white) via React Three Fiber and drei (CameraControls, Environment, useProgress) |
+| Post-processing | `postprocessing`: bloom and AgX tone mapping |
+| State | ![Zustand](https://img.shields.io/badge/zustand-443E38?style=flat-square) overview ↔ inspection |
+| Content pipeline | ![Blender](https://img.shields.io/badge/Blender_5.2-E87D0D?style=flat-square&logo=blender&logoColor=white) (bpy, headless) + Cycles for baked lighting · `gltf-transform` to optimize the model |
+| Quality | ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white) + Testing Library · oxlint · CI on GitHub Actions |
+| Hosting | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white) |
+
+### Performance
+
+- **~3.4 MB** transferred on the first visit (model, both lightmaps, code and fonts). Product photos (~430 KB
+  total) **don't** count: they load when you open each object's card.
+- **~120 draw calls** per frame with all objects and post-processing; ~68 fps in the afternoon, ~83 at night and
+  ~78 while inspecting, on a laptop (production build).
+- No real-time lights: all diffuse light is baked. What moves (the breathing LED, the dust) is layered on top.
+
+<div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
+
+## Quick start
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # Vitest (escena, catálogo, estado, cámara, interfaz)
-npm run build      # build de producción en dist/
+npm test           # Vitest (scene, catalog, state, camera, UI)
+npm run build      # production build in dist/
 ```
 
-El modelo ya optimizado (`public/models/room.glb`) y la luz horneada de los dos ambientes (`lightmap-tarde.webp`, `lightmap-noche.webp`) están en el repo: **no hace falta Blender** para correr el sitio.
+The optimized model (`public/models/room.glb`) and the baked light for both moods (`lightmap-tarde.webp`,
+`lightmap-noche.webp`) are committed: **you don't need Blender** to run the site.
 
-## Cómo se construye el cuarto
+<div align="center"><img src="public/favicon.svg" width="28" alt="" /></div>
 
-El cuarto no se modela a mano: lo genera **código Python que controla Blender** a partir de medidas reales (`blender/measurements.json`, en centímetros).
+## Credits & licenses
 
-```
-measurements.json + texturas
-        │
-        ▼
-blender/scripts/build_room.py   (Blender sin interfaz: geometría, materiales PBR, sol y LEDs)
-        │  hornea la luz con Cycles dos veces (Tarde y Noche) sobre la misma UV2 + denoise OIDN
-        ▼
-blender/out/room.raw.glb        (~16 MB, intermedio, no se versiona)
-        │  gltf-transform: meshopt + WebP
-        ▼
-public/models/room.glb (~3 MB) + lightmap-tarde.webp + lightmap-noche.webp (~170 KB c/u)
-        │
-        ▼
-React Three Fiber: los dos lightmaps se mezclan en el shader (onBeforeCompile),
-bloom, AgX, cámara con easing, puntos de interés e interfaz
-```
-
-| Script | Qué hace |
-|---|---|
-| `npm run assets` | Construye, hornea los dos ambientes (rápido, 1024 px, ~1 min) y optimiza. Requiere **Blender 5.2** en el `PATH` |
-| `npm run assets:final` | Igual, con el horneado de calidad final (2048 px, 1024 muestras, ~8 min) |
-| `npm run assets:preview` | Render de Blender para comparar con la web (`-- --ambience tarde\|noche`) |
-| `npm run textures:sky` | Genera el cielo de atardecer de la ventana (por código, sin fotos) |
-| `npm run textures:wallpapers` | Genera los fondos de las dos pantallas (ondas de colores, por código) |
-| `npm run textures:scholes` | Quita de la camiseta de Scholes el reflejo de quien tomó la foto (separación de frecuencias) |
-| `npm run textures:avatar` | Prepara el avatar de Habbo del autor (recorte y ampliación sin suavizar) |
-| `npm run textures` | Descarga y tiñe las texturas de Poly Haven |
-| `npm run textures:photos` | Corrige la perspectiva de las fotos (los originales no están en el repo) |
-| `npm run products:photos` | Convierte las fotos oficiales de producto a WebP sin metadatos (`blender/textures/products.json`; los originales no están en el repo) |
-| `npm run textures:screens:code` | Pantallas con código real de este repo (fuera del pipeline: ahora llevan los fondos del mock) |
-
-## Stack
-
-- **Vite + React 19 + TypeScript**
-- **three.js** vía **React Three Fiber** y **drei** (CameraControls, Environment, useProgress)
-- **postprocessing**: bloom y tone mapping AgX
-- **zustand** para el estado (vista general ↔ inspección)
-- **Blender 5.2** (bpy, sin interfaz) + **Cycles** para la luz horneada
-- **gltf-transform** para optimizar el modelo
-- **Vitest + Testing Library**; **oxlint**; CI en GitHub Actions
-
-## Rendimiento
-
-- **~3,4 MB** transferidos en la primera visita (modelo, dos lightmaps, código y fuentes). Las fotos de producto (~430 KB en total) **no** cuentan: se descargan al abrir el panel de cada objeto.
-- **~120 draw calls** por cuadro con los diez objetos y el post-procesado; ~68 fps de tarde, ~83 de noche y ~78 inspeccionando, en un portátil (build de producción).
-- Sin luces en tiempo real: toda la luz difusa está horneada. Lo que se mueve (el LED que respira, el polvo) va encima.
-
-## Créditos y licencias
-
-| Recurso | Origen | Licencia |
+| Asset | Source | License |
 |---|---|---|
-| Piso laminado (`laminate_floor_02`, `laminate_floor_03`) y pared (`beige_wall_001`) | [Poly Haven](https://polyhaven.com) | CC0 |
-| Poster y camiseta 2008 | Fotos propias, procesadas | Del autor |
-| Camiseta Scholes 18 | Textura del mock (foto propia), sin el reflejo del fotógrafo (`scripts/clean-scholes.mjs`) | Del autor |
-| Muñeco del autor | Su avatar de [Habbo Hotel](https://www.habbo.com), generado con el avatar imager oficial | Arte de Habbo © Sulake; uso personal |
-| Cabeceras de las fichas sin fotos | Capturas de la propia escena (`public/headers/`) | — |
-| Fondos de las pantallas | Generados por código (`scripts/render-wallpapers.mjs`) | — |
-| Desk mat y tablero del organizador | Generados por código | — |
-| Fotos de producto del panel | Oficiales de [Xiaomi](https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/), [Gigabyte](https://www.gigabyte.com/Monitor/GS27FA), [Apple](https://www.apple.com/macbook-pro/), [ASUS](https://www.asus.com) (TUF de referencia), [Logitech](https://www.logitech.com), [JBL](https://global.jbl.com), [PlayStation](https://www.playstation.com), [Funko](https://funko.com) y [Mublex](https://www.mublex.com) (silla de referencia) | De sus fabricantes; se acreditan con enlace en cada panel |
-| Cielo de atardecer de la ventana | Generado por código (`scripts/render-sky.mjs`) | — |
-| Tipografías Manrope y JetBrains Mono | [Google Fonts](https://fonts.google.com) | SIL Open Font License |
-| Diseño de la interfaz | Mock propio hecho en Claude Design | — |
-| Favicon | Diseño propio (mini diorama, `public/favicon.svg`) | — |
+| Laminate floor (`laminate_floor_02`, `laminate_floor_03`) and wall (`beige_wall_001`) | [Poly Haven](https://polyhaven.com) | CC0 |
+| Poster and 2008 shirt | Own photos, processed | The author's |
+| Scholes 18 shirt | Texture from the mock (own photo), without the photographer's reflection (`scripts/clean-scholes.mjs`) | The author's |
+| My figure | My [Habbo Hotel](https://www.habbo.com) avatar, generated with the official avatar imager | Habbo art © Sulake; personal use |
+| Headers of cards without photos | Captures of the scene itself (`public/headers/`) | — |
+| Screen wallpapers | Generated by code (`scripts/render-wallpapers.mjs`) | — |
+| Desk mat and organizer board | Generated by code | — |
+| Product photos in the card | Official, from [Xiaomi](https://www.mi.com/global/product/xiaomi-curved-gaming-monitor-g34wqi/), [Gigabyte](https://www.gigabyte.com/Monitor/GS27FA), [Apple](https://www.apple.com/macbook-pro/), [ASUS](https://www.asus.com) (reference TUF), [Logitech](https://www.logitech.com), [JBL](https://global.jbl.com), [PlayStation](https://www.playstation.com), [Funko](https://funko.com) and [Mublex](https://www.mublex.com) (reference chair) | Their manufacturers'; credited with a link on each card |
+| Sunset sky outside the window | Generated by code (`scripts/render-sky.mjs`) | — |
+| Manrope and JetBrains Mono fonts | [Google Fonts](https://fonts.google.com) | SIL Open Font License |
+| UI design | Own mock made in Claude Design | — |
+| Favicon | Own design (mini diorama, `public/favicon.svg`) | — |
 
-Las marcas y escudos que aparecen en las camisetas, el poster y los productos pertenecen a sus dueños. Los botones "Ver en Amazon" / "Ver en Mublex" son enlaces normales, **sin afiliado**. Es un proyecto personal sin fines comerciales.
+The brands and crests on the shirts, the poster and the products belong to their owners. The "Ver en Amazon" /
+"Ver en Mublex" buttons are plain links, **no affiliate**. This is a personal, non-commercial project.
 
-## Bitácora
+### Learning log
 
-Este proyecto se hizo para aprender: cada grupo de tareas tiene una nota con los conceptos nuevos (Blender como código, glTF, PBR, luz horneada, raycasting, cámaras, accesibilidad, deploy…) en mi bóveda de Obsidian, y las especificaciones viven en [OpenSpec](https://github.com/Fission-AI/OpenSpec).
+This project was built to learn: each task group has a note with the new concepts (Blender as code, glTF, PBR,
+baked lighting, raycasting, cameras, accessibility, deploy…) in my Obsidian vault, and the specs live in
+[OpenSpec](https://github.com/Fission-AI/OpenSpec).
+
+<div align="center">
+
+<sub>Crafted by <a href="https://github.com/Sanghel"><strong>Sanghel González</strong></a> · <a href="https://sanghel-portfolio.vercel.app">Portfolio</a></sub>
+
+<br/>
+
+<a href="#top">↑ Back to top</a>
+
+</div>
