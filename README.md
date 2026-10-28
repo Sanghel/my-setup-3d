@@ -181,8 +181,7 @@ The brands and crests on the shirts, the poster and the products belong to their
 ### Learning log
 
 This project was built to learn: each task group has a note with the new concepts (Blender as code, glTF, PBR,
-baked lighting, raycasting, cameras, accessibility, deploy…) in my Obsidian vault, and the specs live in
-[OpenSpec](https://github.com/Fission-AI/OpenSpec).
+baked lighting, raycasting, cameras, accessibility, deploy…) in my Obsidian vault.
 
 <div align="center">
 
